@@ -1,0 +1,3002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="carbon">
+  <title>Searchable PDF Document Database &amp; Embed Workbench</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Page and surfaces (Carbon) */
+      --background: #ffffff;
+      --surface-container-low: #f4f4f4;
+      --surface-container: #f4f4f4;
+      --surface-container-high: #e0e0e0;
+      --backdrop-scrim: rgb(22 22 22 / 0.56);
+
+      /* Ink */
+      --on-surface: #161616;
+      --on-surface-variant: #525252;
+
+      /* Rules */
+      --outline: #8d8d8d;
+      --outline-variant: #e0e0e0;
+
+      /* Accents */
+      --primary: #0f62fe;
+      --primary-hover: #0043ce;
+      --on-primary: #ffffff;
+      --primary-container: #d0e2ff;
+      --on-primary-container: #161616;
+      --secondary: #6f6f6f;
+      --tertiary: #198038;
+      --error: #da1e28;
+      --on-error: #ffffff;
+
+      /* Semantic tokens */
+      --positive: #198038;
+      --warning: #b28600;
+      --focus: #0f62fe;
+
+      /* Data series */
+      --data-1: #0f62fe;
+      --data-2: #6929c4;
+      --data-3: #005d5d;
+      --data-4: #9f1853;
+      --data-context: #8d8d8d;
+
+      /* Fonts */
+      --font-headline: 'IBM Plex Sans', sans-serif;
+      --font-body: 'IBM Plex Sans', sans-serif;
+      --font-label: 'IBM Plex Mono', monospace;
+
+      /* Type scale (Dashboard / Tool) */
+      --display-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Shape */
+      --rounded: 0.125rem;
+      --rounded-lg: 0.25rem;
+      --rounded-full: 0.75rem;
+
+      /* Style effects */
+      --shadow-1: 0 2px 6px rgb(0 0 0 / 0.1);
+      --shadow-2: 0 4px 12px rgb(0 0 0 / 0.12);
+      --rule: 1px solid var(--outline-variant);
+      --field-rule: 1px solid var(--outline);
+      --indicator: 2px solid var(--primary);
+      --indicator-bar-left: 3px solid var(--primary);
+
+      /* Spacing scale (4pt base) */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    header { position: static !important; }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .page-grid {
+      display: grid;
+      gap: var(--space-lg);
+      padding: var(--space-lg);
+      max-width: 1360px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Typography helpers */
+    .mono-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--on-surface-variant);
+      font-weight: 500;
+    }
+
+    .display-title {
+      font-family: var(--font-headline);
+      font-size: var(--display-size);
+      font-weight: 300;
+      line-height: 1.18;
+      letter-spacing: 0;
+      margin: var(--space-xs) 0 var(--space-sm) 0;
+      color: var(--on-surface);
+    }
+    .display-title strong {
+      font-weight: 600;
+    }
+
+    .section-heading {
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 600;
+      line-height: 1.25;
+      margin: 0;
+      color: var(--on-surface);
+    }
+
+    .subhead {
+      font-size: var(--subhead-size);
+      color: var(--on-surface-variant);
+      margin: 0;
+      max-width: 65ch;
+      font-weight: 400;
+    }
+
+    /* Header */
+    .app-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: var(--space-md);
+      padding-bottom: var(--space-lg);
+      border-bottom: var(--rule);
+    }
+
+    .header-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    /* Carbon Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: var(--space-sm);
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-lg) var(--space-sm) var(--space-md);
+      border-radius: 0;
+      border: 1px solid transparent;
+      font-weight: 400;
+      font-size: var(--body-size);
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+      text-align: left;
+      white-space: nowrap;
+    }
+    .btn-compact {
+      min-height: 40px;
+      padding: var(--space-xs) var(--space-md);
+    }
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--on-primary);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--primary-hover);
+    }
+    .btn-secondary {
+      background-color: var(--background);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+    .btn-ghost {
+      background-color: transparent;
+      color: var(--primary);
+      padding-left: var(--space-sm);
+      padding-right: var(--space-sm);
+    }
+    .btn-ghost:hover:not(:disabled) {
+      background-color: var(--surface-container);
+    }
+    .btn-neutral {
+      background-color: var(--surface-container);
+      color: var(--on-surface);
+      border-color: var(--outline-variant);
+    }
+    .btn-neutral:hover:not(:disabled) {
+      background-color: var(--surface-container-high);
+    }
+    .btn-danger-ghost {
+      background-color: transparent;
+      color: var(--error);
+      border-color: var(--outline-variant);
+    }
+    .btn-danger-ghost:hover:not(:disabled) {
+      background-color: var(--surface-container);
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn svg, .icon-inline {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* KPI Strip */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-md);
+    }
+
+    .kpi-tile {
+      background-color: var(--surface-container);
+      padding: var(--space-md);
+      border-bottom: 2px solid transparent;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .kpi-tile.is-primary-kpi {
+      border-bottom: var(--indicator);
+    }
+    .kpi-value {
+      font-family: var(--font-label);
+      font-weight: 300;
+      font-size: 2rem;
+      line-height: 1.1;
+      color: var(--on-surface);
+      font-variant-numeric: tabular-nums;
+    }
+    .kpi-helper {
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+
+    /* Carbon Inputs & Form Controls */
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .field-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+    }
+    .field-control {
+      height: 40px;
+      width: 100%;
+      background-color: var(--surface-container);
+      color: var(--on-surface);
+      border: none;
+      border-bottom: var(--field-rule);
+      border-radius: 0;
+      padding: 0 var(--space-md);
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+    .field-control:hover {
+      background-color: var(--surface-container-high);
+    }
+    .field-control.is-error {
+      border-bottom: 2px solid var(--error);
+    }
+    select.field-control {
+      padding-right: var(--space-xl);
+      cursor: pointer;
+    }
+    .field-error-text {
+      font-size: var(--label-size);
+      color: var(--error);
+      min-height: 1rem;
+    }
+
+    /* Search & Filter Command Bar */
+    .search-command-panel {
+      background-color: var(--background);
+      border-bottom: var(--rule);
+      padding-bottom: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .search-controls-row {
+      display: grid;
+      grid-template-columns: minmax(240px, 2.2fr) minmax(160px, 1fr) minmax(160px, 1fr) minmax(160px, 1fr) auto;
+      gap: var(--space-md);
+      align-items: end;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .search-input-wrap .search-icon {
+      position: absolute;
+      left: var(--space-md);
+      color: var(--secondary);
+      pointer-events: none;
+      width: 16px;
+      height: 16px;
+    }
+    .search-input-wrap .field-control {
+      padding-left: calc(var(--space-md) + 24px);
+      padding-right: var(--space-xl);
+    }
+    .search-clear-btn {
+      position: absolute;
+      right: var(--space-xs);
+      background: transparent;
+      border: none;
+      color: var(--on-surface-variant);
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .search-clear-btn:hover {
+      color: var(--on-surface);
+      background-color: var(--surface-container-high);
+    }
+
+    .keyword-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    /* Tags */
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      height: 24px;
+      padding: 0 var(--space-sm);
+      border-radius: var(--rounded-full);
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      font-size: var(--label-size);
+      font-weight: 400;
+      border: none;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out);
+      white-space: nowrap;
+    }
+    .tag-pill:hover {
+      background-color: var(--surface-container-high);
+    }
+    .tag-pill.is-selected {
+      background-color: var(--primary);
+      color: var(--on-primary);
+    }
+
+    /* Intake Grid: Local Upload + URL Preview Input */
+    .intake-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+      gap: var(--space-md);
+    }
+
+    .intake-card {
+      background-color: var(--surface-container);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .intake-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      border-bottom: var(--rule);
+      padding-bottom: var(--space-xs);
+    }
+
+    .dropzone {
+      border: 1px dashed var(--outline);
+      background-color: var(--background);
+      padding: var(--space-md);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+      cursor: pointer;
+    }
+    .dropzone:hover,
+    .dropzone.is-dragover {
+      background-color: var(--primary-container);
+      border-color: var(--primary);
+    }
+    .dropzone-info {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .url-intake-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(130px, 0.9fr) auto auto;
+      gap: var(--space-sm);
+      align-items: end;
+    }
+    .url-intake-row .field-control {
+      background-color: var(--background);
+    }
+
+    .intake-status {
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+    .status-strip {
+      background-color: var(--background);
+      border-left: 3px solid var(--primary);
+      padding: var(--space-xs) var(--space-sm);
+      font-size: var(--label-size);
+      color: var(--on-surface);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .status-strip.is-success {
+      border-left-color: var(--positive);
+    }
+    .status-strip.is-error {
+      border-left-color: var(--error);
+      color: var(--error);
+    }
+
+    /* Main Workspace Split */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: minmax(320px, 5fr) minmax(0, 7fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    /* Document List Panel */
+    .list-panel {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      padding-bottom: var(--space-sm);
+      border-bottom: var(--rule);
+      flex-wrap: wrap;
+    }
+
+    .view-toggle-group {
+      display: inline-flex;
+      border-bottom: var(--rule);
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      min-height: 40px;
+      padding: var(--space-xs) var(--space-md);
+      color: var(--on-surface-variant);
+      cursor: pointer;
+      font-size: var(--label-size);
+      font-family: var(--font-label);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      transition: color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+    .tab-btn:hover {
+      color: var(--on-surface);
+      background-color: var(--surface-container);
+    }
+    .tab-btn.is-active {
+      color: var(--on-surface);
+      font-weight: 600;
+      border-bottom: var(--indicator);
+    }
+
+    .doc-list {
+      display: flex;
+      flex-direction: column;
+      border-top: var(--rule);
+    }
+
+    .doc-card-wrapper {
+      container-type: inline-size;
+      border-bottom: var(--rule);
+    }
+
+    .doc-item {
+      padding: var(--space-md);
+      background-color: var(--background);
+      border-left: 3px solid transparent;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    .doc-item:hover {
+      background-color: var(--surface-container);
+    }
+    .doc-item.is-active {
+      background-color: var(--surface-container);
+      border-left: var(--indicator-bar-left);
+    }
+
+    .doc-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .doc-source-badge {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 2px var(--space-sm);
+      background-color: var(--surface-container-high);
+      color: var(--on-surface);
+    }
+    .doc-source-badge.is-local {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+    .doc-source-badge.is-remote {
+      background-color: var(--on-surface);
+      color: var(--on-primary);
+    }
+
+    .doc-title {
+      font-size: var(--subhead-size);
+      font-weight: 600;
+      margin: 0;
+      color: var(--on-surface);
+      line-height: 1.3;
+    }
+
+    .doc-meta-line {
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    .doc-summary {
+      margin: 0;
+      font-size: var(--body-size);
+      color: var(--on-surface-variant);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .doc-item-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .doc-tags-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+
+    .doc-actions-row {
+      display: flex;
+      gap: var(--space-xs);
+      align-items: center;
+    }
+
+    .icon-action-btn {
+      min-width: 36px;
+      min-height: 36px;
+      padding: 0 var(--space-sm);
+      border: 1px solid var(--outline-variant);
+      background-color: var(--background);
+      color: var(--on-surface);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      font-size: var(--label-size);
+      cursor: pointer;
+    }
+    .icon-action-btn:hover {
+      background-color: var(--surface-container-high);
+    }
+    .icon-action-btn.is-bookmarked {
+      background-color: var(--primary-container);
+      border-color: var(--primary);
+      color: var(--on-primary-container);
+    }
+
+    /* Compact Table View */
+    .table-scroll {
+      overflow-x: auto;
+      border-bottom: var(--rule);
+    }
+    .carbon-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--body-size);
+      text-align: left;
+    }
+    .carbon-table thead th {
+      background-color: var(--surface-container-high);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--on-surface);
+      padding: var(--space-sm) var(--space-md);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .carbon-table tbody tr {
+      border-top: var(--rule);
+      cursor: pointer;
+    }
+    .carbon-table tbody tr:nth-child(even) {
+      background-color: var(--surface-container);
+    }
+    .carbon-table tbody tr:hover {
+      background-color: var(--surface-container-high);
+    }
+    .carbon-table tbody tr.is-active {
+      background-color: var(--primary-container);
+    }
+    .carbon-table td {
+      padding: var(--space-sm) var(--space-md);
+      vertical-align: middle;
+    }
+    .td-num {
+      font-family: var(--font-label);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* Empty State */
+    .empty-state {
+      background-color: var(--surface-container);
+      padding: var(--space-xl);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      border-left: var(--indicator-bar-left);
+    }
+
+    /* Interactive PDF Preview Panel */
+    .preview-panel {
+      background-color: var(--surface-container);
+      display: flex;
+      flex-direction: column;
+      border-top: var(--indicator);
+    }
+
+    .preview-header {
+      padding: var(--space-md);
+      background-color: var(--surface-container);
+      border-bottom: var(--rule);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .preview-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+    }
+
+    .preview-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: 0 var(--space-md);
+      background-color: var(--background);
+      border-bottom: var(--rule);
+      flex-wrap: wrap;
+    }
+
+    .preview-actions-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-xs) 0;
+      flex-wrap: wrap;
+    }
+
+    .preview-stage {
+      background-color: var(--surface-container-high);
+      min-height: 540px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .pdf-frame {
+      width: 100%;
+      height: 560px;
+      border: none;
+      background-color: var(--background);
+      display: block;
+    }
+
+    .reader-container {
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      align-items: center;
+      overflow-y: auto;
+      max-height: 600px;
+    }
+
+    .reader-controls {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      background-color: var(--background);
+      padding: var(--space-xs) var(--space-md);
+      border: var(--rule);
+      flex-wrap: wrap;
+    }
+
+    .pdf-sheet {
+      background-color: var(--background);
+      border: var(--rule);
+      width: 100%;
+      max-width: 680px;
+      padding: var(--space-xl);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      transform-origin: top center;
+      transition: transform var(--dur-short) var(--ease-out);
+    }
+
+    .pdf-sheet-bar {
+      border-top: 4px solid var(--primary);
+      padding-top: var(--space-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .pdf-sheet-title {
+      font-size: var(--headline-size);
+      font-weight: 600;
+      margin: 0;
+      color: var(--on-surface);
+    }
+
+    .pdf-sheet-list {
+      margin: 0;
+      padding-left: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .preview-footer {
+      padding: var(--space-md);
+      background-color: var(--surface-container);
+      border-top: var(--rule);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .code-inline-preview {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      background-color: var(--background);
+      border: var(--rule);
+      padding: var(--space-sm);
+      overflow-x: auto;
+      white-space: nowrap;
+      color: var(--on-surface);
+    }
+
+    /* Grounding & Research Reference Section */
+    .reference-section {
+      border-top: var(--rule);
+      padding-top: var(--space-xl);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+      gap: var(--space-lg);
+    }
+    .finding-list {
+      list-style: none;
+      margin: var(--space-md) 0 0 0;
+      padding: 0;
+      border-top: var(--rule);
+    }
+    .finding-list li {
+      padding: var(--space-sm) 0;
+      border-bottom: var(--rule);
+      font-size: var(--body-size);
+    }
+
+    /* Modal: Embed & Share Code Generator */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: var(--backdrop-scrim);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-md);
+      z-index: 1000;
+    }
+    .modal-backdrop.is-open {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background-color: var(--background);
+      width: 100%;
+      max-width: 820px;
+      max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-2);
+      border-top: 3px solid var(--primary);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: var(--space-md) var(--space-lg);
+      background-color: var(--surface-container);
+      border-bottom: var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .modal-body {
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .embed-config-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-md);
+      background-color: var(--surface-container);
+      padding: var(--space-md);
+    }
+
+    .checkbox-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      grid-column: 1 / -1;
+      padding-top: var(--space-xs);
+      border-top: var(--rule);
+    }
+    .check-label {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-size: var(--label-size);
+      color: var(--on-surface);
+      cursor: pointer;
+      min-height: 32px;
+    }
+
+    .snippet-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .snippet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .code-textarea {
+      width: 100%;
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      background-color: var(--surface-container);
+      color: var(--on-surface);
+      border: none;
+      border-left: var(--indicator-bar-left);
+      padding: var(--space-md);
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .modal-footer {
+      padding: var(--space-md) var(--space-lg);
+      background-color: var(--surface-container);
+      border-top: var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+    }
+
+    /* Floating Toast Notification */
+    .toast-banner {
+      position: fixed;
+      bottom: var(--space-lg);
+      right: var(--space-lg);
+      background-color: var(--on-surface);
+      color: var(--on-primary);
+      padding: var(--space-sm) var(--space-md);
+      border-left: 3px solid var(--primary);
+      box-shadow: var(--shadow-2);
+      font-size: var(--label-size);
+      font-family: var(--font-label);
+      display: none;
+      align-items: center;
+      gap: var(--space-sm);
+      z-index: 1200;
+    }
+    .toast-banner.is-visible {
+      display: flex;
+    }
+
+    /* Container queries */
+    @container (max-width: 420px) {
+      .doc-item-footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    /* Responsive breakpoints */
+    @media (max-width: 1024px) {
+      .search-controls-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .intake-grid,
+      .workspace-grid,
+      .reference-section {
+        grid-template-columns: 1fr;
+      }
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-grid {
+        padding: var(--space-md);
+        gap: var(--space-md);
+      }
+      .search-controls-row,
+      .url-intake-row,
+      .embed-config-grid,
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      .pdf-frame {
+        height: 420px;
+      }
+      .preview-stage {
+        min-height: 420px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-grid">
+    <!-- Header -->
+    <header class="app-header">
+      <div>
+        <div class="mono-label">DOCUMENT ARCHIVE · PDF INDEX &amp; EMBED WORKBENCH</div>
+        <h1 class="display-title">Searchable <strong>PDF Document Database</strong></h1>
+        <p class="subhead">Filter indexed technical reports by metadata or keyword, preview local PDF uploads and remote links inline, and generate embeddable HTML snippets.</p>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="btn btn-secondary" onclick="exportCatalogCsv()">
+          <i data-lucide="download" aria-hidden="true"></i>
+          <span>Export CSV</span>
+        </button>
+        <button type="button" class="btn btn-primary" onclick="openEmbedModal('database')">
+          <i data-lucide="code-2" aria-hidden="true"></i>
+          <span>Embed &amp; Share Database</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- KPI Summary Strip -->
+    <section class="kpi-grid" aria-label="Database Metrics">
+      <div class="kpi-tile is-primary-kpi">
+        <span class="mono-label">Indexed Documents</span>
+        <span class="kpi-value" id="kpi-total">06</span>
+        <span class="kpi-helper" id="kpi-total-sub">6 built-in · 0 user added</span>
+      </div>
+      <div class="kpi-tile">
+        <span class="mono-label">Matching Filter</span>
+        <span class="kpi-value" id="kpi-matching">06</span>
+        <span class="kpi-helper" id="kpi-matching-sub">Showing full catalog</span>
+      </div>
+      <div class="kpi-tile">
+        <span class="mono-label">Categories</span>
+        <span class="kpi-value" id="kpi-categories">04</span>
+        <span class="kpi-helper">Filterable taxonomy</span>
+      </div>
+      <div class="kpi-tile">
+        <span class="mono-label">Bookmarked</span>
+        <span class="kpi-value" id="kpi-bookmarked">00</span>
+        <span class="kpi-helper">Persisted across sessions</span>
+      </div>
+    </section>
+
+    <!-- Real-Time Search & Filtering Controls -->
+    <section class="search-command-panel" aria-label="Search and Filter Controls">
+      <div class="search-controls-row">
+        <div class="field-group">
+          <label for="search-input" class="field-label">Search Title, Author, Category, or Keywords</label>
+          <div class="search-input-wrap">
+            <i data-lucide="search" class="search-icon" aria-hidden="true"></i>
+            <input type="text" id="search-input" class="field-control" placeholder="Type e.g. PDF.js, Nutrient, iframe, upload…" oninput="handleSearchInput(this.value)">
+            <button type="button" id="clear-search-btn" class="search-clear-btn" aria-label="Clear search query" onclick="clearSearchQuery()" style="display: none;">
+              <i data-lucide="x" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="category-filter" class="field-label">Category</label>
+          <select id="category-filter" class="field-control" onchange="handleCategoryChange(this.value)">
+            <option value="all">All Categories</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label for="author-filter" class="field-label">Author / Source</label>
+          <select id="author-filter" class="field-control" onchange="handleAuthorChange(this.value)">
+            <option value="all">All Authors</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label for="sort-select" class="field-label">Sort Order</label>
+          <select id="sort-select" class="field-control" onchange="handleSortChange(this.value)">
+            <option value="recent">Newest First</option>
+            <option value="title-asc">Title (A–Z)</option>
+            <option value="author-asc">Author (A–Z)</option>
+            <option value="bookmarked">Bookmarked First</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn btn-neutral btn-compact" onclick="resetAllFilters()">
+          <i data-lucide="rotate-ccw" aria-hidden="true"></i>
+          <span>Reset</span>
+        </button>
+      </div>
+
+      <div class="keyword-strip" id="keyword-chips" aria-label="Quick Keyword Filters">
+        <span class="mono-label">Quick Keywords:</span>
+      </div>
+    </section>
+
+    <!-- Local Upload + External URL Intake -->
+    <section class="intake-grid" aria-label="Add or Preview PDF Sources">
+      <!-- Local Upload -->
+      <div class="intake-card">
+        <div class="intake-card-head">
+          <span class="mono-label">01 · Local PDF Upload (URL.createObjectURL)</span>
+          <span class="mono-label" id="local-count-badge">0 SESSION FILES</span>
+        </div>
+        <div id="pdf-dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload local PDF files via click or drag and drop" onclick="triggerFilePicker()" onkeydown="handleDropzoneKeydown(event)">
+          <div class="dropzone-info">
+            <i data-lucide="file-up" aria-hidden="true"></i>
+            <div>
+              <strong>Drop PDF files here</strong> or click to browse
+              <div class="mono-label">Client-side only · Zero server upload</div>
+            </div>
+          </div>
+          <span class="btn btn-secondary btn-compact">Select PDF</span>
+          <input type="file" id="local-file-input" accept="application/pdf,.pdf" multiple style="display: none;" onchange="handleFileInputChange(this.files)">
+        </div>
+        <div id="upload-status" class="intake-status">
+          <span>Supports multiple .pdf files using browser object URLs.</span>
+        </div>
+      </div>
+
+      <!-- URL / Link Input -->
+      <div class="intake-card">
+        <div class="intake-card-head">
+          <span class="mono-label">02 · External PDF URL Preview &amp; Import</span>
+          <span class="mono-label">DIRECT IFRAME / OBJECT</span>
+        </div>
+        <div class="url-intake-row">
+          <div class="field-group">
+            <label for="remote-url-input" class="field-label">External PDF URL</label>
+            <input type="url" id="remote-url-input" class="field-control" placeholder="https://example.com/report.pdf">
+          </div>
+          <div class="field-group">
+            <label for="remote-title-input" class="field-label">Document Title (Optional)</label>
+            <input type="text" id="remote-title-input" class="field-control" placeholder="Custom label">
+          </div>
+          <button type="button" class="btn btn-secondary btn-compact" onclick="previewExternalUrl()">
+            <i data-lucide="eye" aria-hidden="true"></i>
+            <span>Preview</span>
+          </button>
+          <button type="button" class="btn btn-primary btn-compact" onclick="addExternalUrlToDb()">
+            <i data-lucide="plus" aria-hidden="true"></i>
+            <span>Add to List</span>
+          </button>
+        </div>
+        <div id="url-status" class="intake-status">
+          <span>Paste any public .pdf URL to render inline. Cross-origin hosts blocking framing can be opened in Reader Mode or wrapped via a viewer proxy.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Split Workspace: List + Interactive Embedded Preview -->
+    <section class="workspace-grid" aria-label="PDF Catalog and Preview Panel">
+      <!-- Left: Searchable List View -->
+      <div class="list-panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="section-heading">Document Index</h2>
+            <span class="mono-label" id="results-count-label">Showing 6 of 6 documents</span>
+          </div>
+          <div class="view-toggle-group" role="tablist" aria-label="List View Layout">
+            <button type="button" role="tab" id="tab-view-cards" class="tab-btn is-active" aria-selected="true" onclick="setListViewMode('cards')">
+              <i data-lucide="list" aria-hidden="true"></i>
+              <span>Cards</span>
+            </button>
+            <button type="button" role="tab" id="tab-view-table" class="tab-btn" aria-selected="false" onclick="setListViewMode('table')">
+              <i data-lucide="table-2" aria-hidden="true"></i>
+              <span>Table</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="document-list-container"></div>
+      </div>
+
+      <!-- Right: Interactive Embedded PDF Preview Panel -->
+      <div class="preview-panel" aria-label="Interactive PDF Preview Panel">
+        <div class="preview-header">
+          <div class="preview-title-row">
+            <div>
+              <span class="mono-label" id="preview-doc-id">DOC-001 · RESEARCH REPORT</span>
+              <h2 class="section-heading" id="preview-doc-title">Select a document to preview</h2>
+              <div class="doc-meta-line" id="preview-doc-meta"></div>
+            </div>
+            <div class="doc-actions-row">
+              <button type="button" id="preview-bookmark-btn" class="icon-action-btn" onclick="toggleActiveBookmark()" aria-label="Bookmark current document">
+                <i data-lucide="bookmark" aria-hidden="true"></i>
+                <span>Save</span>
+              </button>
+              <button type="button" class="btn btn-secondary btn-compact" onclick="downloadActivePdf()">
+                <i data-lucide="download" aria-hidden="true"></i>
+                <span>Download PDF</span>
+              </button>
+              <button type="button" class="btn btn-primary btn-compact" onclick="openEmbedModal('document')">
+                <i data-lucide="share-2" aria-hidden="true"></i>
+                <span>Embed / Share</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Render Mode Tabs -->
+        <div class="preview-toolbar">
+          <div class="view-toggle-group" role="tablist" aria-label="PDF Render Mode">
+            <button type="button" role="tab" id="tab-mode-iframe" class="tab-btn is-active" aria-selected="true" onclick="setPreviewMode('iframe')">
+              <span>Native &lt;iframe&gt;</span>
+            </button>
+            <button type="button" role="tab" id="tab-mode-object" class="tab-btn" aria-selected="false" onclick="setPreviewMode('object')">
+              <span>Native &lt;object&gt;</span>
+            </button>
+            <button type="button" role="tab" id="tab-mode-reader" class="tab-btn" aria-selected="false" onclick="setPreviewMode('reader')">
+              <span>Interactive Reader</span>
+            </button>
+          </div>
+          <div class="preview-actions-bar">
+            <span class="mono-label" id="preview-source-type">GENERATED BLOB PDF</span>
+          </div>
+        </div>
+
+        <!-- Preview Stage -->
+        <div id="preview-stage" class="preview-stage"></div>
+
+        <!-- Preview Footer & Quick Embed Snippet -->
+        <div class="preview-footer">
+          <div class="snippet-head">
+            <span class="mono-label">Quick &lt;iframe&gt; Embed Tag</span>
+            <button type="button" class="btn btn-ghost btn-compact" onclick="copyQuickEmbed()">
+              <i data-lucide="copy" aria-hidden="true"></i>
+              <span>Copy Tag</span>
+            </button>
+          </div>
+          <div class="code-inline-preview" id="quick-embed-snippet"></div>
+          <div class="intake-status">
+            <span id="preview-helper-note">If your browser blocks inline PDF plugins inside sandboxed frames, switch to the Interactive Reader tab above.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Research Grounding & Sources -->
+    <section class="reference-section" aria-label="Architecture Notes and Sources">
+      <div>
+        <span class="mono-label">Architecture Reference · 2026-11-19</span>
+        <h2 class="section-heading">PDF Preview &amp; Search Techniques</h2>
+        <ul class="finding-list">
+          <li><strong>Inline Browser Rendering:</strong> Native HTML <code>&lt;iframe&gt;</code> and <code>&lt;object&gt;</code> tags render PDF files directly, while Mozilla's PDF.js provides full client-side canvas control.</li>
+          <li><strong>Local File Object URLs:</strong> Drag-and-drop and file inputs call <code>URL.createObjectURL(file)</code> for instant zero-upload previews.</li>
+          <li><strong>Remote Link Fallbacks:</strong> External URL inputs support direct PDF embedding as well as viewer-wrapper fallback formatting when servers restrict framing.</li>
+          <li><strong>Real-Time Client Filtering:</strong> Maintaining a master document array enables instant keyword, author, and category filtering on every keystroke.</li>
+        </ul>
+      </div>
+
+      <div>
+        <span class="mono-label">Research Report Sources</span>
+        <h2 class="section-heading">Referenced Technical Literature</h2>
+        <div class="table-scroll" style="margin-top: var(--space-md);">
+          <table class="carbon-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Source</th>
+                <th>Type</th>
+                <th class="td-num">Year</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-num">01</td>
+                <td>How to show PDF file upload previews using JavaScript</td>
+                <td>ThatSoftwareDude</td>
+                <td>Technical</td>
+                <td class="td-num">2024</td>
+              </tr>
+              <tr>
+                <td class="td-num">02</td>
+                <td>How to display a PDF in HTML: Six easy ways</td>
+                <td>Nutrient.io</td>
+                <td>Overview</td>
+                <td class="td-num">2026</td>
+              </tr>
+              <tr>
+                <td class="td-num">03</td>
+                <td>Display a pdf in a viewer on a browser</td>
+                <td>Stack Overflow</td>
+                <td>Discussion</td>
+                <td class="td-num">2024</td>
+              </tr>
+              <tr>
+                <td class="td-num">04</td>
+                <td>Build a JavaScript PDF Viewer with PDF.js</td>
+                <td>Nutrient.io</td>
+                <td>Technical</td>
+                <td class="td-num">2026</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Embed & Share Code Generator Modal -->
+  <div id="embed-modal-backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="embed-modal-title" onclick="handleBackdropClick(event)">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <span class="mono-label">External Integration Workbench</span>
+          <h2 id="embed-modal-title" class="section-heading">Embed &amp; Share Code Generator</h2>
+        </div>
+        <button type="button" class="icon-action-btn" aria-label="Close embed generator modal" onclick="closeEmbedModal()">
+          <i data-lucide="x" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Scope Switcher -->
+        <div class="view-toggle-group" role="tablist" aria-label="Embed Target Scope">
+          <button type="button" role="tab" id="embed-scope-doc" class="tab-btn is-active" aria-selected="true" onclick="setEmbedScope('document')">
+            Single PDF Document
+          </button>
+          <button type="button" role="tab" id="embed-scope-db" class="tab-btn" aria-selected="false" onclick="setEmbedScope('database')">
+            Entire Searchable Database Viewer
+          </button>
+        </div>
+
+        <!-- Configuration Grid -->
+        <div class="embed-config-grid">
+          <div class="field-group" id="embed-doc-select-group">
+            <label for="embed-doc-select" class="field-label">Target Document</label>
+            <select id="embed-doc-select" class="field-control" onchange="updateEmbedSnippets()"></select>
+          </div>
+
+          <div class="field-group">
+            <label for="embed-tag-type" class="field-label">HTML Embed Tag</label>
+            <select id="embed-tag-type" class="field-control" onchange="updateEmbedSnippets()">
+              <option value="iframe">&lt;iframe&gt; (Recommended)</option>
+              <option value="object">&lt;object&gt; PDF Fallback</option>
+              <option value="embed">&lt;embed&gt; Inline Tag</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label for="embed-host-url" class="field-label">Hosted Base URL</label>
+            <input type="url" id="embed-host-url" class="field-control" value="https://example.com/pdf-archive" oninput="updateEmbedSnippets()">
+          </div>
+
+          <div class="field-group">
+            <label for="embed-width" class="field-label">Width</label>
+            <select id="embed-width" class="field-control" onchange="updateEmbedSnippets()">
+              <option value="100%">100% (Responsive)</option>
+              <option value="960px">960px</option>
+              <option value="800px">800px</option>
+              <option value="640px">640px</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label for="embed-height" class="field-label">Height</label>
+            <select id="embed-height" class="field-control" onchange="updateEmbedSnippets()">
+              <option value="640px">640px</option>
+              <option value="760px">760px</option>
+              <option value="520px">520px</option>
+              <option value="420px">420px</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label for="embed-border-style" class="field-label">Frame Border</label>
+            <select id="embed-border-style" class="field-control" onchange="updateEmbedSnippets()">
+              <option value="1px solid #e0e0e0">1px Hairline Rule</option>
+              <option value="none">Borderless (0px)</option>
+            </select>
+          </div>
+
+          <div class="checkbox-row">
+            <label class="check-label">
+              <input type="checkbox" id="opt-lazy" checked onchange="updateEmbedSnippets()">
+              <span>Lazy load (<code>loading="lazy"</code>)</span>
+            </label>
+            <label class="check-label">
+              <input type="checkbox" id="opt-fullscreen" checked onchange="updateEmbedSnippets()">
+              <span>Allow fullscreen</span>
+            </label>
+            <label class="check-label" id="opt-toolbar-wrap">
+              <input type="checkbox" id="opt-hide-toolbar" onchange="updateEmbedSnippets()">
+              <span>Hide PDF viewer toolbar (<code>#toolbar=0</code>)</span>
+            </label>
+            <label class="check-label" id="opt-filter-wrap">
+              <input type="checkbox" id="opt-include-filter" checked onchange="updateEmbedSnippets()">
+              <span>Preserve active search &amp; category filter in URL</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="embed-local-warning" class="status-strip" style="display: none;">
+          <i data-lucide="info" aria-hidden="true"></i>
+          <span>Local file uploads use session-only <code>blob:</code> URLs. To share externally, host the PDF at your Base URL shown above; the snippet uses the generated hosted path.</span>
+        </div>
+
+        <!-- Generated HTML Embed Code -->
+        <div class="snippet-block">
+          <div class="snippet-head">
+            <span class="mono-label">1 · HTML Embed Tag Snippet</span>
+            <button type="button" class="btn btn-primary btn-compact" onclick="copyTextareaValue('output-html-snippet', 'HTML embed tag copied')">
+              <i data-lucide="copy" aria-hidden="true"></i>
+              <span>Copy HTML Tag</span>
+            </button>
+          </div>
+          <textarea id="output-html-snippet" class="code-textarea" rows="4" readonly></textarea>
+        </div>
+
+        <!-- Generated Shareable Web Link -->
+        <div class="snippet-block">
+          <div class="snippet-head">
+            <span class="mono-label">2 · Shareable Web Link</span>
+            <button type="button" class="btn btn-secondary btn-compact" onclick="copyTextareaValue('output-share-url', 'Shareable web link copied')">
+              <i data-lucide="link" aria-hidden="true"></i>
+              <span>Copy Link</span>
+            </button>
+          </div>
+          <textarea id="output-share-url" class="code-textarea" rows="2" readonly></textarea>
+        </div>
+
+        <!-- Generated Markdown / Docs Snippet -->
+        <div class="snippet-block">
+          <div class="snippet-head">
+            <span class="mono-label">3 · Markdown / Wiki Reference Snippet</span>
+            <button type="button" class="btn btn-neutral btn-compact" onclick="copyTextareaValue('output-markdown-snippet', 'Markdown snippet copied')">
+              <i data-lucide="copy" aria-hidden="true"></i>
+              <span>Copy Markdown</span>
+            </button>
+          </div>
+          <textarea id="output-markdown-snippet" class="code-textarea" rows="2" readonly></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <span class="mono-label">Snippets update live with every option change</span>
+        <button type="button" class="btn btn-neutral btn-compact" onclick="closeEmbedModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Feedback -->
+  <div id="toast-banner" class="toast-banner" role="status" aria-live="polite">
+    <i data-lucide="check" aria-hidden="true"></i>
+    <span id="toast-message">Copied</span>
+  </div>
+
+  <api-shim></api-shim>
+  <script>
+    const BASE_DOCUMENTS = [
+      {
+        id: `DOC-001`,
+        title: `Searchable PDF List & URL Preview Web Application — Research Report`,
+        author: `Research Synthesis Team`,
+        category: `Research Report`,
+        year: 2026,
+        pages: 4,
+        sizeLabel: `184 KB`,
+        sourceType: `indexed`,
+        slug: `searchable-pdf-list-research-report.pdf`,
+        tags: [`PDF.js`, `iframe`, `createObjectURL`, `search`, `URL preview`],
+        summary: `Synthesizes browser PDF rendering strategies, local FileReader/createObjectURL drag-and-drop workflows, and client-side search architectures.`,
+        sections: [
+          {
+            heading: `1. PDF Preview Techniques`,
+            points: [
+              `HTML <iframe>, <embed>, and <object> tags render PDF documents inline with native browser controls.`,
+              `Mozilla PDF.js enables full client-side canvas rendering when cross-browser UI consistency or custom pagination is required.`
+            ]
+          },
+          {
+            heading: `2. Link & URL Input Integration`,
+            points: [
+              `Direct URL inputs load remote PDF endpoints into preview frames immediately.`,
+              `Viewer wrapper fallbacks (such as Google Docs Viewer syntax) handle remote files that block direct framing.`
+            ]
+          },
+          {
+            heading: `3. Local Upload & Search Filtering`,
+            points: [
+              `URL.createObjectURL(file) maps dropped local PDFs to in-memory preview URLs without server uploads.`,
+              `Master JavaScript arrays allow sub-millisecond filtering across title, author, category, and keyword tags.`
+            ]
+          }
+        ]
+      },
+      {
+        id: `DOC-002`,
+        title: `How to Show PDF File Upload Previews Using JavaScript`,
+        author: `ThatSoftwareDude`,
+        category: `Technical Guide`,
+        year: 2024,
+        pages: 6,
+        sizeLabel: `240 KB`,
+        sourceType: `indexed`,
+        slug: `js-pdf-file-upload-previews.pdf`,
+        tags: [`createObjectURL`, `drag-and-drop`, `object`, `local upload`, `File API`],
+        summary: `Practical implementation guide for accepting local PDF files via <input type="file"> and drag-and-drop handlers using URL.createObjectURL.`,
+        sections: [
+          {
+            heading: `1. File Input & Drag-and-Drop Handling`,
+            points: [
+              `Filter dropped files by checking file.type === 'application/pdf' or .pdf extension.`,
+              `Prevent default browser navigation on dragover and drop events inside the dropzone.`
+            ]
+          },
+          {
+            heading: `2. Memory-Safe Blob Object URLs`,
+            points: [
+              `Generate temporary local URLs via URL.createObjectURL(file) and bind them to <iframe src> or <object data>.`,
+              `Revoke unused object URLs with URL.revokeObjectURL() when files are removed from session memory.`
+            ]
+          }
+        ]
+      },
+      {
+        id: `DOC-003`,
+        title: `How to Display a PDF in HTML: Six Easy Ways`,
+        author: `Nutrient.io Engineering`,
+        category: `Architecture Overview`,
+        year: 2026,
+        pages: 9,
+        sizeLabel: `412 KB`,
+        sourceType: `indexed`,
+        slug: `display-pdf-in-html-six-ways.pdf`,
+        tags: [`iframe`, `embed`, `object`, `PDF.js`, `fallback`],
+        summary: `Comparative benchmark of native HTML embed tags (<embed>, <object>, <iframe>) versus client-side JavaScript rendering engines.`,
+        sections: [
+          {
+            heading: `1. Comparing <iframe>, <object>, and <embed>`,
+            points: [
+              `<iframe> provides wide compatibility and simple responsive sizing with standard attributes.`,
+              `<object type="application/pdf"> supports nested fallback HTML when a browser lacks an inline PDF plugin.`
+            ]
+          },
+          {
+            heading: `2. Toolbar Parameters & Responsive Sizing`,
+            points: [
+              `Appending #toolbar=0 or #view=FitH customizes native PDF viewer chrome where supported.`,
+              `Explicit container heights prevent collapsed 0px frames in flex and grid layouts.`
+            ]
+          }
+        ]
+      },
+      {
+        id: `DOC-004`,
+        title: `Build a JavaScript PDF Viewer with PDF.js`,
+        author: `Nutrient.io Engineering`,
+        category: `Technical Guide`,
+        year: 2026,
+        pages: 12,
+        sizeLabel: `580 KB`,
+        sourceType: `indexed`,
+        slug: `build-js-pdf-viewer-pdfjs.pdf`,
+        tags: [`PDF.js`, `canvas`, `pagination`, `zoom`, `client-side`],
+        summary: `Step-by-step architecture for rendering PDF pages onto HTML5 <canvas> elements with custom zoom controls, page navigation, and text selection.`,
+        sections: [
+          {
+            heading: `1. Canvas Rendering Pipeline`,
+            points: [
+              `Load documents asynchronously, retrieve page viewports at the target scale factor, and paint onto <canvas>.`,
+              `Separate render tasks prevent overlapping draws when users step rapidly through pages.`
+            ]
+          },
+          {
+            heading: `2. Custom Controls & Accessibility`,
+            points: [
+              `Expose explicit Previous/Next Page buttons, zoom steps, and keyboard navigation.`,
+              `Pair canvas layers with text layers or structured HTML reader views for screen-reader accessibility.`
+            ]
+          }
+        ]
+      },
+      {
+        id: `DOC-005`,
+        title: `Display a PDF in a Viewer on a Browser — Community Patterns`,
+        author: `Stack Overflow Contributors`,
+        category: `Community Discussion`,
+        year: 2024,
+        pages: 5,
+        sizeLabel: `156 KB`,
+        sourceType: `indexed`,
+        slug: `browser-pdf-viewer-patterns.pdf`,
+        tags: [`iframe`, `CORS`, `viewer fallback`, `sandbox`, `headers`],
+        summary: `Troubleshooting common browser PDF embedding pitfalls including Content-Disposition headers, X-Frame-Options restrictions, and mobile fallbacks.`,
+        sections: [
+          {
+            heading: `1. HTTP Header Pitfalls`,
+            points: [
+              `Servers returning Content-Disposition: attachment force a download instead of inline iframe preview.`,
+              `X-Frame-Options: DENY or SAMEORIGIN blocks third-party embedding unless served via a compliant viewer.`
+            ]
+          },
+          {
+            heading: `2. Mobile Browser Considerations`,
+            points: [
+              `Some mobile browsers render only the first page inside an iframe or prompt a direct open.`,
+              `Providing an explicit Download PDF button and Reader fallback guarantees access on every device.`
+            ]
+          }
+        ]
+      },
+      {
+        id: `DOC-006`,
+        title: `Client-Side Search & Dynamic List Management Specification`,
+        author: `Frontend Systems Lab`,
+        category: `Architecture Overview`,
+        year: 2026,
+        pages: 7,
+        sizeLabel: `295 KB`,
+        sourceType: `indexed`,
+        slug: `client-side-pdf-search-spec.pdf`,
+        tags: [`search`, `metadata`, `filtering`, `embed`, `JSON`],
+        summary: `Data schema and indexing patterns for keeping a master PDF catalog array in sync with real-time keyword queries, category facets, and shareable URLs.`,
+        sections: [
+          {
+            heading: `1. Master Array & Normalized Search Index`,
+            points: [
+              `Normalize title, author, category, summary, and tag arrays into lowercase searchable text.`,
+              `Combine text search with facet dropdowns (Category, Author) and deterministic sort modes.`
+            ]
+          },
+          {
+            heading: `2. Deep-Linking & Embeddable State`,
+            points: [
+              `Encode active document IDs and search queries into URL parameters (?doc=DOC-001&q=iframe).`,
+              `Generate self-contained <iframe> snippets so teams can embed either a single document or the full catalog.`
+            ]
+          }
+        ]
+      }
+    ];
+
+    // Application state
+    let documents = [];
+    let activeDocId = `DOC-001`;
+    let searchQuery = ``;
+    let selectedCategory = `all`;
+    let selectedAuthor = `all`;
+    let sortOrder = `recent`;
+    let listViewMode = `cards`;
+    let previewMode = `iframe`;
+    let readerPage = 1;
+    let readerZoom = 1.0;
+    let bookmarkedIds = [];
+    let remoteDocs = [];
+    let localSessionCount = 0;
+
+    // Embed modal state
+    let embedScope = `document`;
+    let embedTargetDocId = `DOC-001`;
+    let toastTimer = null;
+
+    // Build a real, valid, standards-compliant PDF 1.4 Blob URL in memory
+    function sanitizePdfAscii(text) {
+      return String(text || ``)
+        .replace(/[\u2013\u2014]/g, `--`)
+        .replace(/[\u2018\u2019]/g, `'`)
+        .replace(/[\u201C\u201D]/g, `"`)
+        .replace(/[^\x20-\x7E]/g, ` `)
+        .replace(/\\/g, `\\\\`)
+        .replace(/\(/g, `\\(`)
+        .replace(/\)/g, `\\)`);
+    }
+
+    function wrapTextLines(text, maxChars) {
+      const words = String(text || ``).split(/\s+/);
+      const lines = [];
+      let current = ``;
+      for (let i = 0; i < words.length; i++) {
+        const w = words[i];
+        if (!current) {
+          current = w;
+        } else if ((current + ` ` + w).length <= maxChars) {
+          current += ` ` + w;
+        } else {
+          lines.push(current);
+          current = w;
+        }
+      }
+      if (current) lines.push(current);
+      return lines;
+    }
+
+    function buildPdfBlobUrl(doc) {
+      const cmds = [];
+      // Top blue Carbon accent bar
+      cmds.push(`0.059 0.384 0.996 rg 48 738 516 4 re f`);
+      // Header metadata
+      cmds.push(`BT /F2 9 Tf 0.32 0.32 0.32 rg 48 720 Td (${sanitizePdfAscii(doc.id + ` | ` + doc.category.toUpperCase() + ` | ` + doc.year)}) Tj ET`);
+      // Document title
+      const titleLines = wrapTextLines(doc.title, 54);
+      let y = 694;
+      for (let i = 0; i < titleLines.length; i++) {
+        cmds.push(`BT /F2 16 Tf 0.086 0.086 0.086 rg 48 ${y} Td (${sanitizePdfAscii(titleLines[i])}) Tj ET`);
+        y -= 20;
+      }
+      // Author & tags line
+      y -= 4;
+      cmds.push(`BT /F1 10 Tf 0.32 0.32 0.32 rg 48 ${y} Td (${sanitizePdfAscii(`Author: ` + doc.author + `   |   Pages: ` + doc.pages + `   |   Size: ` + doc.sizeLabel)}) Tj ET`);
+      y -= 16;
+      cmds.push(`BT /F1 9 Tf 0.059 0.384 0.996 rg 48 ${y} Td (${sanitizePdfAscii(`Keywords: ` + (doc.tags || []).join(`, `))}) Tj ET`);
+      y -= 16;
+      // Hairline rule
+      cmds.push(`0.878 0.878 0.878 RG 1 w 48 ${y} m 564 ${y} l S`);
+      y -= 22;
+
+      // Summary
+      const summaryLines = wrapTextLines(doc.summary, 78);
+      for (let i = 0; i < summaryLines.length; i++) {
+        if (y < 72) break;
+        cmds.push(`BT /F1 10.5 Tf 0.086 0.086 0.086 rg 48 ${y} Td (${sanitizePdfAscii(summaryLines[i])}) Tj ET`);
+        y -= 15;
+      }
+      y -= 12;
+
+      // Structured Sections
+      const sections = doc.sections || [];
+      for (let s = 0; s < sections.length; s++) {
+        const sec = sections[s];
+        if (y < 90) break;
+        cmds.push(`BT /F2 11.5 Tf 0.086 0.086 0.086 rg 48 ${y} Td (${sanitizePdfAscii(sec.heading)}) Tj ET`);
+        y -= 16;
+        const pts = sec.points || [];
+        for (let p = 0; p < pts.length; p++) {
+          const pLines = wrapTextLines(`- ` + pts[p], 76);
+          for (let l = 0; l < pLines.length; l++) {
+            if (y < 72) break;
+            cmds.push(`BT /F1 10 Tf 0.25 0.25 0.25 rg 56 ${y} Td (${sanitizePdfAscii(pLines[l])}) Tj ET`);
+            y -= 14;
+          }
+          y -= 4;
+        }
+        y -= 8;
+      }
+
+      // Footer
+      cmds.push(`0.878 0.878 0.878 RG 1 w 48 52 m 564 52 l S`);
+      cmds.push(`BT /F1 8.5 Tf 0.435 0.435 0.435 rg 48 36 Td (${sanitizePdfAscii(`Searchable PDF Document Database · Generated inline preview · ` + doc.id)}) Tj ET`);
+
+      const stream = cmds.join(`\n`);
+      const objects = [
+        `1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n`,
+        `2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n`,
+        `3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>\nendobj\n`,
+        `4 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n`,
+        `5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>\nendobj\n`,
+        `6 0 obj\n<< /Length ${stream.length} >>\nstream\n${stream}\nendstream\nendobj\n`
+      ];
+
+      let pdf = `%PDF-1.4\n`;
+      const offsets = [0];
+      for (let i = 0; i < objects.length; i++) {
+        offsets.push(pdf.length);
+        pdf += objects[i];
+      }
+      const xrefOffset = pdf.length;
+      pdf += `xref\n0 ${objects.length + 1}\n`;
+      pdf += `0000000000 65535 f \n`;
+      for (let i = 1; i < offsets.length; i++) {
+        pdf += String(offsets[i]).padStart(10, `0`) + ` 00000 n \n`;
+      }
+      pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+
+      const bytes = new Uint8Array(pdf.length);
+      for (let i = 0; i < pdf.length; i++) {
+        bytes[i] = pdf.charCodeAt(i) & 0xff;
+      }
+      const blob = new Blob([bytes], { type: `application/pdf` });
+      return URL.createObjectURL(blob);
+    }
+
+    function escapeHtml(str) {
+      return String(str || ``)
+        .replace(/&/g, `&amp;`)
+        .replace(/</g, `&lt;`)
+        .replace(/>/g, `&gt;`)
+        .replace(/"/g, `&quot;`)
+        .replace(/'/g, `&#39;`);
+    }
+
+    function showToast(message) {
+      const banner = document.getElementById(`toast-banner`);
+      const msgEl = document.getElementById(`toast-message`);
+      if (!banner || !msgEl) return;
+      msgEl.textContent = message;
+      banner.classList.add(`is-visible`);
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () {
+        banner.classList.remove(`is-visible`);
+      }, 2400);
+    }
+
+    function getActiveDocument() {
+      for (let i = 0; i < documents.length; i++) {
+        if (documents[i].id === activeDocId) return documents[i];
+      }
+      return documents[0] || null;
+    }
+
+    function getFilteredDocuments() {
+      const q = searchQuery.trim().toLowerCase();
+      const filtered = documents.filter(function (doc) {
+        if (selectedCategory !== `all` && doc.category !== selectedCategory) return false;
+        if (selectedAuthor !== `all` && doc.author !== selectedAuthor) return false;
+        if (!q) return true;
+        const haystack = [
+          doc.id,
+          doc.title,
+          doc.author,
+          doc.category,
+          doc.summary,
+          String(doc.year),
+          (doc.tags || []).join(` `)
+        ].join(` `).toLowerCase();
+        return haystack.indexOf(q) !== -1;
+      });
+
+      filtered.sort(function (a, b) {
+        if (sortOrder === `title-asc`) {
+          return a.title.localeCompare(b.title);
+        }
+        if (sortOrder === `author-asc`) {
+          return a.author.localeCompare(b.author);
+        }
+        if (sortOrder === `bookmarked`) {
+          const aBook = bookmarkedIds.indexOf(a.id) !== -1 ? 1 : 0;
+          const bBook = bookmarkedIds.indexOf(b.id) !== -1 ? 1 : 0;
+          if (bBook !== aBook) return bBook - aBook;
+          return b.year - a.year;
+        }
+        // recent
+        if (b.year !== a.year) return b.year - a.year;
+        return a.id.localeCompare(b.id);
+      });
+
+      return filtered;
+    }
+
+    function populateFilterDropdowns() {
+      const catSelect = document.getElementById(`category-filter`);
+      const authSelect = document.getElementById(`author-filter`);
+      const categories = [];
+      const authors = [];
+      const tagCounts = {};
+
+      for (let i = 0; i < documents.length; i++) {
+        const d = documents[i];
+        if (categories.indexOf(d.category) === -1) categories.push(d.category);
+        if (authors.indexOf(d.author) === -1) authors.push(d.author);
+        const tags = d.tags || [];
+        for (let t = 0; t < tags.length; t++) {
+          tagCounts[tags[t]] = (tagCounts[tags[t]] || 0) + 1;
+        }
+      }
+
+      if (catSelect) {
+        let html = `<option value="all">All Categories (${categories.length})</option>`;
+        for (let i = 0; i < categories.length; i++) {
+          const c = categories[i];
+          const sel = selectedCategory === c ? ` selected` : ``;
+          html += `<option value="${escapeHtml(c)}"${sel}>${escapeHtml(c)}</option>`;
+        }
+        catSelect.innerHTML = html;
+      }
+
+      if (authSelect) {
+        let html = `<option value="all">All Authors (${authors.length})</option>`;
+        for (let i = 0; i < authors.length; i++) {
+          const a = authors[i];
+          const sel = selectedAuthor === a ? ` selected` : ``;
+          html += `<option value="${escapeHtml(a)}"${sel}>${escapeHtml(a)}</option>`;
+        }
+        authSelect.innerHTML = html;
+      }
+
+      const chipsEl = document.getElementById(`keyword-chips`);
+      if (chipsEl) {
+        const topTags = Object.keys(tagCounts)
+          .sort(function (a, b) { return tagCounts[b] - tagCounts[a]; })
+          .slice(0, 7);
+        let chipsHtml = `<span class="mono-label">Quick Keywords:</span>`;
+        const allActive = searchQuery.trim() === `` ? ` is-selected` : ``;
+        chipsHtml += `<button type="button" class="tag-pill${allActive}" onclick="applyKeywordChip('')">All</button>`;
+        for (let i = 0; i < topTags.length; i++) {
+          const tag = topTags[i];
+          const isSel = searchQuery.trim().toLowerCase() === tag.toLowerCase() ? ` is-selected` : ``;
+          chipsHtml += `<button type="button" class="tag-pill${isSel}" onclick="applyKeywordChip('${escapeHtml(tag)}')">${escapeHtml(tag)}</button>`;
+        }
+        chipsEl.innerHTML = chipsHtml;
+      }
+    }
+
+    function updateKpis(filteredCount) {
+      const kpiTotal = document.getElementById(`kpi-total`);
+      const kpiTotalSub = document.getElementById(`kpi-total-sub`);
+      const kpiMatching = document.getElementById(`kpi-matching`);
+      const kpiMatchingSub = document.getElementById(`kpi-matching-sub`);
+      const kpiCats = document.getElementById(`kpi-categories`);
+      const kpiBook = document.getElementById(`kpi-bookmarked`);
+      const localBadge = document.getElementById(`local-count-badge`);
+
+      const cats = {};
+      for (let i = 0; i < documents.length; i++) {
+        cats[documents[i].category] = true;
+      }
+
+      if (kpiTotal) kpiTotal.textContent = String(documents.length).padStart(2, `0`);
+      if (kpiTotalSub) {
+        const added = documents.length - BASE_DOCUMENTS.length;
+        kpiTotalSub.textContent = `${BASE_DOCUMENTS.length} built-in · ${added} user added`;
+      }
+      if (kpiMatching) kpiMatching.textContent = String(filteredCount).padStart(2, `0`);
+      if (kpiMatchingSub) {
+        kpiMatchingSub.textContent = filteredCount === documents.length
+          ? `Showing full catalog`
+          : `Filtered from ${documents.length} total`;
+      }
+      if (kpiCats) kpiCats.textContent = String(Object.keys(cats).length).padStart(2, `0`);
+      if (kpiBook) kpiBook.textContent = String(bookmarkedIds.length).padStart(2, `0`);
+      if (localBadge) localBadge.textContent = `${localSessionCount} SESSION FILE${localSessionCount === 1 ? `` : `S`}`;
+    }
+
+    function renderDocumentList() {
+      const container = document.getElementById(`document-list-container`);
+      const countLabel = document.getElementById(`results-count-label`);
+      if (!container) return;
+
+      const filtered = getFilteredDocuments();
+      updateKpis(filtered.length);
+
+      if (countLabel) {
+        countLabel.textContent = `Showing ${filtered.length} of ${documents.length} documents`;
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <span class="mono-label">No Matching Records</span>
+            <h3 class="section-heading">No PDF documents match your current filter</h3>
+            <p class="subhead">Try clearing your search query ("${escapeHtml(searchQuery)}") or resetting the category and author filters.</p>
+            <button type="button" class="btn btn-primary btn-compact" onclick="resetAllFilters()">Clear all filters</button>
+          </div>
+        `;
+        return;
+      }
+
+      if (listViewMode === `table`) {
+        let rowsHtml = ``;
+        for (let i = 0; i < filtered.length; i++) {
+          const d = filtered[i];
+          const activeCls = d.id === activeDocId ? ` is-active` : ``;
+          const isBook = bookmarkedIds.indexOf(d.id) !== -1;
+          rowsHtml += `
+            <tr class="${activeCls}" onclick="selectDocument('${escapeHtml(d.id)}')">
+              <td class="mono-label">${escapeHtml(d.id)}</td>
+              <td><strong>${escapeHtml(d.title)}</strong></td>
+              <td>${escapeHtml(d.author)}</td>
+              <td>${escapeHtml(d.category)}</td>
+              <td class="td-num">${escapeHtml(d.year)}</td>
+              <td>
+                <div class="doc-actions-row" onclick="event.stopPropagation()">
+                  <button type="button" class="icon-action-btn${isBook ? ` is-bookmarked` : ``}" aria-label="Toggle bookmark for ${escapeHtml(d.title)}" onclick="toggleBookmark('${escapeHtml(d.id)}')">
+                    <i data-lucide="bookmark" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="icon-action-btn" aria-label="Generate embed code for ${escapeHtml(d.title)}" onclick="openEmbedForDoc('${escapeHtml(d.id)}')">
+                    <i data-lucide="code-2" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }
+        container.innerHTML = `
+          <div class="table-scroll">
+            <table class="carbon-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Author</th>
+                  <th>Category</th>
+                  <th class="td-num">Year</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>${rowsHtml}</tbody>
+            </table>
+          </div>
+        `;
+      } else {
+        let cardsHtml = `<div class="doc-list">`;
+        for (let i = 0; i < filtered.length; i++) {
+          const d = filtered[i];
+          const activeCls = d.id === activeDocId ? ` is-active` : ``;
+          const isBook = bookmarkedIds.indexOf(d.id) !== -1;
+          let badgeCls = `doc-source-badge`;
+          let badgeText = `Indexed PDF`;
+          if (d.sourceType === `local`) {
+            badgeCls += ` is-local`;
+            badgeText = `Local Blob`;
+          } else if (d.sourceType === `remote`) {
+            badgeCls += ` is-remote`;
+            badgeText = `Remote URL`;
+          }
+
+          let tagsHtml = ``;
+          const tags = d.tags || [];
+          for (let t = 0; t < tags.length; t++) {
+            tagsHtml += `<button type="button" class="tag-pill" onclick="event.stopPropagation(); applyKeywordChip('${escapeHtml(tags[t])}')">${escapeHtml(tags[t])}</button>`;
+          }
+
+          cardsHtml += `
+            <div class="doc-card-wrapper">
+              <article class="doc-item${activeCls}" onclick="selectDocument('${escapeHtml(d.id)}')">
+                <div class="doc-item-top">
+                  <span class="mono-label">${escapeHtml(d.id)} · ${escapeHtml(d.year)} · ${escapeHtml(d.sizeLabel)} · ${escapeHtml(d.pages)}P</span>
+                  <span class="${badgeCls}">${badgeText}</span>
+                </div>
+                <h3 class="doc-title">${escapeHtml(d.title)}</h3>
+                <div class="doc-meta-line">
+                  <span><strong>Author:</strong> ${escapeHtml(d.author)}</span>
+                  <span>·</span>
+                  <span><strong>Category:</strong> ${escapeHtml(d.category)}</span>
+                </div>
+                <p class="doc-summary">${escapeHtml(d.summary)}</p>
+                <div class="doc-item-footer">
+                  <div class="doc-tags-row">${tagsHtml}</div>
+                  <div class="doc-actions-row" onclick="event.stopPropagation()">
+                    <button type="button" class="icon-action-btn${isBook ? ` is-bookmarked` : ``}" aria-label="Bookmark ${escapeHtml(d.title)}" onclick="toggleBookmark('${escapeHtml(d.id)}')">
+                      <i data-lucide="bookmark" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="icon-action-btn" aria-label="Embed ${escapeHtml(d.title)}" onclick="openEmbedForDoc('${escapeHtml(d.id)}')">
+                      <i data-lucide="code-2" aria-hidden="true"></i>
+                      <span>Embed</span>
+                    </button>
+                  </div>
+                </div>
+              </article>
+            </div>
+          `;
+        }
+        cardsHtml += `</div>`;
+        container.innerHTML = cardsHtml;
+      }
+
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    function getDocEmbedSrc(doc) {
+      if (!doc) return ``;
+      if (doc.blobUrl) return doc.blobUrl;
+      if (doc.remoteUrl) return doc.remoteUrl;
+      doc.blobUrl = buildPdfBlobUrl(doc);
+      return doc.blobUrl;
+    }
+
+    function buildSingleIframeSnippet(doc, customHost, width, height, tagType, borderStyle, lazy, fullscreen, hideToolbar) {
+      const host = (customHost || `https://example.com/pdf-archive`).replace(/\/+$/, ``);
+      const srcUrl = doc.sourceType === `remote` && doc.remoteUrl
+        ? doc.remoteUrl
+        : `${host}/files/${doc.slug || (doc.id.toLowerCase() + `.pdf`)}`;
+      const finalSrc = hideToolbar ? `${srcUrl}#toolbar=0` : srcUrl;
+      const w = width || `100%`;
+      const h = height || `640px`;
+      const bStyle = borderStyle || `1px solid #e0e0e0`;
+
+      if (tagType === `object`) {
+        return `<object data="${escapeHtml(finalSrc)}" type="application/pdf" width="${escapeHtml(w)}" height="${escapeHtml(h)}" style="border: ${escapeHtml(bStyle)};">\n  <p>Inline PDF preview unavailable. Download: ${escapeHtml(doc.title)} (${escapeHtml(finalSrc)})</p>\n</object>`;
+      }
+      if (tagType === `embed`) {
+        return `<embed src="${escapeHtml(finalSrc)}" type="application/pdf" width="${escapeHtml(w)}" height="${escapeHtml(h)}" style="border: ${escapeHtml(bStyle)};" />`;
+      }
+      const attrs = [
+        `src="${escapeHtml(finalSrc)}"`,
+        `title="${escapeHtml(doc.title)}"`,
+        `width="${escapeHtml(w)}"`,
+        `height="${escapeHtml(h)}"`,
+        `style="border: ${escapeHtml(bStyle)};"`
+      ];
+      if (lazy) attrs.push(`loading="lazy"`);
+      if (fullscreen) attrs.push(`allowfullscreen`);
+      return `<iframe ${attrs.join(` `)}></iframe>`;
+    }
+
+    function renderPreviewPanel() {
+      const doc = getActiveDocument();
+      const idEl = document.getElementById(`preview-doc-id`);
+      const titleEl = document.getElementById(`preview-doc-title`);
+      const metaEl = document.getElementById(`preview-doc-meta`);
+      const srcTypeEl = document.getElementById(`preview-source-type`);
+      const stageEl = document.getElementById(`preview-stage`);
+      const quickEl = document.getElementById(`quick-embed-snippet`);
+      const bookBtn = document.getElementById(`preview-bookmark-btn`);
+      const helperEl = document.getElementById(`preview-helper-note`);
+
+      if (!doc || !stageEl) return;
+
+      if (idEl) idEl.textContent = `${doc.id} · ${doc.category.toUpperCase()}`;
+      if (titleEl) titleEl.textContent = doc.title;
+      if (metaEl) {
+        metaEl.innerHTML = `
+          <span><strong>Author:</strong> ${escapeHtml(doc.author)}</span>
+          <span>·</span>
+          <span>${escapeHtml(doc.year)}</span>
+          <span>·</span>
+          <span>${escapeHtml(doc.pages)} pages</span>
+          <span>·</span>
+          <span>${escapeHtml(doc.sizeLabel)}</span>
+        `;
+      }
+
+      if (srcTypeEl) {
+        if (doc.sourceType === `local`) srcTypeEl.textContent = `LOCAL OBJECT URL`;
+        else if (doc.sourceType === `remote`) srcTypeEl.textContent = `EXTERNAL PDF LINK`;
+        else srcTypeEl.textContent = `GENERATED BLOB PDF`;
+      }
+
+      if (bookBtn) {
+        const isBook = bookmarkedIds.indexOf(doc.id) !== -1;
+        bookBtn.classList.toggle(`is-bookmarked`, isBook);
+        const span = bookBtn.querySelector(`span`);
+        if (span) span.textContent = isBook ? `Saved` : `Save`;
+      }
+
+      const embedSrc = getDocEmbedSrc(doc);
+
+      if (quickEl) {
+        quickEl.textContent = buildSingleIframeSnippet(doc, `https://example.com/pdf-archive`, `100%`, `600px`, `iframe`, `1px solid #e0e0e0`, true, true, false);
+      }
+
+      // Sync render mode tab active classes
+      const tabIframe = document.getElementById(`tab-mode-iframe`);
+      const tabObject = document.getElementById(`tab-mode-object`);
+      const tabReader = document.getElementById(`tab-mode-reader`);
+      if (tabIframe) {
+        tabIframe.classList.toggle(`is-active`, previewMode === `iframe`);
+        tabIframe.setAttribute(`aria-selected`, String(previewMode === `iframe`));
+      }
+      if (tabObject) {
+        tabObject.classList.toggle(`is-active`, previewMode === `object`);
+        tabObject.setAttribute(`aria-selected`, String(previewMode === `object`));
+      }
+      if (tabReader) {
+        tabReader.classList.toggle(`is-active`, previewMode === `reader`);
+        tabReader.setAttribute(`aria-selected`, String(previewMode === `reader`));
+      }
+
+      if (previewMode === `iframe`) {
+        stageEl.innerHTML = `
+          <iframe class="pdf-frame" src="${escapeHtml(embedSrc)}" title="${escapeHtml(doc.title)}"></iframe>
+        `;
+        if (helperEl) {
+          helperEl.textContent = doc.sourceType === `remote`
+            ? `Rendering external URL via <iframe>. If the remote host sends X-Frame-Options: DENY, use Interactive Reader or a viewer wrapper.`
+            : `Rendering live application/pdf Blob via <iframe>. Switch to Interactive Reader if your browser blocks inline PDF frames.`;
+        }
+      } else if (previewMode === `object`) {
+        stageEl.innerHTML = `
+          <object class="pdf-frame" data="${escapeHtml(embedSrc)}" type="application/pdf" aria-label="${escapeHtml(doc.title)}">
+            <div class="empty-state" style="margin: var(--space-lg);">
+              <span class="mono-label">Native Object Fallback</span>
+              <h3 class="section-heading">Inline PDF plugin unavailable in this browser frame</h3>
+              <p class="subhead">Switch to the Interactive Reader view or download the PDF file directly.</p>
+              <button type="button" class="btn btn-primary btn-compact" onclick="setPreviewMode('reader')">Open Interactive Reader</button>
+            </div>
+          </object>
+        `;
+        if (helperEl) {
+          helperEl.textContent = `Rendering PDF via native <object type="application/pdf"> with built-in HTML fallback slot.`;
+        }
+      } else {
+        // Interactive Reader mode
+        const sections = doc.sections || [];
+        const totalPages = Math.max(1, sections.length || doc.pages || 1);
+        if (readerPage > totalPages) readerPage = totalPages;
+        if (readerPage < 1) readerPage = 1;
+
+        let bodyHtml = ``;
+        if (doc.sourceType === `local` || doc.sourceType === `remote`) {
+          bodyHtml = `
+            <p>${escapeHtml(doc.summary)}</p>
+            <div class="status-strip">
+              <span><strong>Active Source URI:</strong> <code>${escapeHtml(embedSrc)}</code></span>
+            </div>
+            <p class="subhead">This document is loaded dynamically from ${doc.sourceType === `local` ? `a local file via URL.createObjectURL(file)` : `an external URL`}. Use the Native &lt;iframe&gt; or &lt;object&gt; tabs above to inspect the raw PDF binary pages.</p>
+          `;
+        } else {
+          const sec = sections[readerPage - 1];
+          const pts = sec ? (sec.points || []) : [];
+          let ptsHtml = `<ul class="pdf-sheet-list">`;
+          for (let i = 0; i < pts.length; i++) {
+            ptsHtml += `<li>${escapeHtml(pts[i])}</li>`;
+          }
+          ptsHtml += `</ul>`;
+          bodyHtml = `
+            <p>${escapeHtml(doc.summary)}</p>
+            <h4 class="section-heading" style="margin-top: var(--space-sm);">${escapeHtml(sec ? sec.heading : `Document Overview`)}</h4>
+            ${ptsHtml}
+          `;
+        }
+
+        const zoomPct = Math.round(readerZoom * 100);
+        stageEl.innerHTML = `
+          <div class="reader-container">
+            <div class="reader-controls">
+              <div class="doc-actions-row">
+                <button type="button" class="icon-action-btn" onclick="stepReaderPage(-1)" ${readerPage <= 1 ? `disabled` : ``} aria-label="Previous section page">
+                  <i data-lucide="chevron-left" aria-hidden="true"></i>
+                </button>
+                <span class="mono-label">Page ${readerPage} of ${totalPages}</span>
+                <button type="button" class="icon-action-btn" onclick="stepReaderPage(1)" ${readerPage >= totalPages ? `disabled` : ``} aria-label="Next section page">
+                  <i data-lucide="chevron-right" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div class="doc-actions-row">
+                <button type="button" class="icon-action-btn" onclick="adjustReaderZoom(-0.1)" aria-label="Zoom out">
+                  <i data-lucide="zoom-out" aria-hidden="true"></i>
+                </button>
+                <span class="mono-label">${zoomPct}%</span>
+                <button type="button" class="icon-action-btn" onclick="adjustReaderZoom(0.1)" aria-label="Zoom in">
+                  <i data-lucide="zoom-in" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+            <article class="pdf-sheet" style="transform: scale(${readerZoom});">
+              <div class="pdf-sheet-bar">
+                <span class="mono-label">${escapeHtml(doc.id)} · ${escapeHtml(doc.category)}</span>
+                <span class="mono-label">${escapeHtml(doc.year)} · ${escapeHtml(doc.sizeLabel)}</span>
+              </div>
+              <h3 class="pdf-sheet-title">${escapeHtml(doc.title)}</h3>
+              <div class="doc-meta-line">
+                <span><strong>Author:</strong> ${escapeHtml(doc.author)}</span>
+                <span>·</span>
+                <span><strong>Keywords:</strong> ${escapeHtml((doc.tags || []).join(`, `))}</span>
+              </div>
+              <hr style="width: 100%; border: none; border-top: var(--rule); margin: 0;">
+              ${bodyHtml}
+            </article>
+          </div>
+        `;
+        if (helperEl) {
+          helperEl.textContent = `Interactive HTML Reader View active. Use page controls and zoom or switch back to Native <iframe> at any time.`;
+        }
+      }
+
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+
+    // Event handlers (hoisted function declarations)
+    function handleSearchInput(val) {
+      searchQuery = val;
+      const clearBtn = document.getElementById(`clear-search-btn`);
+      if (clearBtn) {
+        clearBtn.style.display = val.trim() ? `inline-flex` : `none`;
+      }
+      populateFilterDropdowns();
+      renderDocumentList();
+      persistState();
+    }
+
+    function clearSearchQuery() {
+      const input = document.getElementById(`search-input`);
+      if (input) input.value = ``;
+      handleSearchInput(``);
+    }
+
+    function applyKeywordChip(keyword) {
+      const input = document.getElementById(`search-input`);
+      if (input) input.value = keyword;
+      handleSearchInput(keyword);
+    }
+
+    function handleCategoryChange(val) {
+      selectedCategory = val;
+      renderDocumentList();
+      persistState();
+    }
+
+    function handleAuthorChange(val) {
+      selectedAuthor = val;
+      renderDocumentList();
+      persistState();
+    }
+
+    function handleSortChange(val) {
+      sortOrder = val;
+      renderDocumentList();
+      persistState();
+    }
+
+    function resetAllFilters() {
+      searchQuery = ``;
+      selectedCategory = `all`;
+      selectedAuthor = `all`;
+      sortOrder = `recent`;
+      const sInput = document.getElementById(`search-input`);
+      const cSelect = document.getElementById(`category-filter`);
+      const aSelect = document.getElementById(`author-filter`);
+      const sortSel = document.getElementById(`sort-select`);
+      const clearBtn = document.getElementById(`clear-search-btn`);
+      if (sInput) sInput.value = ``;
+      if (cSelect) cSelect.value = `all`;
+      if (aSelect) aSelect.value = `all`;
+      if (sortSel) sortSel.value = `recent`;
+      if (clearBtn) clearBtn.style.display = `none`;
+      populateFilterDropdowns();
+      renderDocumentList();
+      persistState();
+    }
+
+    function setListViewMode(mode) {
+      listViewMode = mode;
+      const cardsBtn = document.getElementById(`tab-view-cards`);
+      const tableBtn = document.getElementById(`tab-view-table`);
+      if (cardsBtn) {
+        cardsBtn.classList.toggle(`is-active`, mode === `cards`);
+        cardsBtn.setAttribute(`aria-selected`, String(mode === `cards`));
+      }
+      if (tableBtn) {
+        tableBtn.classList.toggle(`is-active`, mode === `table`);
+        tableBtn.setAttribute(`aria-selected`, String(mode === `table`));
+      }
+      renderDocumentList();
+    }
+
+    function selectDocument(id) {
+      activeDocId = id;
+      readerPage = 1;
+      renderDocumentList();
+      renderPreviewPanel();
+      persistState();
+    }
+
+    function setPreviewMode(mode) {
+      previewMode = mode;
+      renderPreviewPanel();
+      persistState();
+    }
+
+    function stepReaderPage(delta) {
+      readerPage += delta;
+      renderPreviewPanel();
+    }
+
+    function adjustReaderZoom(delta) {
+      readerZoom = Math.min(1.4, Math.max(0.7, Math.round((readerZoom + delta) * 10) / 10));
+      renderPreviewPanel();
+    }
+
+    function toggleBookmark(id) {
+      const idx = bookmarkedIds.indexOf(id);
+      if (idx === -1) {
+        bookmarkedIds.push(id);
+        showToast(`Document saved to bookmarks`);
+      } else {
+        bookmarkedIds.splice(idx, 1);
+        showToast(`Bookmark removed`);
+      }
+      renderDocumentList();
+      renderPreviewPanel();
+      persistState();
+    }
+
+    function toggleActiveBookmark() {
+      if (activeDocId) toggleBookmark(activeDocId);
+    }
+
+    // Local PDF upload & drag-and-drop
+    function triggerFilePicker() {
+      const fileInput = document.getElementById(`local-file-input`);
+      if (fileInput) fileInput.click();
+    }
+
+    function handleDropzoneKeydown(evt) {
+      if (evt.key === `Enter` || evt.key === ` `) {
+        evt.preventDefault();
+        triggerFilePicker();
+      }
+    }
+
+    function formatFileSize(bytes) {
+      if (!bytes || bytes < 1024) return `${bytes || 0} B`;
+      if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    }
+
+    function handleFileInputChange(fileList) {
+      if (!fileList || fileList.length === 0) return;
+      const statusEl = document.getElementById(`upload-status`);
+      let addedCount = 0;
+      let lastId = null;
+
+      for (let i = 0; i < fileList.length; i++) {
+        const file = fileList[i];
+        const isPdf = file.type === `application/pdf` || /\.pdf$/i.test(file.name);
+        if (!isPdf) continue;
+
+        localSessionCount += 1;
+        addedCount += 1;
+        const objectUrl = URL.createObjectURL(file);
+        const cleanTitle = file.name.replace(/\.pdf$/i, ``).replace(/[-_]+/g, ` `);
+        const newId = `LOC-${String(localSessionCount).padStart(3, `0`)}`;
+        const year = file.lastModified ? new Date(file.lastModified).getFullYear() : 2026;
+
+        documents.unshift({
+          id: newId,
+          title: cleanTitle || file.name,
+          author: `Local Upload`,
+          category: `Local Upload`,
+          year: year,
+          pages: 1,
+          sizeLabel: formatFileSize(file.size),
+          sourceType: `local`,
+          slug: file.name,
+          blobUrl: objectUrl,
+          tags: [`local upload`, `createObjectURL`, `PDF`],
+          summary: `Uploaded locally (${file.name}, ${formatFileSize(file.size)}) and bound via URL.createObjectURL(file) for zero-server inline preview.`
+        });
+        lastId = newId;
+      }
+
+      if (addedCount > 0 && lastId) {
+        activeDocId = lastId;
+        previewMode = `iframe`;
+        populateFilterDropdowns();
+        renderDocumentList();
+        renderPreviewPanel();
+        if (statusEl) {
+          statusEl.innerHTML = `<div class="status-strip is-success"><span>Loaded ${addedCount} local PDF${addedCount > 1 ? `s` : ``} via <code>URL.createObjectURL</code>.</span></div>`;
+        }
+        showToast(`Loaded ${addedCount} local PDF file${addedCount > 1 ? `s` : ``}`);
+      } else if (statusEl) {
+        statusEl.innerHTML = `<div class="status-strip is-error"><span>Unsupported file type. Select a valid .pdf document.</span></div>`;
+      }
+
+      const fileInput = document.getElementById(`local-file-input`);
+      if (fileInput) fileInput.value = ``;
+    }
+
+    function validateExternalUrl(rawUrl) {
+      const trimmed = String(rawUrl || ``).trim();
+      if (!trimmed) {
+        return { ok: false, error: `Enter an http:// or https:// PDF link first.` };
+      }
+      if (!/^https?:\/\/.+/i.test(trimmed)) {
+        return { ok: false, error: `Include the full protocol (https:// or http://) before previewing.` };
+      }
+      return { ok: true, url: trimmed };
+    }
+
+    function previewExternalUrl() {
+      const urlInput = document.getElementById(`remote-url-input`);
+      const titleInput = document.getElementById(`remote-title-input`);
+      const statusEl = document.getElementById(`url-status`);
+      if (!urlInput) return;
+
+      const check = validateExternalUrl(urlInput.value);
+      if (!check.ok) {
+        urlInput.classList.add(`is-error`);
+        if (statusEl) {
+          statusEl.innerHTML = `<div class="status-strip is-error"><span>${escapeHtml(check.error)}</span></div>`;
+        }
+        return;
+      }
+
+      urlInput.classList.remove(`is-error`);
+      const rawName = check.url.split(`/`).pop().split(`?`)[0] || `external-document.pdf`;
+      const customTitle = titleInput && titleInput.value.trim() ? titleInput.value.trim() : rawName.replace(/\.pdf$/i, ``).replace(/[-_]+/g, ` `);
+      const tempId = `URL-PREVIEW`;
+
+      // Replace existing transient URL-PREVIEW if present
+      documents = documents.filter(function (d) { return d.id !== tempId; });
+      documents.unshift({
+        id: tempId,
+        title: customTitle,
+        author: `External Link`,
+        category: `External URL`,
+        year: 2026,
+        pages: 1,
+        sizeLabel: `Remote`,
+        sourceType: `remote`,
+        slug: rawName,
+        remoteUrl: check.url,
+        tags: [`URL preview`, `iframe`, `remote PDF`],
+        summary: `Live external PDF preview loaded from ${check.url}. Click "Add to List" to save permanently into the searchable database.`
+      });
+
+      activeDocId = tempId;
+      previewMode = `iframe`;
+      populateFilterDropdowns();
+      renderDocumentList();
+      renderPreviewPanel();
+      if (statusEl) {
+        statusEl.innerHTML = `<div class="status-strip is-success"><span>Previewing remote URL in panel. Click "Add to List" to persist it in the catalog.</span></div>`;
+      }
+    }
+
+    function addExternalUrlToDb() {
+      const urlInput = document.getElementById(`remote-url-input`);
+      const titleInput = document.getElementById(`remote-title-input`);
+      const statusEl = document.getElementById(`url-status`);
+      if (!urlInput) return;
+
+      const check = validateExternalUrl(urlInput.value);
+      if (!check.ok) {
+        urlInput.classList.add(`is-error`);
+        if (statusEl) {
+          statusEl.innerHTML = `<div class="status-strip is-error"><span>${escapeHtml(check.error)}</span></div>`;
+        }
+        return;
+      }
+
+      urlInput.classList.remove(`is-error`);
+      const rawName = check.url.split(`/`).pop().split(`?`)[0] || `remote-document.pdf`;
+      const customTitle = titleInput && titleInput.value.trim() ? titleInput.value.trim() : rawName.replace(/\.pdf$/i, ``).replace(/[-_]+/g, ` `);
+      const nextNum = remoteDocs.length + 1;
+      const newId = `URL-${String(nextNum).padStart(3, `0`)}`;
+
+      const record = {
+        id: newId,
+        title: customTitle,
+        author: `External Link`,
+        category: `External URL`,
+        year: 2026,
+        pages: 1,
+        sizeLabel: `Remote`,
+        sourceType: `remote`,
+        slug: rawName,
+        remoteUrl: check.url,
+        tags: [`URL preview`, `remote PDF`, `embed`],
+        summary: `Saved external PDF link (${check.url}) indexed for search, inline preview, and embed code generation.`
+      };
+
+      remoteDocs.push(record);
+      documents = documents.filter(function (d) { return d.id !== `URL-PREVIEW`; });
+      documents.unshift(record);
+      activeDocId = newId;
+      previewMode = `iframe`;
+
+      urlInput.value = ``;
+      if (titleInput) titleInput.value = ``;
+      populateFilterDropdowns();
+      renderDocumentList();
+      renderPreviewPanel();
+      persistState();
+
+      if (statusEl) {
+        statusEl.innerHTML = `<div class="status-strip is-success"><span>Saved ${escapeHtml(newId)} to the searchable database.</span></div>`;
+      }
+      showToast(`Added ${newId} to database`);
+    }
+
+    function downloadActivePdf() {
+      const doc = getActiveDocument();
+      if (!doc) return;
+      const src = getDocEmbedSrc(doc);
+      const a = document.createElement(`a`);
+      a.href = src;
+      a.download = doc.slug || `${doc.id.toLowerCase()}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast(`Triggered PDF download: ${doc.slug || doc.id}`);
+    }
+
+    function exportCatalogCsv() {
+      const rows = [[`ID`, `Title`, `Author`, `Category`, `Year`, `Size`, `SourceType`, `Tags`]];
+      for (let i = 0; i < documents.length; i++) {
+        const d = documents[i];
+        rows.push([
+          d.id,
+          d.title,
+          d.author,
+          d.category,
+          String(d.year),
+          d.sizeLabel,
+          d.sourceType,
+          (d.tags || []).join(`; `)
+        ]);
+      }
+      const csv = rows.map(function (r) {
+        return r.map(function (cell) {
+          return `"` + String(cell).replace(/"/g, `""`) + `"`;
+        }).join(`,`);
+      }).join(`\n`);
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === `function`) {
+        window.notebookAppApi.triggerFileDownload({
+          content: csv,
+          contentType: `text/csv`,
+          encoding: `UTF-8`,
+          filename: `pdf-database-catalog.csv`
+        });
+        showToast(`Exported catalog CSV`);
+      } else {
+        const blob = new Blob([csv], { type: `text/csv` });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement(`a`);
+        a.href = url;
+        a.download = `pdf-database-catalog.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast(`Exported catalog CSV`);
+      }
+    }
+
+    // Embed & Share Code Generator Modal
+    function openEmbedForDoc(docId) {
+      embedTargetDocId = docId;
+      openEmbedModal(`document`);
+    }
+
+    function openEmbedModal(scope) {
+      embedScope = scope || `document`;
+      if (scope === `document`) {
+        const active = getActiveDocument();
+        if (active && !embedTargetDocId) embedTargetDocId = active.id;
+        if (active && embedScope === `document` && active.id !== embedTargetDocId && !arguments[1]) {
+          embedTargetDocId = active.id;
+        }
+      }
+      const backdrop = document.getElementById(`embed-modal-backdrop`);
+      const docSelect = document.getElementById(`embed-doc-select`);
+      if (docSelect) {
+        let html = ``;
+        for (let i = 0; i < documents.length; i++) {
+          const d = documents[i];
+          const sel = d.id === embedTargetDocId ? ` selected` : ``;
+          html += `<option value="${escapeHtml(d.id)}"${sel}>${escapeHtml(d.id)} — ${escapeHtml(d.title)}</option>`;
+        }
+        docSelect.innerHTML = html;
+      }
+      setEmbedScope(embedScope);
+      if (backdrop) backdrop.classList.add(`is-open`);
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function closeEmbedModal() {
+      const backdrop = document.getElementById(`embed-modal-backdrop`);
+      if (backdrop) backdrop.classList.remove(`is-open`);
+    }
+
+    function handleBackdropClick(evt) {
+      if (evt.target && evt.target.id === `embed-modal-backdrop`) {
+        closeEmbedModal();
+      }
+    }
+
+    function setEmbedScope(scope) {
+      embedScope = scope;
+      const docTab = document.getElementById(`embed-scope-doc`);
+      const dbTab = document.getElementById(`embed-scope-db`);
+      const docGroup = document.getElementById(`embed-doc-select-group`);
+      const toolbarWrap = document.getElementById(`opt-toolbar-wrap`);
+      const filterWrap = document.getElementById(`opt-filter-wrap`);
+
+      if (docTab) {
+        docTab.classList.toggle(`is-active`, scope === `document`);
+        docTab.setAttribute(`aria-selected`, String(scope === `document`));
+      }
+      if (dbTab) {
+        dbTab.classList.toggle(`is-active`, scope === `database`);
+        dbTab.setAttribute(`aria-selected`, String(scope === `database`));
+      }
+      if (docGroup) docGroup.style.display = scope === `document` ? `flex` : `none`;
+      if (toolbarWrap) toolbarWrap.style.display = scope === `document` ? `inline-flex` : `none`;
+      if (filterWrap) filterWrap.style.display = scope === `database` ? `inline-flex` : `none`;
+
+      updateEmbedSnippets();
+    }
+
+    function updateEmbedSnippets() {
+      const docSelect = document.getElementById(`embed-doc-select`);
+      const tagTypeEl = document.getElementById(`embed-tag-type`);
+      const hostEl = document.getElementById(`embed-host-url`);
+      const widthEl = document.getElementById(`embed-width`);
+      const heightEl = document.getElementById(`embed-height`);
+      const borderEl = document.getElementById(`embed-border-style`);
+      const lazyEl = document.getElementById(`opt-lazy`);
+      const fullEl = document.getElementById(`opt-fullscreen`);
+      const hideToolbarEl = document.getElementById(`opt-hide-toolbar`);
+      const includeFilterEl = document.getElementById(`opt-include-filter`);
+      const localWarn = document.getElementById(`embed-local-warning`);
+
+      const outHtml = document.getElementById(`output-html-snippet`);
+      const outUrl = document.getElementById(`output-share-url`);
+      const outMd = document.getElementById(`output-markdown-snippet`);
+
+      const host = ((hostEl ? hostEl.value.trim() : ``) || `https://example.com/pdf-archive`).replace(/\/+$/, ``);
+      const tagType = tagTypeEl ? tagTypeEl.value : `iframe`;
+      const width = widthEl ? widthEl.value : `100%`;
+      const height = heightEl ? heightEl.value : `640px`;
+      const borderStyle = borderEl ? borderEl.value : `1px solid #e0e0e0`;
+      const lazy = lazyEl ? lazyEl.checked : true;
+      const fullscreen = fullEl ? fullEl.checked : true;
+      const hideToolbar = hideToolbarEl ? hideToolbarEl.checked : false;
+      const includeFilter = includeFilterEl ? includeFilterEl.checked : true;
+
+      if (embedScope === `document`) {
+        const chosenId = docSelect ? docSelect.value : activeDocId;
+        embedTargetDocId = chosenId;
+        let targetDoc = documents[0];
+        for (let i = 0; i < documents.length; i++) {
+          if (documents[i].id === chosenId) {
+            targetDoc = documents[i];
+            break;
+          }
+        }
+        if (!targetDoc) return;
+
+        if (localWarn) {
+          localWarn.style.display = targetDoc.sourceType === `local` ? `flex` : `none`;
+        }
+
+        const shareLink = `${host}/?doc=${encodeURIComponent(targetDoc.id)}`;
+        const htmlSnippet = buildSingleIframeSnippet(targetDoc, host, width, height, tagType, borderStyle, lazy, fullscreen, hideToolbar);
+        const mdSnippet = `[${targetDoc.title} (${targetDoc.id})](${shareLink})`;
+
+        if (outHtml) outHtml.value = htmlSnippet;
+        if (outUrl) outUrl.value = shareLink;
+        if (outMd) outMd.value = mdSnippet;
+      } else {
+        if (localWarn) localWarn.style.display = `none`;
+
+        const params = [];
+        if (includeFilter) {
+          if (searchQuery.trim()) params.push(`q=${encodeURIComponent(searchQuery.trim())}`);
+          if (selectedCategory !== `all`) params.push(`category=${encodeURIComponent(selectedCategory)}`);
+          if (selectedAuthor !== `all`) params.push(`author=${encodeURIComponent(selectedAuthor)}`);
+        }
+        const queryString = params.length > 0 ? `?${params.join(`&`)}` : ``;
+        const dbUrl = `${host}/${queryString}`;
+
+        let htmlSnippet = ``;
+        if (tagType === `object`) {
+          htmlSnippet = `<object data="${dbUrl}" type="text/html" width="${width}" height="${height}" style="border: ${borderStyle};">\n  <p>Open Searchable PDF Document Database: ${dbUrl}</p>\n</object>`;
+        } else if (tagType === `embed`) {
+          htmlSnippet = `<embed src="${dbUrl}" type="text/html" width="${width}" height="${height}" style="border: ${borderStyle};" />`;
+        } else {
+          const attrs = [
+            `src="${dbUrl}"`,
+            `title="Searchable PDF Document Database"`,
+            `width="${width}"`,
+            `height="${height}"`,
+            `style="border: ${borderStyle};"`
+          ];
+          if (lazy) attrs.push(`loading="lazy"`);
+          if (fullscreen) attrs.push(`allowfullscreen`);
+          htmlSnippet = `<iframe ${attrs.join(` `)}></iframe>`;
+        }
+
+        const mdSnippet = `[Searchable PDF Document Database (${documents.length} documents)](${dbUrl})`;
+        if (outHtml) outHtml.value = htmlSnippet;
+        if (outUrl) outUrl.value = dbUrl;
+        if (outMd) outMd.value = mdSnippet;
+      }
+    }
+
+    function copyTextFallback(text, msg) {
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === `function`) {
+        navigator.clipboard.writeText(text).then(function () {
+          showToast(msg);
+        }).catch(function () {
+          legacyCopy(text, msg);
+        });
+      } else {
+        legacyCopy(text, msg);
+      }
+    }
+
+    function legacyCopy(text, msg) {
+      const ta = document.createElement(`textarea`);
+      ta.value = text;
+      ta.style.position = `fixed`;
+      ta.style.opacity = `0`;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand(`copy`);
+        showToast(msg);
+      } catch (e) {
+        showToast(`Select snippet text and copy manually`);
+      }
+      document.body.removeChild(ta);
+    }
+
+    function copyQuickEmbed() {
+      const el = document.getElementById(`quick-embed-snippet`);
+      if (!el) return;
+      copyTextFallback(el.textContent, `Quick <iframe> snippet copied`);
+    }
+
+    function copyTextareaValue(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      copyTextFallback(el.value, msg);
+    }
+
+    // State persistence via notebookAppApi
+    async function persistState() {
+      if (!window.notebookAppApi || typeof window.notebookAppApi.setAppState !== `function`) return;
+      try {
+        await window.notebookAppApi.setAppState({
+          activeDocId: activeDocId,
+          searchQuery: searchQuery,
+          selectedCategory: selectedCategory,
+          selectedAuthor: selectedAuthor,
+          sortOrder: sortOrder,
+          previewMode: previewMode,
+          bookmarkedIds: bookmarkedIds,
+          remoteDocs: remoteDocs
+        });
+      } catch (e) {
+        // Ignore persistence errors silently in restricted modes
+      }
+    }
+
+    function applyUrlDeepLinkParams() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const q = params.get(`q`);
+        const cat = params.get(`category`);
+        const auth = params.get(`author`);
+        const docParam = params.get(`doc`);
+        if (q) searchQuery = q;
+        if (cat) selectedCategory = cat;
+        if (auth) selectedAuthor = auth;
+        if (docParam) {
+          for (let i = 0; i < documents.length; i++) {
+            if (documents[i].id === docParam) {
+              activeDocId = docParam;
+              break;
+            }
+          }
+        }
+      } catch (e) {
+        // Ignore malformed URL params
+      }
+    }
+
+    function setupDropzoneEvents() {
+      const dz = document.getElementById(`pdf-dropzone`);
+      if (!dz) return;
+      dz.addEventListener(`dragover`, function (e) {
+        e.preventDefault();
+        dz.classList.add(`is-dragover`);
+      });
+      dz.addEventListener(`dragleave`, function () {
+        dz.classList.remove(`is-dragover`);
+      });
+      dz.addEventListener(`drop`, function (e) {
+        e.preventDefault();
+        dz.classList.remove(`is-dragover`);
+        if (e.dataTransfer && e.dataTransfer.files) {
+          handleFileInputChange(e.dataTransfer.files);
+        }
+      });
+    }
+
+    function setupKeyboardShortcuts() {
+      document.addEventListener(`keydown`, function (e) {
+        if (e.key === `Escape`) {
+          closeEmbedModal();
+        }
+      });
+    }
+
+    async function initApp() {
+      documents = BASE_DOCUMENTS.map(function (d) {
+        return Object.assign({}, d);
+      });
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+        try {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved) {
+            if (Array.isArray(saved.remoteDocs)) {
+              remoteDocs = saved.remoteDocs;
+              for (let i = remoteDocs.length - 1; i >= 0; i--) {
+                documents.unshift(remoteDocs[i]);
+              }
+            }
+            if (Array.isArray(saved.bookmarkedIds)) bookmarkedIds = saved.bookmarkedIds;
+            if (typeof saved.searchQuery === `string`) searchQuery = saved.searchQuery;
+            if (typeof saved.selectedCategory === `string`) selectedCategory = saved.selectedCategory;
+            if (typeof saved.selectedAuthor === `string`) selectedAuthor = saved.selectedAuthor;
+            if (typeof saved.sortOrder === `string`) sortOrder = saved.sortOrder;
+            if (typeof saved.previewMode === `string`) previewMode = saved.previewMode;
+            if (typeof saved.activeDocId === `string`) activeDocId = saved.activeDocId;
+          }
+        } catch (e) {
+          // Fall back to default state
+        }
+      }
+
+      applyUrlDeepLinkParams();
+
+      const sInput = document.getElementById(`search-input`);
+      const clearBtn = document.getElementById(`clear-search-btn`);
+      const sortSel = document.getElementById(`sort-select`);
+      if (sInput) sInput.value = searchQuery;
+      if (clearBtn) clearBtn.style.display = searchQuery.trim() ? `inline-flex` : `none`;
+      if (sortSel) sortSel.value = sortOrder;
+
+      populateFilterDropdowns();
+      renderDocumentList();
+      renderPreviewPanel();
+      setupDropzoneEvents();
+      setupKeyboardShortcuts();
+
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+        window.notebookAppApi.notifyAppReady();
+      }
+    }
+
+    initApp();
+  </script>
+</body>
+</html>
