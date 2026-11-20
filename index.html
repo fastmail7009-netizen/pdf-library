@@ -1,0 +1,2210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="bauhaus">
+  <title>SDS Book — Safety Data Sheets Library (fastmail7009-netizen/pdf-library)</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Industrial SDS Binder Palette (adapted from Bauhaus + gs-sds-b4-430.png) */
+      --safety-yellow: #ffd400;
+      --safety-yellow-deep: #eab800;
+      --safety-red: #b8141e;
+      --safety-red-dark: #8f0e16;
+      --background: #ffd400;
+      --surface-container-low: #fffdf5;
+      --surface-container: #f7f3e3;
+      --surface-container-high: #ede6cc;
+      --surface-white: #ffffff;
+
+      /* Ink */
+      --ink: #111111;
+      --on-surface: #111111;
+      --on-surface-variant: #3f3d36;
+      --on-primary: #ffffff;
+      --on-primary-container: #111111;
+
+      /* Lines & Accents */
+      --outline: #111111;
+      --outline-variant: #c8bfa0;
+      --primary: #111111;
+      --primary-container: #ffd400;
+      --secondary: #b8141e;
+      --tertiary: #0c4a8a;
+      --error: #b8141e;
+      --on-error: #ffffff;
+
+      /* Semantic */
+      --positive: #166534;
+      --positive-bg: #dcfce7;
+      --warning: #9a5b00;
+      --warning-bg: #fef3c7;
+      --danger-bg: #fee2e2;
+      --focus: #0c4a8a;
+
+      /* Typography — Times New Roman requested + IBM Plex Mono for codes/snippets */
+      --font-headline: 'Times New Roman', Times, Georgia, serif;
+      --font-body: 'Times New Roman', Times, Georgia, serif;
+      --font-label: 'Times New Roman', Times, Georgia, serif;
+      --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+
+      /* Type scale (Dashboard / Lookup) */
+      --display-size: clamp(1.75rem, 1.35rem + 1.4vw, 2.5rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.25rem);
+      --body-size: clamp(0.95rem, 0.92rem + 0.15vw, 1.05rem);
+      --label-size: 0.75rem;
+
+      /* Shape & Industrial Effects */
+      --rounded: 0.125rem;
+      --rounded-lg: 0.25rem;
+      --border-thick: 3px solid var(--outline);
+      --border-medium: 2px solid var(--outline);
+      --border-thin: 1px solid var(--outline-variant);
+      --offset-shadow: 5px 5px 0 var(--outline);
+      --offset-shadow-sm: 3px 3px 0 var(--outline);
+      --hazard-stripe: repeating-linear-gradient(
+        -45deg,
+        var(--safety-red) 0px,
+        var(--safety-red) 16px,
+        var(--safety-yellow) 16px,
+        var(--safety-yellow) 32px
+      );
+
+      /* Spacing scale (4pt base) */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.5;
+    }
+    header { position: static !important; }
+
+    button, input, select {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Outer Physical Binder Shell */
+    .binder-shell {
+      max-width: 1360px;
+      margin: var(--space-md) auto;
+      padding: var(--space-md);
+      background-color: var(--safety-yellow);
+      border: var(--border-thick);
+      box-shadow: var(--offset-shadow);
+    }
+
+    .binder-shell * { min-width: 0; }
+
+    /* Hazard Stripe Top & Bottom Borders matching gs-sds-b4-430.png */
+    .hazard-band {
+      height: 22px;
+      width: 100%;
+      background: var(--hazard-stripe);
+      border: var(--border-thick);
+    }
+
+    /* Binder Header Masthead */
+    .binder-header {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: var(--space-lg);
+      padding: var(--space-lg) var(--space-md);
+      background-color: var(--safety-yellow);
+      border-left: var(--border-thick);
+      border-right: var(--border-thick);
+      border-bottom: var(--border-thick);
+    }
+
+    /* Header Logo Frame for logo.png */
+    .logo-frame {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 148px;
+      min-height: 88px;
+      padding: var(--space-sm);
+      background-color: var(--surface-white);
+      border: var(--border-thick);
+      box-shadow: var(--offset-shadow-sm);
+      overflow: hidden;
+    }
+
+    .logo-frame img {
+      display: block;
+      max-width: 100%;
+      max-height: 70px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .logo-fallback {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: var(--space-xs);
+      width: 100%;
+    }
+
+    .logo-fallback-mark {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .logo-fallback-sub {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+    }
+
+    /* Central Red SDS Badge & Title */
+    .binder-title-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--space-xs);
+    }
+
+    .sds-central-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--safety-red);
+      color: var(--on-primary);
+      border: var(--border-thick);
+      box-shadow: var(--offset-shadow-sm);
+      padding: var(--space-xs) var(--space-xl);
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+      letter-spacing: 0.14em;
+      line-height: 1.05;
+    }
+
+    .binder-main-title {
+      margin: var(--space-xs) 0 0;
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--display-size);
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .binder-subtitle {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 600;
+      color: var(--ink);
+      background-color: var(--surface-container-low);
+      border: var(--border-medium);
+      padding: var(--space-xs) var(--space-sm);
+      max-width: 100%;
+      overflow-wrap: anywhere;
+    }
+
+    /* Header Right Status & Quick Actions */
+    .binder-status-cluster {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: var(--space-sm);
+    }
+
+    .readonly-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      background-color: var(--ink);
+      color: var(--safety-yellow);
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: var(--space-xs) var(--space-sm);
+      border: var(--border-medium);
+    }
+
+    .kpi-strip {
+      display: flex;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .kpi-box {
+      background-color: var(--surface-white);
+      border: var(--border-medium);
+      padding: var(--space-xs) var(--space-sm);
+      text-align: center;
+      min-width: 88px;
+    }
+
+    .kpi-value {
+      display: block;
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.35rem;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .kpi-label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-md);
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--body-size);
+      background-color: var(--surface-white);
+      color: var(--ink);
+      border: var(--border-medium);
+      border-radius: var(--rounded);
+      box-shadow: var(--offset-shadow-sm);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform var(--dur-micro) var(--ease-out),
+                  background-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out),
+                  box-shadow var(--dur-micro) var(--ease-out);
+    }
+
+    .btn:hover:not(:disabled) {
+      background-color: var(--ink);
+      color: var(--safety-yellow);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: none;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background-color: var(--safety-red);
+      color: var(--on-primary);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--ink);
+      color: var(--safety-yellow);
+    }
+
+    .btn-yellow {
+      background-color: var(--safety-yellow);
+      color: var(--ink);
+    }
+
+    /* Top Search & Filter Bar */
+    .search-toolbar {
+      background-color: var(--surface-container-low);
+      border-left: var(--border-thick);
+      border-right: var(--border-thick);
+      border-bottom: var(--border-thick);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: var(--space-sm);
+      align-items: end;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .field-label {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--body-size);
+      color: var(--ink);
+    }
+
+    .search-input, .select-input {
+      width: 100%;
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-md);
+      background-color: var(--surface-white);
+      border: var(--border-medium);
+      border-radius: var(--rounded);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      color: var(--ink);
+    }
+
+    .select-input {
+      padding-right: var(--space-xl);
+      cursor: pointer;
+    }
+
+    .filter-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+
+    .folder-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+
+    .chip-btn {
+      min-height: 36px;
+      padding: var(--space-xs) var(--space-sm);
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 600;
+      background-color: var(--surface-white);
+      color: var(--ink);
+      border: var(--border-medium);
+      border-radius: var(--rounded);
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out);
+    }
+
+    .chip-btn:hover {
+      background-color: var(--surface-container-high);
+    }
+
+    .chip-btn.is-active {
+      background-color: var(--ink);
+      color: var(--safety-yellow);
+    }
+
+    .manifest-status-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 600;
+      padding: var(--space-xs) var(--space-sm);
+      border: var(--border-medium);
+      background-color: var(--surface-white);
+    }
+
+    .manifest-status-bar.is-live {
+      background-color: var(--positive-bg);
+      color: var(--positive);
+      border-color: var(--positive);
+    }
+
+    .manifest-status-bar.is-fallback {
+      background-color: var(--warning-bg);
+      color: var(--warning);
+      border-color: var(--warning);
+    }
+
+    /* Main Two-Column Binder Workspace */
+    .binder-workspace {
+      display: grid;
+      grid-template-columns: minmax(300px, 0.95fr) minmax(0, 1.55fr);
+      gap: var(--space-md);
+      padding: var(--space-md);
+      background-color: var(--safety-yellow);
+      border-left: var(--border-thick);
+      border-right: var(--border-thick);
+      border-bottom: var(--border-thick);
+      align-items: start;
+    }
+
+    /* Left Panel: SDS Sheets List */
+    .panel-card {
+      background-color: var(--surface-container-low);
+      border: var(--border-thick);
+      box-shadow: var(--offset-shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      padding: var(--space-md);
+      background-color: var(--ink);
+      color: var(--safety-yellow);
+      border-bottom: var(--border-thick);
+    }
+
+    .panel-title {
+      margin: 0;
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--headline-size);
+      letter-spacing: 0.02em;
+      color: var(--safety-yellow);
+    }
+
+    .panel-count {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 700;
+      background-color: var(--safety-red);
+      color: var(--on-primary);
+      padding: var(--space-xs) var(--space-sm);
+      border: 1px solid var(--surface-white);
+    }
+
+    .sds-list-controls {
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--surface-container);
+      border-bottom: var(--border-medium);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+
+    .sds-sheets-list {
+      list-style: none;
+      margin: 0;
+      padding: var(--space-sm);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      max-height: 760px;
+      overflow-y: auto;
+    }
+
+    .sds-item {
+      width: 100%;
+      text-align: left;
+      background-color: var(--surface-white);
+      border: var(--border-medium);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      container-type: inline-size;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  transform var(--dur-micro) var(--ease-out),
+                  box-shadow var(--dur-micro) var(--ease-out);
+    }
+
+    .sds-item:hover {
+      background-color: var(--surface-container);
+      box-shadow: var(--offset-shadow-sm);
+    }
+
+    .sds-item.is-selected {
+      background-color: var(--safety-yellow);
+      border: var(--border-thick);
+      box-shadow: var(--offset-shadow-sm);
+    }
+
+    .sds-item-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-xs) var(--space-sm);
+      width: 100%;
+    }
+
+    /* REQUIRED FIX: .sds-item-code fully contains and aligns the complete SDS code & wraps cleanly on mobile */
+    .sds-item-code {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      max-width: 100%;
+      background-color: var(--ink);
+      color: var(--safety-yellow);
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: var(--label-size);
+      line-height: 1.35;
+      letter-spacing: 0.03em;
+      padding: var(--space-xs) var(--space-sm);
+      border: 1px solid var(--ink);
+      border-radius: var(--rounded);
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      text-align: left;
+      flex-shrink: 1;
+    }
+
+    .sds-item-folder {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--ink);
+      background-color: var(--surface-container-high);
+      border: 1px solid var(--ink);
+      padding: var(--space-xs) var(--space-sm);
+      max-width: 100%;
+      overflow-wrap: anywhere;
+    }
+
+    .sds-item-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--subhead-size);
+      line-height: 1.25;
+      color: var(--ink);
+      overflow-wrap: anywhere;
+    }
+
+    .sds-item-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs) var(--space-md);
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+
+    .signal-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 1px var(--space-xs);
+      border: 1px solid var(--ink);
+    }
+
+    .signal-tag--danger {
+      background-color: var(--safety-red);
+      color: var(--on-primary);
+    }
+
+    .signal-tag--warning {
+      background-color: var(--safety-yellow);
+      color: var(--ink);
+    }
+
+    /* Empty State */
+    .empty-state {
+      padding: var(--space-xl) var(--space-md);
+      text-align: center;
+      background-color: var(--surface-white);
+      border: var(--border-medium);
+      margin: var(--space-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    /* Right Panel: Summary & Full SDS Sheet Viewer */
+    .viewer-header-bar {
+      padding: var(--space-md);
+      background-color: var(--surface-container);
+      border-bottom: var(--border-thick);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .viewer-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+
+    .viewer-doc-title {
+      margin: 0;
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--headline-size);
+      line-height: 1.2;
+      color: var(--ink);
+      overflow-wrap: anywhere;
+    }
+
+    .viewer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    .copy-feedback {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--positive);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+      gap: var(--space-sm);
+      padding: var(--space-md);
+      background-color: var(--surface-white);
+      border-bottom: var(--border-medium);
+    }
+
+    .summary-tile {
+      padding: var(--space-sm);
+      background-color: var(--surface-container-low);
+      border: var(--border-medium);
+      border-left: 5px solid var(--safety-red);
+    }
+
+    .summary-tile-label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-xs);
+    }
+
+    .summary-tile-value {
+      display: block;
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: var(--body-size);
+      color: var(--ink);
+      overflow-wrap: anywhere;
+    }
+
+    /* Viewer Mode Switch */
+    .viewer-mode-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--surface-container-high);
+      border-bottom: var(--border-medium);
+    }
+
+    .mode-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+
+    .pdf-viewer-stage {
+      min-height: 540px;
+      background-color: var(--surface-white);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .pdf-embed-frame {
+      width: 100%;
+      min-height: 520px;
+      border: var(--border-thick);
+      background-color: var(--surface-container-low);
+    }
+
+    /* Structured SDS Sheet Render (Preview & Summary) */
+    .sds-sheet-document {
+      border: var(--border-thick);
+      background-color: var(--surface-white);
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .sds-doc-banner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      padding-bottom: var(--space-sm);
+      border-bottom: 4px solid var(--ink);
+    }
+
+    .sds-doc-section {
+      border: var(--border-medium);
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--surface-container-low);
+    }
+
+    .sds-doc-section h4 {
+      margin: 0 0 var(--space-xs);
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--subhead-size);
+      color: var(--safety-red);
+      border-bottom: 1px solid var(--outline-variant);
+      padding-bottom: var(--space-xs);
+    }
+
+    .sds-doc-section p {
+      margin: 0;
+    }
+
+    .ghs-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    .ghs-diamond {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-sm);
+      background-color: var(--surface-white);
+      border: 2px solid var(--safety-red);
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      font-weight: 700;
+    }
+
+    .nfpa-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(60px, 1fr));
+      gap: var(--space-xs);
+      max-width: 360px;
+    }
+
+    .nfpa-cell {
+      border: var(--border-medium);
+      padding: var(--space-xs);
+      text-align: center;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      background-color: var(--surface-white);
+    }
+
+    .nfpa-cell--health { border-top: 6px solid var(--tertiary); }
+    .nfpa-cell--fire { border-top: 6px solid var(--safety-red); }
+    .nfpa-cell--instability { border-top: 6px solid var(--safety-yellow); }
+    .nfpa-cell--special { border-top: 6px solid var(--ink); }
+
+    /* Deployment Instructions & Workflow Guide Section */
+    .guide-section {
+      padding: var(--space-lg) var(--space-md);
+      background-color: var(--surface-container-low);
+      border-left: var(--border-thick);
+      border-right: var(--border-thick);
+      border-bottom: var(--border-thick);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .guide-header {
+      border-top: 6px solid var(--safety-red);
+      padding-top: var(--space-md);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+
+    .guide-title {
+      margin: 0;
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: clamp(1.35rem, 1.15rem + 0.8vw, 1.85rem);
+      color: var(--ink);
+    }
+
+    .guide-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .guide-step-card {
+      background-color: var(--surface-white);
+      border: var(--border-medium);
+      padding: var(--space-md);
+      box-shadow: var(--offset-shadow-sm);
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background-color: var(--ink);
+      color: var(--safety-yellow);
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.875rem;
+      margin-right: var(--space-xs);
+    }
+
+    .code-workbench {
+      border: var(--border-thick);
+      background-color: var(--surface-white);
+      box-shadow: var(--offset-shadow);
+    }
+
+    .code-tabs-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--surface-container-high);
+      border-bottom: var(--border-thick);
+    }
+
+    .code-tab-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+
+    .code-panel {
+      display: none;
+      margin: 0;
+      padding: var(--space-md);
+      background-color: var(--ink);
+      color: var(--surface-container-low);
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      line-height: 1.55;
+      overflow-x: auto;
+      max-height: 460px;
+      white-space: pre;
+    }
+
+    .code-panel.is-active {
+      display: block;
+    }
+
+    .binder-footer {
+      padding: var(--space-md);
+      background-color: var(--safety-yellow);
+      border-left: var(--border-thick);
+      border-right: var(--border-thick);
+      border-bottom: var(--border-thick);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+    }
+
+    /* Container Query for narrow SDS list items */
+    @container (max-width: 340px) {
+      .sds-item-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .sds-item-code {
+        width: 100%;
+      }
+    }
+
+    /* Mobile Breakpoint */
+    @media (max-width: 900px) {
+      .binder-header {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+      }
+      .binder-status-cluster {
+        align-items: center;
+      }
+      .kpi-strip {
+        justify-content: center;
+      }
+      .binder-workspace {
+        grid-template-columns: 1fr;
+      }
+      .sds-sheets-list {
+        max-height: 420px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .binder-shell {
+        margin: 0;
+        padding: var(--space-xs);
+        border-width: 2px;
+        box-shadow: none;
+      }
+      .search-row {
+        grid-template-columns: 1fr;
+      }
+      .sds-item {
+        padding: var(--space-sm);
+      }
+      .sds-item-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .sds-item-code {
+        max-width: 100%;
+        font-size: 0.75rem;
+        padding: var(--space-xs) var(--space-sm);
+      }
+      .nfpa-grid {
+        grid-template-columns: repeat(2, minmax(60px, 1fr));
+      }
+      .pdf-viewer-stage {
+        min-height: 360px;
+        padding: var(--space-sm);
+      }
+      .pdf-embed-frame {
+        min-height: 340px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media print {
+      .search-toolbar,
+      .binder-status-cluster,
+      .viewer-mode-bar,
+      .guide-section,
+      .sds-list-controls,
+      .panel-card--list,
+      .hazard-band {
+        display: none !important;
+      }
+      .binder-shell, .binder-workspace {
+        border: none;
+        box-shadow: none;
+        background: var(--surface-white);
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="binder-shell">
+    <!-- Top Safety Hazard Stripes -->
+    <div class="hazard-band" aria-hidden="true"></div>
+
+    <!-- Physical SDS Binder Masthead -->
+    <header class="binder-header">
+      <div class="logo-frame" aria-label="Facility Logo Frame">
+        <img
+          id="facility-logo-img"
+          src="logo.png"
+          alt="Facility Safety Logo"
+          onerror="handleLogoFallback(this)"
+        >
+        <div id="facility-logo-fallback" class="logo-fallback" style="display: none;">
+          <svg width="42" height="32" viewBox="0 0 42 32" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="38" height="28" fill="none" stroke="currentColor" stroke-width="3"></rect>
+            <polygon points="21,6 33,26 9,26" fill="var(--safety-yellow)" stroke="currentColor" stroke-width="2"></polygon>
+            <rect x="20" y="13" width="2" height="7" fill="currentColor"></rect>
+            <rect x="20" y="22" width="2" height="2" fill="currentColor"></rect>
+          </svg>
+          <span class="logo-fallback-mark">UFM · SDS</span>
+          <span class="logo-fallback-sub">logo.png frame</span>
+        </div>
+      </div>
+
+      <div class="binder-title-block">
+        <div class="sds-central-badge" aria-label="SDS Central Badge">SDS</div>
+        <h1 class="binder-main-title">Safety Data Sheets Binder</h1>
+        <p class="binder-subtitle">
+          Repository: <strong>fastmail7009-netizen/pdf-library</strong> · Auto-Synced via <code>pdf-manifest.json</code>
+        </p>
+      </div>
+
+      <div class="binder-status-cluster">
+        <span class="readonly-pill">Read-Only Static Archive</span>
+        <div class="kpi-strip">
+          <div class="kpi-box">
+            <span class="kpi-value" id="kpi-total-sheets">0</span>
+            <span class="kpi-label">Total PDFs</span>
+          </div>
+          <div class="kpi-box">
+            <span class="kpi-value" id="kpi-folder-count">0</span>
+            <span class="kpi-label">Folders</span>
+          </div>
+        </div>
+        <a href="#deployment-guide" class="btn btn-yellow">Workflow &amp; Setup Guide</a>
+      </div>
+    </header>
+
+    <!-- Top Search & Manifest Filter Bar (Strictly Read-Only — Zero Upload Controls) -->
+    <section class="search-toolbar" aria-label="SDS Binder Search and Filtering">
+      <div class="search-row">
+        <div class="field-group">
+          <label class="field-label" for="sds-search">
+            Search SDS Sheets (Filter by SDS Code, Chemical Name, Folder Path, or Filename)
+          </label>
+          <input
+            id="sds-search"
+            class="search-input"
+            type="search"
+            placeholder="Type e.g. SDS-SOLV-001, Acetone, Solvents, or CAS number…"
+            oninput="handleSearchInput()"
+          >
+        </div>
+        <button type="button" class="btn" id="clear-search-btn" onclick="resetFilters()">
+          Reset Filters
+        </button>
+        <button type="button" class="btn btn-primary" id="reload-manifest-btn" onclick="loadPdfManifest(true)">
+          Reload Manifest
+        </button>
+      </div>
+
+      <div class="filter-meta-row">
+        <div id="folder-chips" class="folder-chips" role="group" aria-label="Filter by Repository Folder"></div>
+        <div id="manifest-status" class="manifest-status-bar" role="status" aria-live="polite">
+          Initializing manifest loader…
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Binder Workspace: SDS Sheets List + Summary & Full SDS Sheet Viewer -->
+    <main class="binder-workspace">
+      <!-- Left Container: SDS Sheets List -->
+      <section class="panel-card panel-card--list" aria-label="SDS Sheets List">
+        <div class="panel-header">
+          <h2 class="panel-title">SDS Sheets List</h2>
+          <span class="panel-count" id="list-match-count">0 / 0</span>
+        </div>
+
+        <div class="sds-list-controls">
+          <div class="field-group" style="flex: 1;">
+            <label class="field-label" for="sds-sort">Sort Index By</label>
+            <select id="sds-sort" class="select-input" onchange="applyFiltersAndRender()">
+              <option value="code-asc">SDS Code (A–Z)</option>
+              <option value="title-asc">Chemical / Sheet Title (A–Z)</option>
+              <option value="folder-asc">Repository Folder (A–Z)</option>
+              <option value="updated-desc">Most Recently Updated</option>
+            </select>
+          </div>
+        </div>
+
+        <ul id="sds-sheets-list" class="sds-sheets-list" aria-label="Matching Safety Data Sheets"></ul>
+
+        <div id="list-empty-state" class="empty-state" style="display: none;">
+          <strong>No matching SDS sheets found.</strong>
+          <span>Your current search keyword or folder filter returned zero PDF entries.</span>
+          <button type="button" class="btn btn-yellow" onclick="resetFilters()">Show All SDS Sheets</button>
+        </div>
+      </section>
+
+      <!-- Right Container: Summary & Full SDS Sheet Viewer Panel -->
+      <section class="panel-card" aria-label="Summary and Full SDS Sheet">
+        <div class="panel-header">
+          <h2 class="panel-title">Summary &amp; Full SDS Sheet</h2>
+          <span class="panel-count" id="viewer-source-badge">Select Sheet</span>
+        </div>
+
+        <div class="viewer-header-bar">
+          <div class="viewer-title-row">
+            <div style="display: flex; flex-direction: column; gap: var(--space-xs); max-width: 100%;">
+              <span id="viewer-sds-code" class="sds-item-code">NO SHEET SELECTED</span>
+              <h3 id="viewer-sds-title" class="viewer-doc-title">Select an SDS sheet from the list</h3>
+            </div>
+            <div class="viewer-actions">
+              <button type="button" class="btn" id="copy-path-btn" onclick="copySelectedPath()">
+                Copy Repo Path
+              </button>
+              <button type="button" class="btn btn-primary" onclick="printActiveSheet()">
+                Print Sheet
+              </button>
+              <span id="copy-path-status" class="copy-feedback" role="status" aria-live="polite"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Summary KPI Tiles -->
+        <div class="summary-grid">
+          <div class="summary-tile">
+            <span class="summary-tile-label">Repository File Path</span>
+            <span class="summary-tile-value" id="sum-path">—</span>
+          </div>
+          <div class="summary-tile">
+            <span class="summary-tile-label">Folder / Category</span>
+            <span class="summary-tile-value" id="sum-folder">—</span>
+          </div>
+          <div class="summary-tile">
+            <span class="summary-tile-label">File Size</span>
+            <span class="summary-tile-value" id="sum-size">—</span>
+          </div>
+          <div class="summary-tile">
+            <span class="summary-tile-label">Last Updated</span>
+            <span class="summary-tile-value" id="sum-updated">—</span>
+          </div>
+        </div>
+
+        <!-- Viewer Mode Toggle (Live PDF Embed vs Structured Summary Sheet) -->
+        <div class="viewer-mode-bar">
+          <div class="mode-tabs" role="tablist" aria-label="SDS Viewer Display Mode">
+            <button
+              type="button"
+              class="chip-btn is-active"
+              id="mode-btn-summary"
+              role="tab"
+              aria-selected="true"
+              onclick="setViewerMode('summary')"
+            >
+              Structured SDS Summary
+            </button>
+            <button
+              type="button"
+              class="chip-btn"
+              id="mode-btn-embed"
+              role="tab"
+              aria-selected="false"
+              onclick="setViewerMode('embed')"
+            >
+              Full PDF Embed (&lt;iframe&gt;)
+            </button>
+          </div>
+          <span id="viewer-mode-note" style="font-family: var(--font-mono); font-size: var(--label-size); color: var(--on-surface-variant);">
+            Showing structured summary &amp; hazard preview
+          </span>
+        </div>
+
+        <!-- Viewer Stage -->
+        <div class="pdf-viewer-stage">
+          <div id="viewer-summary-pane" class="sds-sheet-document"></div>
+
+          <div id="viewer-embed-pane" style="display: none; flex-direction: column; gap: var(--space-sm);">
+            <p style="margin: 0; font-family: var(--font-mono); font-size: var(--label-size); color: var(--on-surface-variant);">
+              Direct browser PDF embed via <code>&lt;iframe&gt;</code> pointing to the relative repository path in <strong>fastmail7009-netizen/pdf-library</strong>. For remote PDFs where inline headers prevent framing, static deployments can fall back to <code>drive.google.com/viewerng/viewer?embedded=true&amp;url=…</code>.
+            </p>
+            <iframe
+              id="sds-pdf-frame"
+              class="pdf-embed-frame"
+              title="Full Safety Data Sheet PDF Preview"
+              src="about:blank"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Onscreen Help / Deployment Instructions & Complete Workflow Code -->
+    <section id="deployment-guide" class="guide-section" aria-label="Repository Deployment Instructions and Automated Workflow Code">
+      <div class="guide-header">
+        <div>
+          <h2 class="guide-title">Repository Automation &amp; Deployment Guide</h2>
+          <p style="margin: var(--space-xs) 0 0; color: var(--on-surface-variant);">
+            Commit the three files below to <strong>github.com/fastmail7009-netizen/pdf-library</strong> so every <code>.pdf</code> pushed anywhere in the repository automatically appears in this read-only SDS binder.
+          </p>
+        </div>
+        <span class="readonly-pill">Zero Manual Maintenance</span>
+      </div>
+
+      <div class="guide-steps">
+        <article class="guide-step-card">
+          <h3 style="margin: 0 0 var(--space-xs); font-size: var(--subhead-size);">
+            <span class="step-badge">1</span>Enable Actions Write Access
+          </h3>
+          <p style="margin: 0;">
+            In repository <strong>Settings → Actions → General → Workflow permissions</strong>, select <strong>Read and write permissions</strong> so the workflow can commit <code>pdf-manifest.json</code> on push to <code>main</code>.
+          </p>
+        </article>
+        <article class="guide-step-card">
+          <h3 style="margin: 0 0 var(--space-xs); font-size: var(--subhead-size);">
+            <span class="step-badge">2</span>Commit Workflow, JS &amp; Starter JSON
+          </h3>
+          <p style="margin: 0;">
+            Add <code>.github/workflows/sync-pdf-library.yml</code>, <code>pdf-library.js</code>, and <code>pdf-manifest.json</code> alongside your <code>index.html</code> and optional <code>logo.png</code>.
+          </p>
+        </article>
+        <article class="guide-step-card">
+          <h3 style="margin: 0 0 var(--space-xs); font-size: var(--subhead-size);">
+            <span class="step-badge">3</span>Push Any .pdf Anywhere in Repo
+          </h3>
+          <p style="margin: 0;">
+            Upload PDFs to root or subfolders (e.g. <code>solvents/Acetone.pdf</code>). GitHub Actions scans all <code>.pdf</code> files, rebuilds <code>pdf-manifest.json</code>, and GitHub Pages serves the updated binder immediately.
+          </p>
+        </article>
+      </div>
+
+      <!-- Interactive Code Tabs for the 3 Repository Files -->
+      <div class="code-workbench">
+        <div class="code-tabs-bar">
+          <div class="code-tab-group" role="tablist" aria-label="Deployment Code Files">
+            <button
+              type="button"
+              class="chip-btn is-active"
+              id="tab-btn-workflow"
+              role="tab"
+              aria-selected="true"
+              onclick="selectCodeTab('workflow')"
+            >
+              .github/workflows/sync-pdf-library.yml
+            </button>
+            <button
+              type="button"
+              class="chip-btn"
+              id="tab-btn-js"
+              role="tab"
+              aria-selected="false"
+              onclick="selectCodeTab('js')"
+            >
+              pdf-library.js
+            </button>
+            <button
+              type="button"
+              class="chip-btn"
+              id="tab-btn-manifest"
+              role="tab"
+              aria-selected="false"
+              onclick="selectCodeTab('manifest')"
+            >
+              pdf-manifest.json
+            </button>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: var(--space-sm);">
+            <span id="code-copy-status" class="copy-feedback" role="status" aria-live="polite"></span>
+            <button type="button" class="btn btn-yellow" onclick="copyActiveCodeSnippet()">
+              Copy Active File
+            </button>
+          </div>
+        </div>
+
+        <pre id="code-panel-workflow" class="code-panel is-active"><code>name: Sync PDF Library Manifest
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-pdf-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan all PDF files and generate pdf-manifest.json
+        run: |
+          python3 - &lt;&lt; 'EOF'
+          import datetime
+          import json
+          import os
+          import re
+          import subprocess
+          import urllib.parse
+
+          repo = os.environ.get("GITHUB_REPOSITORY", "fastmail7009-netizen/pdf-library")
+          branch = os.environ.get("GITHUB_REF_NAME", "main")
+          sheets = []
+
+          for root, dirs, files in os.walk("."):
+              dirs[:] = sorted(d for d in dirs if not d.startswith("."))
+              for fname in sorted(files):
+                  if not fname.lower().endswith(".pdf"):
+                      continue
+                  rel_path = os.path.relpath(os.path.join(root, fname), ".").replace("\\", "/")
+                  folder = os.path.dirname(rel_path) or "Root"
+                  stem = os.path.splitext(fname)[0]
+
+                  # Extract leading SDS code if present, otherwise generate deterministic code
+                  code_match = re.match(r"^([A-Z]{2,6}[-_][A-Z0-9_-]{2,32})[\s_-]+(.+)$", stem, re.I)
+                  if code_match:
+                      code = code_match.group(1).upper()
+                      raw_title = code_match.group(2)
+                  else:
+                      slug = re.sub(r"[^A-Za-z0-9]+", "-", stem).strip("-").upper()
+                      code = f"SDS-{slug[:24]}" if slug else "SDS-DOC"
+                      raw_title = stem
+
+                  title = re.sub(r"[-_]+", " ", raw_title).strip()
+                  size_bytes = os.path.getsize(rel_path)
+
+                  if size_bytes &gt;= 1024 * 1024:
+                      size_str = f"{size_bytes / (1024 * 1024):.2f} MB"
+                  else:
+                      size_str = f"{max(1, round(size_bytes / 1024))} KB"
+
+                  git_date = subprocess.check_output(
+                      ["git", "log", "-1", "--format=%cs", "--", rel_path],
+                      text=True,
+                  ).strip()
+                  updated_at = git_date or datetime.date.today().isoformat()
+
+                  encoded_url = "./" + "/".join(urllib.parse.quote(p) for p in rel_path.split("/"))
+
+                  sheets.append({
+                      "code": code,
+                      "title": title,
+                      "filename": fname,
+                      "path": rel_path,
+                      "folder": folder,
+                      "sizeBytes": size_bytes,
+                      "size": size_str,
+                      "updatedAt": updated_at,
+                      "url": encoded_url,
+                  })
+
+          sheets.sort(key=lambda s: (s["folder"].lower(), s["code"].lower(), s["filename"].lower()))
+
+          manifest = {
+              "repository": repo,
+              "branch": branch,
+              "generatedAt": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "totalCount": len(sheets),
+              "sheets": sheets,
+          }
+
+          with open("pdf-manifest.json", "w", encoding="utf-8") as f:
+              json.dump(manifest, f, indent=2)
+              f.write("\n")
+
+          print(f"Generated pdf-manifest.json with {len(sheets)} PDF(s).")
+          EOF
+
+      - name: Commit and push pdf-manifest.json if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pdf-manifest.json
+          if git diff --cached --quiet; then
+            echo "No changes to pdf-manifest.json."
+          else
+            git commit -m "chore: sync pdf-manifest.json [skip ci]"
+            git push
+          fi</code></pre>
+
+        <pre id="code-panel-js" class="code-panel"><code>/**
+ * pdf-library.js — Read-Only SDS Binder Loader for fastmail7009-netizen/pdf-library
+ * Fetches ./pdf-manifest.json generated by GitHub Actions on push to main.
+ */
+(function (global) {
+  'use strict';
+
+  var MANIFEST_URL = './pdf-manifest.json';
+
+  function normalizeManifestPayload(payload) {
+    var rawList = Array.isArray(payload)
+      ? payload
+      : (payload &amp;&amp; (payload.sheets || payload.files || payload.documents)) || [];
+
+    return rawList.map(function (entry, idx) {
+      var relPath = String(entry.path || entry.filename || ('document-' + (idx + 1) + '.pdf'));
+      var filename = entry.filename || relPath.split('/').pop();
+      var folder = entry.folder || (relPath.indexOf('/') !== -1 ? relPath.slice(0, relPath.lastIndexOf('/')) : 'Root');
+      var code = entry.code || ('SDS-' + String(idx + 1).padStart(3, '0'));
+      var title = entry.title || filename.replace(/\.pdf$/i, '').replace(/[-_]+/g, ' ');
+      var url = entry.url || ('./' + relPath.split('/').map(encodeURIComponent).join('/'));
+
+      return {
+        code: code,
+        title: title,
+        filename: filename,
+        path: relPath,
+        folder: folder,
+        size: entry.size || 'PDF',
+        sizeBytes: Number(entry.sizeBytes || 0),
+        updatedAt: entry.updatedAt || 'Unknown',
+        url: url,
+        signalWord: entry.signalWord || 'HAZARD INFO IN PDF',
+        cas: entry.cas || 'See Full PDF',
+        ghs: Array.isArray(entry.ghs) ? entry.ghs : ['Refer to Full SDS Document'],
+        ppe: entry.ppe || 'Inspect Section 8 of attached PDF before handling.',
+        firstAid: entry.firstAid || 'Inspect Section 4 of attached PDF for emergency measures.',
+        storage: entry.storage || 'Inspect Section 7 of attached PDF for storage requirements.',
+        nfpa: entry.nfpa || null
+      };
+    });
+  }
+
+  async function fetchSdsManifest(fallbackSheets) {
+    try {
+      var response = await fetch(MANIFEST_URL + '?v=' + Date.now(), { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error('HTTP ' + response.status);
+      }
+      var data = await response.json();
+      var sheets = normalizeManifestPayload(data);
+      return {
+        source: 'live',
+        generatedAt: data.generatedAt || null,
+        repository: data.repository || 'fastmail7009-netizen/pdf-library',
+        sheets: sheets
+      };
+    } catch (err) {
+      return {
+        source: 'fallback',
+        error: err &amp;&amp; err.message ? err.message : 'Manifest unavailable',
+        generatedAt: null,
+        repository: 'fastmail7009-netizen/pdf-library',
+        sheets: normalizeManifestPayload(fallbackSheets || [])
+      };
+    }
+  }
+
+  global.PdfLibraryLoader = {
+    fetchSdsManifest: fetchSdsManifest,
+    normalizeManifestPayload: normalizeManifestPayload
+  };
+})(window);</code></pre>
+
+        <pre id="code-panel-manifest" class="code-panel"><code>{
+  "repository": "fastmail7009-netizen/pdf-library",
+  "branch": "main",
+  "generatedAt": "2026-11-20T12:00:00Z",
+  "totalCount": 3,
+  "sheets": [
+    {
+      "code": "SDS-SOLV-001",
+      "title": "Acetone Technical Grade",
+      "filename": "SDS-SOLV-001-Acetone-Technical-Grade.pdf",
+      "path": "solvents/SDS-SOLV-001-Acetone-Technical-Grade.pdf",
+      "folder": "solvents",
+      "sizeBytes": 428190,
+      "size": "418 KB",
+      "updatedAt": "2026-11-18",
+      "url": "./solvents/SDS-SOLV-001-Acetone-Technical-Grade.pdf"
+    },
+    {
+      "code": "SDS-ACID-014",
+      "title": "Sulfuric Acid 98 Percent Solution",
+      "filename": "SDS-ACID-014-Sulfuric-Acid-98-Percent-Solution.pdf",
+      "path": "acids-and-bases/SDS-ACID-014-Sulfuric-Acid-98-Percent-Solution.pdf",
+      "folder": "acids-and-bases",
+      "sizeBytes": 612480,
+      "size": "598 KB",
+      "updatedAt": "2026-11-19",
+      "url": "./acids-and-bases/SDS-ACID-014-Sulfuric-Acid-98-Percent-Solution.pdf"
+    },
+    {
+      "code": "SDS-LUBE-088",
+      "title": "Synthetic Hydraulic Fluid ISO VG 46",
+      "filename": "SDS-LUBE-088-Synthetic-Hydraulic-Fluid-ISO-VG-46.pdf",
+      "path": "lubricants/SDS-LUBE-088-Synthetic-Hydraulic-Fluid-ISO-VG-46.pdf",
+      "folder": "lubricants",
+      "sizeBytes": 354120,
+      "size": "346 KB",
+      "updatedAt": "2026-11-20",
+      "url": "./lubricants/SDS-LUBE-088-Synthetic-Hydraulic-Fluid-ISO-VG-46.pdf"
+    }
+  ]
+}</code></pre>
+      </div>
+    </section>
+
+    <footer class="binder-footer">
+      <span>Industrial SDS Binder · Read-Only Static GitHub Pages Architecture</span>
+      <span>Sources: PDF Preview &amp; Searchable List Research Report (2026); Industrial SDS Binder Spec (gs-sds-b4-430)</span>
+    </footer>
+
+    <!-- Bottom Safety Hazard Stripes -->
+    <div class="hazard-band" aria-hidden="true"></div>
+  </div>
+
+  <script>
+    /* Fallback Catalog (used gracefully if ./pdf-manifest.json is not yet present or in preview sandbox) */
+    const FALLBACK_MANIFEST = {
+      repository: `fastmail7009-netizen/pdf-library`,
+      branch: `main`,
+      generatedAt: `2026-11-20T12:00:00Z`,
+      sheets: [
+        {
+          code: `SDS-SOLV-001`,
+          title: `Acetone — Technical & Laboratory Grade`,
+          filename: `SDS-SOLV-001-Acetone-Technical-Grade.pdf`,
+          path: `solvents/SDS-SOLV-001-Acetone-Technical-Grade.pdf`,
+          folder: `solvents`,
+          size: `418 KB`,
+          sizeBytes: 428190,
+          updatedAt: `2026-11-18`,
+          url: `./solvents/SDS-SOLV-001-Acetone-Technical-Grade.pdf`,
+          signalWord: `DANGER`,
+          cas: `67-64-1`,
+          ghs: [`Flammable Liquid Cat. 2`, `Eye Irritation Cat. 2A`, `STOT-SE Cat. 3`],
+          ppe: `Splash-resistant chemical goggles, butyl rubber gloves, flame-resistant lab coat, local exhaust ventilation.`,
+          firstAid: `Eyes: Rinse cautiously with water for 15+ minutes. Inhalation: Move to fresh air immediately. Do not induce vomiting if swallowed.`,
+          storage: `Store in grounded flammable-liquid safety cabinet away from heat, sparks, open flames, and strong oxidizers.`,
+          nfpa: { health: 1, flammability: 3, instability: 0, special: `—` }
+        },
+        {
+          code: `SDS-SOLV-2026-METHYL-ETHYL-KETONE-409`,
+          title: `Methyl Ethyl Ketone (MEK) Industrial Solvent`,
+          filename: `SDS-SOLV-2026-METHYL-ETHYL-KETONE-409.pdf`,
+          path: `solvents/SDS-SOLV-2026-METHYL-ETHYL-KETONE-409.pdf`,
+          folder: `solvents`,
+          size: `512 KB`,
+          sizeBytes: 524288,
+          updatedAt: `2026-11-19`,
+          url: `./solvents/SDS-SOLV-2026-METHYL-ETHYL-KETONE-409.pdf`,
+          signalWord: `DANGER`,
+          cas: `78-93-3`,
+          ghs: [`Flammable Liquid Cat. 2`, `Serious Eye Damage/Irritation`, `STOT-SE Cat. 3`],
+          ppe: `Indirect-vent chemical splash goggles, butyl rubber or barrier laminate gloves, organic vapor respirator where TLV exceeded.`,
+          firstAid: `Skin: Wash thoroughly with soap and water; remove contaminated clothing. Eyes: Irrigate 15 minutes and seek medical attention.`,
+          storage: `Keep container tightly closed in cool, well-ventilated explosion-proof storage zone. Bond and ground containers during transfer.`,
+          nfpa: { health: 1, flammability: 3, instability: 0, special: `—` }
+        },
+        {
+          code: `SDS-ACID-014`,
+          title: `Sulfuric Acid 98% Concentrated Reagent`,
+          filename: `SDS-ACID-014-Sulfuric-Acid-98-Percent.pdf`,
+          path: `acids-and-bases/SDS-ACID-014-Sulfuric-Acid-98-Percent.pdf`,
+          folder: `acids-and-bases`,
+          size: `598 KB`,
+          sizeBytes: 612480,
+          updatedAt: `2026-11-19`,
+          url: `./acids-and-bases/SDS-ACID-014-Sulfuric-Acid-98-Percent.pdf`,
+          signalWord: `DANGER`,
+          cas: `7664-93-9`,
+          ghs: [`Corrosive to Metals Cat. 1`, `Skin Corrosion Cat. 1A`, `Serious Eye Damage Cat. 1`],
+          ppe: `Full face shield over safety goggles, acid-resistant Viton/neoprene apron & long-cuff gloves, acid-gas cartridge respirator if misting.`,
+          firstAid: `Flush affected skin or eyes immediately with copious running water for at least 30 minutes while removing contaminated clothing. Call emergency medical care.`,
+          storage: `Store in corrosion-resistant secondary containment, strictly segregated from bases, organic materials, cyanides, and water.`,
+          nfpa: { health: 3, flammability: 0, instability: 2, special: `W` }
+        },
+        {
+          code: `SDS-BASE-022`,
+          title: `Sodium Hydroxide 50% Aqueous Solution`,
+          filename: `SDS-BASE-022-Sodium-Hydroxide-50-Percent.pdf`,
+          path: `acids-and-bases/SDS-BASE-022-Sodium-Hydroxide-50-Percent.pdf`,
+          folder: `acids-and-bases`,
+          size: `464 KB`,
+          sizeBytes: 475136,
+          updatedAt: `2026-11-17`,
+          url: `./acids-and-bases/SDS-BASE-022-Sodium-Hydroxide-50-Percent.pdf`,
+          signalWord: `DANGER`,
+          cas: `1310-73-2`,
+          ghs: [`Corrosive to Metals Cat. 1`, `Skin Corrosion Cat. 1A`, `Serious Eye Damage Cat. 1`],
+          ppe: `Chemical splash goggles plus full face shield, neoprene or nitrile chemical gloves, rubber boots and caustic-resistant apron.`,
+          firstAid: `Eyes/Skin: Continuous emergency eyewash or safety shower for 20–30 minutes. Never neutralize chemical burns with acid.`,
+          storage: `Keep in high-density polyethylene or stainless steel drum above 15°C to prevent crystallization; segregate from acids and aluminum.`,
+          nfpa: { health: 3, flammability: 0, instability: 1, special: `ALK` }
+        },
+        {
+          code: `SDS-LUBE-088`,
+          title: `Synthetic Hydraulic Fluid ISO VG 46`,
+          filename: `SDS-LUBE-088-Synthetic-Hydraulic-Fluid-ISO-VG-46.pdf`,
+          path: `lubricants/SDS-LUBE-088-Synthetic-Hydraulic-Fluid-ISO-VG-46.pdf`,
+          folder: `lubricants`,
+          size: `346 KB`,
+          sizeBytes: 354120,
+          updatedAt: `2026-11-20`,
+          url: `./lubricants/SDS-LUBE-088-Synthetic-Hydraulic-Fluid-ISO-VG-46.pdf`,
+          signalWord: `WARNING`,
+          cas: `68037-01-4`,
+          ghs: [`Aspiration Hazard (Mist)`, `Mild Skin Irritation`],
+          ppe: `Safety glasses with side shields, oil-resistant nitrile gloves, impervious coveralls for high-pressure line inspection.`,
+          firstAid: `High-pressure hydraulic injection under skin is a surgical emergency—seek immediate hospital evaluation even if wound appears minor.`,
+          storage: `Store sealed drums upright indoors away from moisture, strong oxidizers, and open flame.`,
+          nfpa: { health: 1, flammability: 1, instability: 0, special: `—` }
+        },
+        {
+          code: `SDS-GAS-005`,
+          title: `Nitrogen Compressed Gas Cylinder (99.999%)`,
+          filename: `SDS-GAS-005-Nitrogen-Compressed-Gas.pdf`,
+          path: `compressed-gases/SDS-GAS-005-Nitrogen-Compressed-Gas.pdf`,
+          folder: `compressed-gases`,
+          size: `290 KB`,
+          sizeBytes: 296960,
+          updatedAt: `2026-11-15`,
+          url: `./compressed-gases/SDS-GAS-005-Nitrogen-Compressed-Gas.pdf`,
+          signalWord: `WARNING`,
+          cas: `7727-37-9`,
+          ghs: [`Gases Under Pressure (Compressed Gas)`, `Simple Asphyxiant`],
+          ppe: `Safety glasses, leather work gloves, steel-toed safety footwear during cylinder transport; oxygen monitor in confined rooms.`,
+          firstAid: `Asphyxiation: Rescuers must wear SCBA before entering oxygen-deficient atmosphere. Move victim to fresh air and administer oxygen.`,
+          storage: `Chain or strap cylinders upright at two-thirds height in cool, ventilated rack below 52°C with valve protection cap installed.`,
+          nfpa: { health: 0, flammability: 0, instability: 0, special: `SA` }
+        },
+        {
+          code: `SDS-CLNR-103`,
+          title: `Isopropyl Alcohol 70% Surface Disinfectant`,
+          filename: `SDS-CLNR-103-Isopropyl-Alcohol-70-Percent.pdf`,
+          path: `cleaners/SDS-CLNR-103-Isopropyl-Alcohol-70-Percent.pdf`,
+          folder: `cleaners`,
+          size: `312 KB`,
+          sizeBytes: 319488,
+          updatedAt: `2026-11-16`,
+          url: `./cleaners/SDS-CLNR-103-Isopropyl-Alcohol-70-Percent.pdf`,
+          signalWord: `DANGER`,
+          cas: `67-63-0`,
+          ghs: [`Flammable Liquid Cat. 2`, `Eye Irritation Cat. 2A`, `STOT-SE Cat. 3`],
+          ppe: `Safety glasses or goggles, nitrile gloves for prolonged wiping, adequate room ventilation.`,
+          firstAid: `Eyes: Flush with water for 15 minutes. Ingestion: Rinse mouth; seek medical advice.`,
+          storage: `Store tightly capped in cool flammable storage locker away from ignition sources.`,
+          nfpa: { health: 1, flammability: 3, instability: 0, special: `—` }
+        }
+      ]
+    };
+
+    /* Application State */
+    const state = {
+      sheets: [],
+      filtered: [],
+      selectedPath: null,
+      activeFolder: `ALL`,
+      searchQuery: ``,
+      manifestSource: `loading`,
+      manifestGeneratedAt: null,
+      viewerMode: `summary`
+    };
+
+    /* Logo fallback handler */
+    function handleLogoFallback(imgEl) {
+      if (imgEl) imgEl.style.display = `none`;
+      const fallback = document.getElementById(`facility-logo-fallback`);
+      if (fallback) fallback.style.display = `flex`;
+    }
+
+    /* Normalize incoming pdf-manifest.json schema */
+    function normalizeManifestPayload(payload) {
+      const rawList = Array.isArray(payload)
+        ? payload
+        : (payload && (payload.sheets || payload.files || payload.documents)) || [];
+
+      return rawList.map(function (entry, idx) {
+        const relPath = String(entry.path || entry.filename || (`document-` + (idx + 1) + `.pdf`));
+        const filename = entry.filename || relPath.split(`/`).pop();
+        const folder = entry.folder || (relPath.indexOf(`/`) !== -1 ? relPath.slice(0, relPath.lastIndexOf(`/`)) : `Root`);
+        const code = entry.code || (`SDS-` + String(idx + 1).padStart(3, `0`));
+        const title = entry.title || filename.replace(/\.pdf$/i, ``).replace(/[-_]+/g, ` `);
+        const url = entry.url || (`./` + relPath.split(`/`).map(encodeURIComponent).join(`/`));
+
+        return {
+          code: code,
+          title: title,
+          filename: filename,
+          path: relPath,
+          folder: folder,
+          size: entry.size || `PDF`,
+          sizeBytes: Number(entry.sizeBytes || 0),
+          updatedAt: entry.updatedAt || `Unknown`,
+          url: url,
+          signalWord: entry.signalWord || `HAZARD INFO IN PDF`,
+          cas: entry.cas || `See Attached PDF`,
+          ghs: Array.isArray(entry.ghs) ? entry.ghs : [`Refer to Full PDF Document`],
+          ppe: entry.ppe || `Inspect Section 8 (Exposure Controls / Personal Protection) in the attached full PDF before handling.`,
+          firstAid: entry.firstAid || `Inspect Section 4 (First-Aid Measures) in the attached full PDF for emergency response instructions.`,
+          storage: entry.storage || `Inspect Section 7 (Handling and Storage) in the attached full PDF for compatibility and containment rules.`,
+          nfpa: entry.nfpa || null
+        };
+      });
+    }
+
+    /* Fetch ./pdf-manifest.json with graceful fallback */
+    async function loadPdfManifest(manualReload) {
+      const statusEl = document.getElementById(`manifest-status`);
+      if (statusEl) {
+        statusEl.className = `manifest-status-bar`;
+        statusEl.textContent = manualReload ? `Reloading pdf-manifest.json…` : `Loading pdf-manifest.json…`;
+      }
+
+      try {
+        const res = await fetch(`./pdf-manifest.json?v=` + Date.now(), { cache: `no-store` });
+        if (!res.ok) {
+          throw new Error(`HTTP ` + res.status);
+        }
+        const data = await res.json();
+        const normalized = normalizeManifestPayload(data);
+        if (!normalized.length) {
+          throw new Error(`Manifest contains 0 sheets`);
+        }
+
+        state.sheets = normalized;
+        state.manifestSource = `live`;
+        state.manifestGeneratedAt = data.generatedAt || null;
+
+        if (statusEl) {
+          statusEl.className = `manifest-status-bar is-live`;
+          statusEl.textContent = `Live pdf-manifest.json loaded (` + normalized.length + ` PDFs)`;
+        }
+      } catch (_err) {
+        state.sheets = normalizeManifestPayload(FALLBACK_MANIFEST);
+        state.manifestSource = `fallback`;
+        state.manifestGeneratedAt = FALLBACK_MANIFEST.generatedAt;
+
+        if (statusEl) {
+          statusEl.className = `manifest-status-bar is-fallback`;
+          statusEl.textContent = `Fallback Catalog Active (` + state.sheets.length + ` sample sheets — commit pdf-manifest.json for live repo sync)`;
+        }
+      }
+
+      renderFolderChips();
+      updateHeaderKpis();
+      applyFiltersAndRender();
+    }
+
+    function updateHeaderKpis() {
+      const totalEl = document.getElementById(`kpi-total-sheets`);
+      const folderEl = document.getElementById(`kpi-folder-count`);
+      const folders = new Set(state.sheets.map(function (s) { return s.folder; }));
+
+      if (totalEl) totalEl.textContent = String(state.sheets.length);
+      if (folderEl) folderEl.textContent = String(folders.size);
+    }
+
+    function renderFolderChips() {
+      const container = document.getElementById(`folder-chips`);
+      if (!container) return;
+
+      const folders = [`ALL`].concat(
+        Array.from(new Set(state.sheets.map(function (s) { return s.folder; }))).sort()
+      );
+
+      container.innerHTML = ``;
+      folders.forEach(function (folderName) {
+        const btn = document.createElement(`button`);
+        btn.type = `button`;
+        btn.className = `chip-btn` + (state.activeFolder === folderName ? ` is-active` : ``);
+        btn.textContent = folderName === `ALL` ? `All Folders (` + state.sheets.length + `)` : folderName;
+        btn.setAttribute(`aria-pressed`, state.activeFolder === folderName ? `true` : `false`);
+        btn.addEventListener(`click`, function () {
+          state.activeFolder = folderName;
+          renderFolderChips();
+          applyFiltersAndRender();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    function handleSearchInput() {
+      const input = document.getElementById(`sds-search`);
+      state.searchQuery = input ? input.value.trim().toLowerCase() : ``;
+      applyFiltersAndRender();
+    }
+
+    function resetFilters() {
+      const input = document.getElementById(`sds-search`);
+      if (input) input.value = ``;
+      state.searchQuery = ``;
+      state.activeFolder = `ALL`;
+      renderFolderChips();
+      applyFiltersAndRender();
+    }
+
+    function applyFiltersAndRender() {
+      const sortEl = document.getElementById(`sds-sort`);
+      const sortMode = sortEl ? sortEl.value : `code-asc`;
+      const q = state.searchQuery;
+
+      const filtered = state.sheets.filter(function (sheet) {
+        const matchesFolder = state.activeFolder === `ALL` || sheet.folder === state.activeFolder;
+        if (!matchesFolder) return false;
+        if (!q) return true;
+
+        const haystack = [
+          sheet.code,
+          sheet.title,
+          sheet.folder,
+          sheet.filename,
+          sheet.path,
+          sheet.cas,
+          sheet.signalWord
+        ].join(` `).toLowerCase();
+
+        return haystack.indexOf(q) !== -1;
+      });
+
+      filtered.sort(function (a, b) {
+        if (sortMode === `title-asc`) return a.title.localeCompare(b.title);
+        if (sortMode === `folder-asc`) return a.folder.localeCompare(b.folder) || a.code.localeCompare(b.code);
+        if (sortMode === `updated-desc`) return String(b.updatedAt).localeCompare(String(a.updatedAt));
+        return a.code.localeCompare(b.code);
+      });
+
+      state.filtered = filtered;
+
+      if (!filtered.some(function (s) { return s.path === state.selectedPath; })) {
+        state.selectedPath = filtered.length ? filtered[0].path : null;
+      }
+
+      renderSheetsList();
+      renderSelectedSheet();
+    }
+
+    function renderSheetsList() {
+      const listEl = document.getElementById(`sds-sheets-list`);
+      const emptyEl = document.getElementById(`list-empty-state`);
+      const countEl = document.getElementById(`list-match-count`);
+
+      if (countEl) {
+        countEl.textContent = state.filtered.length + ` / ` + state.sheets.length;
+      }
+
+      if (!listEl) return;
+      listEl.innerHTML = ``;
+
+      if (!state.filtered.length) {
+        listEl.style.display = `none`;
+        if (emptyEl) emptyEl.style.display = `flex`;
+        return;
+      }
+
+      listEl.style.display = `flex`;
+      if (emptyEl) emptyEl.style.display = `none`;
+
+      state.filtered.forEach(function (sheet) {
+        const li = document.createElement(`li`);
+        const btn = document.createElement(`button`);
+        const isSelected = sheet.path === state.selectedPath;
+
+        btn.type = `button`;
+        btn.className = `sds-item` + (isSelected ? ` is-selected` : ``);
+        btn.setAttribute(`aria-pressed`, isSelected ? `true` : `false`);
+
+        const topRow = document.createElement(`div`);
+        topRow.className = `sds-item-top`;
+
+        const codeSpan = document.createElement(`span`);
+        codeSpan.className = `sds-item-code`;
+        codeSpan.textContent = sheet.code;
+
+        const folderSpan = document.createElement(`span`);
+        folderSpan.className = `sds-item-folder`;
+        folderSpan.textContent = sheet.folder;
+
+        topRow.appendChild(codeSpan);
+        topRow.appendChild(folderSpan);
+
+        const titleDiv = document.createElement(`div`);
+        titleDiv.className = `sds-item-title`;
+        titleDiv.textContent = sheet.title;
+
+        const metaDiv = document.createElement(`div`);
+        metaDiv.className = `sds-item-meta`;
+
+        const signalSpan = document.createElement(`span`);
+        signalSpan.className = `signal-tag ` + (sheet.signalWord === `DANGER` ? `signal-tag--danger` : `signal-tag--warning`);
+        signalSpan.textContent = sheet.signalWord;
+
+        const sizeSpan = document.createElement(`span`);
+        sizeSpan.textContent = sheet.size;
+
+        const dateSpan = document.createElement(`span`);
+        dateSpan.textContent = `Updated: ` + sheet.updatedAt;
+
+        metaDiv.appendChild(signalSpan);
+        metaDiv.appendChild(sizeSpan);
+        metaDiv.appendChild(dateSpan);
+
+        btn.appendChild(topRow);
+        btn.appendChild(titleDiv);
+        btn.appendChild(metaDiv);
+
+        btn.addEventListener(`click`, function () {
+          state.selectedPath = sheet.path;
+          renderSheetsList();
+          renderSelectedSheet();
+        });
+
+        li.appendChild(btn);
+        listEl.appendChild(li);
+      });
+    }
+
+    function renderSelectedSheet() {
+      const sheet = state.filtered.find(function (s) { return s.path === state.selectedPath; }) || null;
+
+      const codeEl = document.getElementById(`viewer-sds-code`);
+      const titleEl = document.getElementById(`viewer-sds-title`);
+      const badgeEl = document.getElementById(`viewer-source-badge`);
+      const pathEl = document.getElementById(`sum-path`);
+      const folderEl = document.getElementById(`sum-folder`);
+      const sizeEl = document.getElementById(`sum-size`);
+      const updatedEl = document.getElementById(`sum-updated`);
+      const summaryPane = document.getElementById(`viewer-summary-pane`);
+      const pdfFrame = document.getElementById(`sds-pdf-frame`);
+
+      if (!sheet) {
+        if (codeEl) codeEl.textContent = `NO MATCH`;
+        if (titleEl) titleEl.textContent = `No Safety Data Sheet selected`;
+        if (badgeEl) badgeEl.textContent = `Empty`;
+        if (pathEl) pathEl.textContent = `—`;
+        if (folderEl) folderEl.textContent = `—`;
+        if (sizeEl) sizeEl.textContent = `—`;
+        if (updatedEl) updatedEl.textContent = `—`;
+        if (summaryPane) {
+          summaryPane.innerHTML = `<p style="margin:0;">Adjust your search filter or reset filters to view an SDS document.</p>`;
+        }
+        if (pdfFrame) pdfFrame.src = `about:blank`;
+        return;
+      }
+
+      if (codeEl) codeEl.textContent = sheet.code;
+      if (titleEl) titleEl.textContent = sheet.title;
+      if (badgeEl) badgeEl.textContent = state.manifestSource === `live` ? `Live Repo PDF` : `Fallback Preview`;
+      if (pathEl) pathEl.textContent = sheet.path;
+      if (folderEl) folderEl.textContent = sheet.folder;
+      if (sizeEl) sizeEl.textContent = sheet.size;
+      if (updatedEl) updatedEl.textContent = sheet.updatedAt;
+
+      if (pdfFrame) {
+        pdfFrame.src = state.manifestSource === `live` ? sheet.url : `about:blank`;
+      }
+
+      if (summaryPane) {
+        const ghsHtml = sheet.ghs.map(function (item) {
+          return `<span class="ghs-diamond">▲ ${escapeHtml(item)}</span>`;
+        }).join(``);
+
+        const nfpaHtml = sheet.nfpa ? `
+          <div class="sds-doc-section">
+            <h4>NFPA 704 Hazard Diamond Ratings</h4>
+            <div class="nfpa-grid">
+              <div class="nfpa-cell nfpa-cell--health">Health: ${escapeHtml(String(sheet.nfpa.health))}</div>
+              <div class="nfpa-cell nfpa-cell--fire">Fire: ${escapeHtml(String(sheet.nfpa.flammability))}</div>
+              <div class="nfpa-cell nfpa-cell--instability">Instab: ${escapeHtml(String(sheet.nfpa.instability))}</div>
+              <div class="nfpa-cell nfpa-cell--special">Spec: ${escapeHtml(String(sheet.nfpa.special))}</div>
+            </div>
+          </div>
+        ` : ``;
+
+        summaryPane.innerHTML = `
+          <div class="sds-doc-banner">
+            <div>
+              <strong style="font-size: 1.125rem;">SECTION 1–9 COMPLIANCE SUMMARY</strong><br>
+              <span style="font-family: var(--font-mono); font-size: var(--label-size); color: var(--on-surface-variant);">
+                CAS No.: ${escapeHtml(sheet.cas)} · File: ${escapeHtml(sheet.filename)}
+              </span>
+            </div>
+            <span class="signal-tag ${sheet.signalWord === `DANGER` ? `signal-tag--danger` : `signal-tag--warning`}" style="font-size: 0.875rem; padding: var(--space-xs) var(--space-sm);">
+              SIGNAL WORD: ${escapeHtml(sheet.signalWord)}
+            </span>
+          </div>
+
+          <div class="sds-doc-section">
+            <h4>Section 2 — GHS Hazard Identification</h4>
+            <div class="ghs-row">${ghsHtml}</div>
+          </div>
+
+          ${nfpaHtml}
+
+          <div class="sds-doc-section">
+            <h4>Section 4 — First-Aid Measures</h4>
+            <p>${escapeHtml(sheet.firstAid)}</p>
+          </div>
+
+          <div class="sds-doc-section">
+            <h4>Section 7 — Handling &amp; Safe Storage</h4>
+            <p>${escapeHtml(sheet.storage)}</p>
+          </div>
+
+          <div class="sds-doc-section">
+            <h4>Section 8 — Personal Protective Equipment (PPE)</h4>
+            <p>${escapeHtml(sheet.ppe)}</p>
+          </div>
+        `;
+      }
+
+      if (state.manifestSource === `live` && state.viewerMode === `embed`) {
+        setViewerMode(`embed`);
+      }
+    }
+
+    function setViewerMode(mode) {
+      state.viewerMode = mode;
+      const summaryPane = document.getElementById(`viewer-summary-pane`);
+      const embedPane = document.getElementById(`viewer-embed-pane`);
+      const btnSummary = document.getElementById(`mode-btn-summary`);
+      const btnEmbed = document.getElementById(`mode-btn-embed`);
+      const noteEl = document.getElementById(`viewer-mode-note`);
+
+      const isEmbed = mode === `embed`;
+      if (summaryPane) summaryPane.style.display = isEmbed ? `none` : `flex`;
+      if (embedPane) embedPane.style.display = isEmbed ? `flex` : `none`;
+
+      if (btnSummary) {
+        btnSummary.className = `chip-btn` + (isEmbed ? `` : ` is-active`);
+        btnSummary.setAttribute(`aria-selected`, isEmbed ? `false` : `true`);
+      }
+      if (btnEmbed) {
+        btnEmbed.className = `chip-btn` + (isEmbed ? ` is-active` : ``);
+        btnEmbed.setAttribute(`aria-selected`, isEmbed ? `true` : `false`);
+      }
+      if (noteEl) {
+        noteEl.textContent = isEmbed
+          ? (state.manifestSource === `live`
+            ? `Embedding live repository PDF via <iframe>`
+            : `Fallback preview mode: commit real .pdf files + pdf-manifest.json to render live PDF frames`)
+          : `Showing structured summary & hazard preview`;
+      }
+    }
+
+    function copyTextSafely(text, statusElementId, label) {
+      const statusEl = document.getElementById(statusElementId);
+      function showSuccess() {
+        if (statusEl) {
+          statusEl.textContent = label || `Copied!`;
+          setTimeout(function () {
+            if (statusEl) statusEl.textContent = ``;
+          }, 2200);
+        }
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showSuccess).catch(function () {
+          fallbackCopy(text, showSuccess);
+        });
+      } else {
+        fallbackCopy(text, showSuccess);
+      }
+    }
+
+    function fallbackCopy(text, onDone) {
+      const ta = document.createElement(`textarea`);
+      ta.value = text;
+      ta.style.position = `fixed`;
+      ta.style.opacity = `0`;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand(`copy`);
+        if (onDone) onDone();
+      } catch (_e) {
+        // Silent no-op if clipboard blocked
+      }
+      document.body.removeChild(ta);
+    }
+
+    function copySelectedPath() {
+      const sheet = state.filtered.find(function (s) { return s.path === state.selectedPath; });
+      if (!sheet) return;
+      copyTextSafely(sheet.path, `copy-path-status`, `Path copied!`);
+    }
+
+    function printActiveSheet() {
+      window.print();
+    }
+
+    /* Deployment Guide Code Tabs */
+    let activeCodeTab = `workflow`;
+
+    function selectCodeTab(tabKey) {
+      activeCodeTab = tabKey;
+      const keys = [`workflow`, `js`, `manifest`];
+      keys.forEach(function (k) {
+        const btn = document.getElementById(`tab-btn-` + k);
+        const panel = document.getElementById(`code-panel-` + k);
+        const isTarget = k === tabKey;
+        if (btn) {
+          btn.className = `chip-btn` + (isTarget ? ` is-active` : ``);
+          btn.setAttribute(`aria-selected`, isTarget ? `true` : `false`);
+        }
+        if (panel) {
+          panel.className = `code-panel` + (isTarget ? ` is-active` : ``);
+        }
+      });
+    }
+
+    function copyActiveCodeSnippet() {
+      const panel = document.getElementById(`code-panel-` + activeCodeTab);
+      if (!panel) return;
+      copyTextSafely(panel.textContent || ``, `code-copy-status`, `File code copied!`);
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, `&amp;`)
+        .replace(/</g, `&lt;`)
+        .replace(/>/g, `&gt;`)
+        .replace(/"/g, `&quot;`)
+        .replace(/'/g, `&#39;`);
+    }
+
+    document.addEventListener(`DOMContentLoaded`, function () {
+      loadPdfManifest(false);
+    });
+  </script>
+</body>
+</html>
