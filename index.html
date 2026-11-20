@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="tool">
+  <meta name="design-style" content="handbook">
+  <title>INDUSTRIAL HAZARD SDS BOOK — Safety Data Sheet Master Binder</title>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Page and surfaces — deep, muted industrial safety red binder + clean ledger paper */
+      --background: #6f1f1f;               /* deep muted industrial safety red binder */
+      --binder-edge: #531515;              /* recessed binder spine/edge shadow */
+      --binder-highlight: #852a2a;         /* subtle binder cover bevel */
+      --surface-container-low: #f7f4ee;    /* heavy safety-binder paper stock */
+      --surface-container: #fbf9f5;        /* clean inner sheet / card */
+      --surface-container-high: #ede7dc;   /* warm muted hover / active row */
+
+      /* Ink */
+      --on-surface: #1b1817;               /* primary ledger black ink */
+      --on-surface-variant: #4f4643;       /* muted slate-brown secondary text */
+
+      /* Rules & borders */
+      --outline: #2b2321;                  /* crisp binder hardware / rule ink */
+      --outline-variant: #cfc6b8;          /* subtle ledger divider */
+
+      /* Accents — industrial safety red & dark crimson */
+      --primary: #7c2323;                  /* primary safety red button / active accent */
+      --on-primary: #fbf9f5;               /* off-white text on primary */
+      --primary-container: #f1dfdf;        /* soft red wash for active list item */
+      --on-primary-container: #5c1616;     /* deep crimson text on soft wash */
+      --secondary: #4a3f3a;                /* neutral industrial hardware / button */
+      --tertiary: #6a1d1d;                 /* deep safety red inset rule */
+      --error: #9e1b1b;
+      --on-error: #fbf9f5;
+
+      /* Semantic */
+      --positive: #1f5c3a;
+      --warning: #8f5a00;
+      --focus: #d9a404;
+
+      /* Binder hardware metals */
+      --binder-ring: #c8c5be;
+      --binder-ring-shadow: #7f7b73;
+      --binder-plate: #ebe6dc;
+
+      /* Fonts — Times New Roman throughout as requested */
+      --font-headline: "Times New Roman", Times, Georgia, serif;
+      --font-body: "Times New Roman", Times, Georgia, serif;
+      --font-label: "Times New Roman", Times, Georgia, serif;
+
+      /* Type scale (Focused Tool) */
+      --display-size: clamp(1.75rem, 1.35rem + 1.3vw, 2.35rem);
+      --headline-size: clamp(1.2rem, 1.05rem + 0.45vw, 1.45rem);
+      --subhead-size: clamp(1.05rem, 0.98rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.95rem, 0.92rem + 0.15vw, 1.02rem);
+      --label-size: 0.8125rem;
+
+      /* Shape */
+      --rounded: 2px;
+      --rounded-lg: 3px;
+      --rounded-full: 2px;
+
+      /* Spacing scale (4pt base) */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.25rem;
+      --space-2xl: 3.5rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+
+      /* Style effects */
+      --top-index-rule: 6px solid var(--primary);
+      --inset-rule: 5px solid var(--tertiary);
+      --button-ground: 0 2px 0 var(--binder-edge);
+      --button-ground-secondary: 0 2px 0 var(--outline-variant);
+      --binder-shadow: 0 12px 28px rgba(27, 10, 10, 0.42);
+      --focus-ring: 3px solid var(--focus);
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      background-image:
+        radial-gradient(circle at 20% 15%, var(--binder-highlight) 0%, transparent 45%),
+        linear-gradient(180deg, var(--binder-highlight) 0%, var(--background) 14%, var(--binder-edge) 100%);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    header { position: static !important; }
+
+    button, input, select, textarea {
+      font-family: inherit;
+    }
+
+    .binder-shell {
+      max-width: 1260px;
+      margin: 0 auto;
+      padding: var(--space-lg);
+    }
+
+    /* Physical Binder Spine + Sheet Container */
+    .binder-cover {
+      background: var(--surface-container-low);
+      border: 2px solid var(--outline);
+      border-top: 8px solid var(--binder-edge);
+      border-left: 14px solid var(--binder-edge);
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--binder-shadow);
+      overflow: hidden;
+    }
+
+    /* Header — Deep Safety Red Title Band + Prominent Logo */
+    .binder-header {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-bottom: 4px solid var(--outline);
+      padding: var(--space-lg) var(--space-xl);
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.9fr);
+      gap: var(--space-lg);
+      align-items: center;
+    }
+
+    .header-title-block {
+      min-width: 0;
+    }
+
+    .header-title-block h1 {
+      margin: 0;
+      font-family: var(--font-headline);
+      font-size: var(--display-size);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+      color: var(--on-primary);
+      text-transform: uppercase;
+    }
+
+    .header-subtitle {
+      margin: var(--space-sm) 0 0;
+      font-size: var(--subhead-size);
+      font-weight: 400;
+      color: var(--binder-plate);
+      letter-spacing: 0.01em;
+    }
+
+    /* Large Prominent Company Logo Display Area */
+    .logo-stage {
+      background: var(--surface-container);
+      border: 2px solid var(--outline);
+      border-radius: var(--rounded);
+      padding: var(--space-sm);
+      min-height: 132px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-stage img.company-logo {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      max-height: 140px;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .logo-fallback {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: var(--space-xs);
+      padding: var(--space-sm);
+      color: var(--on-surface);
+    }
+
+    .logo-fallback.is-visible {
+      display: flex;
+    }
+
+    .logo-fallback-mark {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      line-height: 1;
+    }
+
+    .logo-fallback-caption {
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+
+    .logo-upload-bar {
+      position: absolute;
+      right: var(--space-xs);
+      bottom: var(--space-xs);
+      display: flex;
+      gap: var(--space-xs);
+    }
+
+    .logo-mini-btn {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      border: 1px solid var(--outline);
+      border-radius: var(--rounded);
+      cursor: pointer;
+      opacity: 0.88;
+      transition: background-color var(--dur-micro) var(--ease-out), opacity var(--dur-micro) var(--ease-out);
+    }
+
+    .logo-mini-btn:hover {
+      opacity: 1;
+      background: var(--surface-container-high);
+    }
+
+    /* Controls Bar: Search + Reset Filter + Batch File/Folder Loader */
+    .controls-band {
+      background: var(--surface-container);
+      border-bottom: 2px solid var(--outline);
+      padding: var(--space-md) var(--space-xl);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--space-md);
+      align-items: end;
+    }
+
+    .search-group {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--space-sm);
+      align-items: end;
+      min-width: 0;
+    }
+
+    .field-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      min-width: 0;
+    }
+
+    .field-label {
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--on-surface);
+      letter-spacing: 0.02em;
+    }
+
+    .search-input {
+      width: 100%;
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      font-size: var(--body-size);
+      color: var(--on-surface);
+      background: var(--surface-container);
+      border: 2px solid var(--outline);
+      border-radius: var(--rounded);
+      transition: border-color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .search-input::placeholder {
+      color: var(--on-surface-variant);
+    }
+
+    .batch-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: end;
+    }
+
+    /* Grounded Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      font-size: var(--body-size);
+      font-weight: 700;
+      line-height: 1.2;
+      border-radius: var(--rounded);
+      border: 2px solid var(--outline);
+      cursor: pointer;
+      text-align: center;
+      transition: background-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+      box-shadow: var(--button-ground);
+    }
+
+    .btn-primary:hover {
+      background: var(--binder-edge);
+    }
+
+    .btn-secondary {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      box-shadow: var(--button-ground-secondary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-container-high);
+    }
+
+    .btn:active {
+      transform: translateY(2px);
+      box-shadow: none;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn:focus-visible,
+    .search-input:focus-visible,
+    .logo-mini-btn:focus-visible,
+    .sds-item-btn:focus-visible {
+      outline: var(--focus-ring);
+      outline-offset: 2px;
+    }
+
+    /* Status line for batch uploads */
+    .status-strip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-xl);
+      background: var(--surface-container-low);
+      border-bottom: 1px solid var(--outline-variant);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+
+    .status-strip strong {
+      color: var(--on-surface);
+    }
+
+    .status-feedback {
+      color: var(--positive);
+      font-weight: 700;
+    }
+
+    .status-feedback.is-error {
+      color: var(--error);
+    }
+
+    /* Main Workspace Grid: Left SDS Sheets List + Right PDF Viewer */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: minmax(300px, 390px) minmax(0, 1fr);
+      min-height: 640px;
+      background: var(--surface-container);
+    }
+
+    .workspace-grid * {
+      min-width: 0;
+    }
+
+    /* Left Panel: SDS Sheets List */
+    .sheets-panel {
+      border-right: 2px solid var(--outline);
+      background: var(--surface-container-low);
+      display: flex;
+      flex-direction: column;
+      max-height: 760px;
+    }
+
+    .panel-header {
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 2px solid var(--outline);
+      background: var(--surface-container);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--space-sm);
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: var(--headline-size);
+      font-weight: 700;
+      color: var(--on-surface);
+    }
+
+    .count-readout {
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--on-surface-variant);
+      white-space: nowrap;
+    }
+
+    .sheets-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      overflow-y: auto;
+      flex: 1 1 auto;
+    }
+
+    .sds-item {
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .sds-item-btn {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 0;
+      border-left: 5px solid transparent;
+      padding: var(--space-md) var(--space-lg);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      color: var(--on-surface);
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .sds-item-btn:hover {
+      background: var(--surface-container-high);
+    }
+
+    .sds-item-btn.is-active {
+      background: var(--primary-container);
+      border-left-color: var(--primary);
+    }
+
+    .sds-item-title {
+      font-size: var(--body-size);
+      font-weight: 700;
+      color: var(--on-surface);
+      word-break: break-word;
+    }
+
+    .sds-item-btn.is-active .sds-item-title {
+      color: var(--on-primary-container);
+    }
+
+    .sds-item-meta {
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .empty-list-state {
+      padding: var(--space-xl) var(--space-lg);
+      text-align: left;
+      border-left: var(--inset-rule);
+      margin: var(--space-md);
+      background: var(--surface-container);
+    }
+
+    .empty-list-state h3 {
+      margin: 0 0 var(--space-xs);
+      font-size: var(--subhead-size);
+    }
+
+    .empty-list-state p {
+      margin: 0 0 var(--space-md);
+      color: var(--on-surface-variant);
+    }
+
+    /* Right Panel: Embedded PDF Viewer */
+    .viewer-panel {
+      display: flex;
+      flex-direction: column;
+      background: var(--surface-container);
+      min-height: 640px;
+    }
+
+    .viewer-toolbar {
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 2px solid var(--outline);
+      background: var(--surface-container-low);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .viewer-doc-info {
+      min-width: 0;
+    }
+
+    .viewer-doc-title {
+      margin: 0;
+      font-size: var(--headline-size);
+      font-weight: 700;
+      color: var(--on-surface);
+      word-break: break-word;
+    }
+
+    .viewer-doc-sub {
+      margin: 2px 0 0;
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+
+    .viewer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    .viewer-stage {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-md);
+      background: var(--surface-container-high);
+      min-height: 540px;
+    }
+
+    .pdf-frame-wrap {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface-container);
+      border: 2px solid var(--outline);
+      min-height: 500px;
+      overflow: hidden;
+    }
+
+    .pdf-iframe {
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: 500px;
+      border: 0;
+      display: block;
+      background: var(--surface-container);
+    }
+
+    /* Built-in Reference Sheet Preview (for sample binder entries before user loads local PDFs) */
+    .sample-sheet {
+      padding: var(--space-xl);
+      overflow-y: auto;
+      flex: 1 1 auto;
+      background: var(--surface-container);
+      color: var(--on-surface);
+    }
+
+    .sample-sheet-banner {
+      border-left: var(--inset-rule);
+      background: var(--surface-container-low);
+      padding: var(--space-sm) var(--space-md);
+      margin-bottom: var(--space-lg);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+
+    .sample-sheet-head {
+      border-top: 4px solid var(--primary);
+      border-bottom: 2px solid var(--outline);
+      padding: var(--space-md) 0;
+      margin-bottom: var(--space-lg);
+    }
+
+    .sample-sheet-head h4 {
+      margin: 0 0 var(--space-xs);
+      font-size: 1.45rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .sample-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .sample-cell {
+      border: 1px solid var(--outline-variant);
+      background: var(--surface-container-low);
+      padding: var(--space-sm) var(--space-md);
+    }
+
+    .sample-cell-label {
+      display: block;
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .sample-section {
+      margin-bottom: var(--space-md);
+      padding-top: var(--space-sm);
+      border-top: 1px solid var(--outline-variant);
+    }
+
+    .sample-section h5 {
+      margin: 0 0 var(--space-xs);
+      font-size: var(--subhead-size);
+      color: var(--primary);
+    }
+
+    .sample-section p {
+      margin: 0;
+      max-width: 72ch;
+    }
+
+    .viewer-placeholder {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: var(--space-xl);
+      background: var(--surface-container);
+      border: 2px dashed var(--outline-variant);
+    }
+
+    .viewer-placeholder h3 {
+      margin: 0 0 var(--space-xs);
+      font-size: var(--headline-size);
+    }
+
+    .viewer-placeholder p {
+      margin: 0 0 var(--space-md);
+      max-width: 58ch;
+      color: var(--on-surface-variant);
+    }
+
+    /* Hidden file inputs */
+    .sr-only-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .drop-active {
+      outline: 3px dashed var(--primary);
+      outline-offset: -6px;
+      background: var(--primary-container);
+    }
+
+    .binder-footer {
+      padding: var(--space-sm) var(--space-xl);
+      background: var(--surface-container-low);
+      border-top: 2px solid var(--outline);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+
+    @media (max-width: 900px) {
+      .binder-header {
+        grid-template-columns: 1fr;
+      }
+      .controls-band {
+        grid-template-columns: 1fr;
+      }
+      .workspace-grid {
+        grid-template-columns: 1fr;
+      }
+      .sheets-panel {
+        border-right: 0;
+        border-bottom: 2px solid var(--outline);
+        max-height: 360px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .binder-shell {
+        padding: var(--space-sm);
+      }
+      .binder-header,
+      .controls-band,
+      .status-strip,
+      .binder-footer {
+        padding-left: var(--space-md);
+        padding-right: var(--space-md);
+      }
+      .search-group {
+        grid-template-columns: 1fr;
+      }
+      .batch-actions {
+        width: 100%;
+      }
+      .batch-actions .btn {
+        flex: 1 1 auto;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="binder-shell">
+    <div class="binder-cover" id="binder-drop-zone">
+
+      <!-- Header -->
+      <header class="binder-header">
+        <div class="header-title-block">
+          <h1>INDUSTRIAL HAZARD SDS BOOK</h1>
+          <p class="header-subtitle">Safety Data Sheet Master Binder</p>
+        </div>
+
+        <div class="logo-stage" id="logo-stage">
+          <img
+            id="company-logo-img"
+            class="company-logo"
+            src="UFM_logo_Transparent.png"
+            alt="Company Logo"
+            onerror="handleLogoError()"
+          >
+          <div id="logo-fallback" class="logo-fallback" aria-live="polite">
+            <span class="logo-fallback-mark">UFM</span>
+            <span class="logo-fallback-caption">Place <strong>UFM_logo_Transparent.png</strong> beside this file or load a logo image.</span>
+          </div>
+          <div class="logo-upload-bar">
+            <button type="button" class="logo-mini-btn" onclick="triggerLogoPicker()" title="Choose logo image file">Load Logo</button>
+          </div>
+          <input id="logo-file-input" class="sr-only-input" type="file" accept="image/*" onchange="handleLogoSelected(this)">
+        </div>
+      </header>
+
+      <!-- Search & Batch File Selector Controls -->
+      <section class="controls-band" aria-label="Search and document loading controls">
+        <div class="search-group">
+          <div class="field-block">
+            <label class="field-label" for="sds-search-input">Search SDS Sheets</label>
+            <input
+              id="sds-search-input"
+              class="search-input"
+              type="search"
+              placeholder="Search SDS index, chemical name..."
+              oninput="handleSearchInput(this.value)"
+              autocomplete="off"
+            >
+          </div>
+          <button type="button" class="btn btn-secondary" id="reset-filter-btn" onclick="resetFilter()">Reset filter</button>
+        </div>
+
+        <div class="batch-actions">
+          <button type="button" class="btn btn-primary" onclick="triggerMultiPdfPicker()">Batch Load PDFs (100+)</button>
+          <button type="button" class="btn btn-secondary" onclick="triggerFolderPdfPicker()">Load SDS Folder</button>
+          <button type="button" class="btn btn-secondary" id="clear-loaded-btn" onclick="clearLoadedFiles(this)" style="display: none;">Clear Loaded</button>
+          <input
+            id="pdf-multi-input"
+            class="sr-only-input"
+            type="file"
+            accept=".pdf,application/pdf"
+            multiple
+            onchange="handleBatchFiles(this.files)"
+          >
+          <input
+            id="pdf-folder-input"
+            class="sr-only-input"
+            type="file"
+            accept=".pdf,application/pdf"
+            webkitdirectory
+            directory
+            multiple
+            onchange="handleBatchFiles(this.files)"
+          >
+        </div>
+      </section>
+
+      <!-- Concise Status Strip -->
+      <div class="status-strip">
+        <span id="binder-summary">Showing <strong id="visible-count">0</strong> of <strong id="total-count">0</strong> sheets</span>
+        <span id="status-feedback" class="status-feedback" role="status" aria-live="polite">Ready — select a sheet or batch-load 100+ local SDS PDFs.</span>
+      </div>
+
+      <!-- Main Binder Workspace -->
+      <main class="workspace-grid">
+        <!-- Left Column: SDS Sheets List -->
+        <section class="sheets-panel" aria-label="SDS Sheets List">
+          <div class="panel-header">
+            <h2>SDS Sheets List</h2>
+            <span class="count-readout" id="list-count-badge">0 sheets</span>
+          </div>
+          <ul class="sheets-list" id="sds-sheets-list" role="listbox" aria-label="SDS Sheets"></ul>
+          <div class="empty-list-state" id="empty-list-state" style="display: none;">
+            <h3>No matching SDS sheets</h3>
+            <p id="empty-list-reason">No documents matched your current search term.</p>
+            <button type="button" class="btn btn-secondary" onclick="resetFilter()">Reset filter</button>
+          </div>
+        </section>
+
+        <!-- Right Column: Embedded PDF Viewer -->
+        <section class="viewer-panel" aria-label="PDF Document Viewer">
+          <div class="viewer-toolbar">
+            <div class="viewer-doc-info">
+              <h3 class="viewer-doc-title" id="viewer-title">Select an SDS Sheet</h3>
+              <p class="viewer-doc-sub" id="viewer-subtitle">Click any document in the SDS Sheets List to inspect it here.</p>
+            </div>
+            <div class="viewer-actions" id="viewer-actions" style="display: none;">
+              <button type="button" class="btn btn-secondary" id="download-pdf-btn" onclick="downloadSelectedPdf()">Download PDF</button>
+            </div>
+          </div>
+
+          <div class="viewer-stage" id="viewer-stage">
+            <div class="viewer-placeholder" id="viewer-placeholder">
+              <h3>Embedded PDF Viewer</h3>
+              <p>Select any sheet on the left, or click <strong>Batch Load PDFs (100+)</strong> or <strong>Load SDS Folder</strong> to load your facility's complete library of Safety Data Sheets directly in the browser.</p>
+              <button type="button" class="btn btn-primary" onclick="triggerMultiPdfPicker()">Select SDS PDF Files</button>
+            </div>
+
+            <div class="pdf-frame-wrap" id="pdf-frame-wrap" style="display: none;">
+              <iframe
+                id="pdf-viewer-iframe"
+                class="pdf-iframe"
+                title="Safety Data Sheet PDF Preview"
+              ></iframe>
+            </div>
+
+            <div class="pdf-frame-wrap" id="sample-sheet-wrap" style="display: none;">
+              <div class="sample-sheet" id="sample-sheet-content"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="binder-footer">
+        <span>Client-side local PDF indexing via browser object URLs — files remain on your workstation.</span>
+        <span>Tip: Drag and drop 100+ PDF files anywhere onto this binder.</span>
+      </footer>
+    </div>
+  </div>
+
+  <api-shim></api-shim>
+  <script>
+    const LOGO_CANDIDATES = [`UFM_logo_Transparent.png`, `logo.png`];
+    let logoAttemptIndex = 0;
+
+    // Built-in starter reference entries so the binder is immediately usable;
+    // replaced or supplemented as soon as the user batch-loads local PDF files.
+    const STARTER_SDS_SHEETS = [
+      {
+        id: `starter-acetone`,
+        title: `Acetone (Industrial Solvent Grade)`,
+        fileName: `SDS-001_Acetone_Solvent.pdf`,
+        cas: `67-64-1`,
+        hazardClass: `Flammable Liquid (Category 2), Eye Irritant`,
+        sourceType: `starter`,
+        sizeLabel: `Reference Sheet`,
+        signalWord: `DANGER`,
+        ghsSummary: `Highly flammable liquid and vapor. Causes serious eye irritation. May cause drowsiness or dizziness.`,
+        ppe: `Chemical splash goggles, butyl rubber gloves, local exhaust ventilation.`,
+        firstAid: `Eyes: Rinse cautiously with water for 15 minutes. Inhalation: Move person to fresh air and keep comfortable for breathing.`,
+        spillResponse: `Eliminate all ignition sources. Absorb with inert dry material and place in grounded waste container.`,
+        storage: `Store in cool, well-ventilated flammable storage cabinet away from oxidizers and heat.`
+      },
+      {
+        id: `starter-hydrochloric-acid`,
+        title: `Hydrochloric Acid (31% – 37% Solution)`,
+        fileName: `SDS-002_Hydrochloric_Acid_37pct.pdf`,
+        cas: `7647-01-0`,
+        hazardClass: `Corrosive to Metals, Skin Corrosion (Category 1B)`,
+        sourceType: `starter`,
+        sizeLabel: `Reference Sheet`,
+        signalWord: `DANGER`,
+        ghsSummary: `May be corrosive to metals. Causes severe skin burns and eye damage. May cause respiratory irritation.`,
+        ppe: `Face shield plus safety goggles, acid-resistant neoprene apron and gloves, acid-gas respirator if vapors exceed TLV.`,
+        firstAid: `Skin: Immediately flush with plenty of water for at least 20 minutes while removing contaminated clothing. Seek immediate medical attention.`,
+        spillResponse: `Neutralize carefully with soda ash or sodium bicarbonate; avoid generating excessive heat or mist.`,
+        storage: `Store in corrosion-resistant secondary containment separate from bases, cyanides, and reactive metals.`
+      },
+      {
+        id: `starter-sodium-hydroxide`,
+        title: `Sodium Hydroxide (Caustic Soda 50% Liquid)`,
+        fileName: `SDS-003_Sodium_Hydroxide_50pct.pdf`,
+        cas: `1310-73-2`,
+        hazardClass: `Corrosive (Category 1A)`,
+        sourceType: `starter`,
+        sizeLabel: `Reference Sheet`,
+        signalWord: `DANGER`,
+        ghsSummary: `Causes severe skin burns and eye damage. May be corrosive to aluminum, zinc, and tin.`,
+        ppe: `Full face shield, chemical-resistant nitrile or butyl gloves, impervious boots and apron.`,
+        firstAid: `Eyes: Flush continuously with water for at least 30 minutes, lifting upper and lower eyelids. Emergency medical care required.`,
+        spillResponse: `Dike spill area; carefully dilute and neutralize with weak acid solution under trained supervision.`,
+        storage: `Keep tightly closed in HDPE or lined steel drums away from acids and moisture-sensitive materials.`
+      },
+      {
+        id: `starter-hydraulic-oil`,
+        title: `AW-46 Anti-Wear Hydraulic Oil`,
+        fileName: `SDS-004_AW46_Hydraulic_Oil.pdf`,
+        cas: `64742-54-7`,
+        hazardClass: `Petroleum Lubricant / Aspiration Hazard`,
+        sourceType: `starter`,
+        sizeLabel: `Reference Sheet`,
+        signalWord: `WARNING`,
+        ghsSummary: `Prolonged or repeated skin contact may cause irritation or dermatitis. High-pressure injection under skin requires immediate surgery.`,
+        ppe: `Safety glasses with side shields, oil-resistant nitrile gloves, long-sleeved workwear.`,
+        firstAid: `Skin: Wash thoroughly with soap and water. For high-pressure injection injury, treat as surgical emergency immediately.`,
+        spillResponse: `Contain with oil-absorbent booms or clay granules; prevent entry into storm drains and waterways.`,
+        storage: `Store in dry, covered area below 45 °C away from strong oxidizing agents.`
+      },
+      {
+        id: `starter-isopropyl-alcohol`,
+        title: `Isopropyl Alcohol (99% Anhydrous)`,
+        fileName: `SDS-005_Isopropyl_Alcohol_99pct.pdf`,
+        cas: `67-63-0`,
+        hazardClass: `Flammable Liquid (Category 2)`,
+        sourceType: `starter`,
+        sizeLabel: `Reference Sheet`,
+        signalWord: `DANGER`,
+        ghsSummary: `Highly flammable liquid and vapor. Causes serious eye irritation. May cause drowsiness or dizziness.`,
+        ppe: `Safety goggles, nitrile gloves, antistatic grounding when transferring bulk drums.`,
+        firstAid: `Inhalation: Remove to fresh air. Eyes: Flush with clean water for 15 minutes.`,
+        spillResponse: `Remove ignition sources, ventilate area, absorb with vermiculite or dry sand using non-sparking tools.`,
+        storage: `Store in bonded/grounded flammable liquid storage room away from open flames.`
+      }
+    ];
+
+    let loadedPdfSheets = [];
+    let searchQuery = ``;
+    let selectedSheetId = STARTER_SDS_SHEETS[0].id;
+    let customLogoDataUrl = ``;
+    let currentPdfBlobUrl = ``;
+
+    function handleLogoError() {
+      const img = document.getElementById(`company-logo-img`);
+      const fallback = document.getElementById(`logo-fallback`);
+      if (!img || !fallback) return;
+
+      logoAttemptIndex += 1;
+      if (logoAttemptIndex < LOGO_CANDIDATES.length) {
+        img.src = LOGO_CANDIDATES[logoAttemptIndex];
+        return;
+      }
+      img.style.display = `none`;
+      fallback.classList.add(`is-visible`);
+    }
+
+    function triggerLogoPicker() {
+      const input = document.getElementById(`logo-file-input`);
+      if (input) input.click();
+    }
+
+    function handleLogoSelected(input) {
+      if (!input || !input.files || !input.files.length) return;
+      const file = input.files[0];
+      const img = document.getElementById(`company-logo-img`);
+      const fallback = document.getElementById(`logo-fallback`);
+      if (!img || !fallback) return;
+
+      if (customLogoDataUrl) {
+        URL.revokeObjectURL(customLogoDataUrl);
+      }
+      customLogoDataUrl = URL.createObjectURL(file);
+      img.onerror = null;
+      img.src = customLogoDataUrl;
+      img.style.display = `block`;
+      fallback.classList.remove(`is-visible`);
+      setStatusFeedback(`Loaded company logo: ${file.name}`, false);
+    }
+
+    function triggerMultiPdfPicker() {
+      const input = document.getElementById(`pdf-multi-input`);
+      if (input) {
+        input.value = ``;
+        input.click();
+      }
+    }
+
+    function triggerFolderPdfPicker() {
+      const input = document.getElementById(`pdf-folder-input`);
+      if (input) {
+        input.value = ``;
+        input.click();
+      }
+    }
+
+    function formatFileSize(bytes) {
+      if (!Number.isFinite(bytes) || bytes <= 0) return `0 KB`;
+      if (bytes < 1024 * 1024) {
+        return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+      }
+      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    }
+
+    function cleanDisplayTitle(fileName) {
+      return fileName
+        .replace(/\.pdf$/i, ``)
+        .replace(/[_]+/g, ` `)
+        .replace(/\s+/g, ` `)
+        .trim();
+    }
+
+    function handleBatchFiles(fileList) {
+      if (!fileList || !fileList.length) return;
+
+      const allFiles = Array.from(fileList);
+      const pdfFiles = allFiles.filter(function (file) {
+        return file.type === `application/pdf` || /\.pdf$/i.test(file.name);
+      });
+
+      if (!pdfFiles.length) {
+        setStatusFeedback(`No PDF files found in the selection (${allFiles.length} file(s) skipped).`, true);
+        return;
+      }
+
+      // Revoke old object URLs to keep memory clean across large 100+ batches
+      const existingByKey = new Map();
+      for (let i = 0; i < loadedPdfSheets.length; i += 1) {
+        const item = loadedPdfSheets[i];
+        const key = `${item.fileName}__${item.fileSize}`;
+        existingByKey.set(key, item);
+      }
+
+      let addedCount = 0;
+      for (let i = 0; i < pdfFiles.length; i += 1) {
+        const file = pdfFiles[i];
+        const key = `${file.name}__${file.size}`;
+        if (existingByKey.has(key)) continue;
+
+        const relativePath = file.webkitRelativePath ? file.webkitRelativePath : file.name;
+        const sheet = {
+          id: `pdf-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 7)}`,
+          title: cleanDisplayTitle(file.name),
+          fileName: file.name,
+          relativePath: relativePath,
+          fileSize: file.size,
+          sizeLabel: formatFileSize(file.size),
+          sourceType: `local-pdf`,
+          file: file,
+          objectUrl: ``
+        };
+        loadedPdfSheets.push(sheet);
+        addedCount += 1;
+      }
+
+      // Sort alphabetically by title for fast binder lookup
+      loadedPdfSheets.sort(function (a, b) {
+        return a.title.localeCompare(b.title, undefined, { sensitivity: `base`, numeric: true });
+      });
+
+      const clearBtn = document.getElementById(`clear-loaded-btn`);
+      if (clearBtn) {
+        clearBtn.style.display = loadedPdfSheets.length > 0 ? `inline-flex` : `none`;
+      }
+
+      if (addedCount > 0 && loadedPdfSheets.length > 0) {
+        selectedSheetId = loadedPdfSheets[0].id;
+      }
+
+      renderAll();
+      setStatusFeedback(`Loaded ${addedCount} PDF sheet(s). Total local PDFs in binder: ${loadedPdfSheets.length}.`, false);
+      persistUiState();
+    }
+
+    function clearLoadedFiles(btn) {
+      if (btn && btn.dataset.armed !== `true`) {
+        btn.dataset.armed = `true`;
+        btn.textContent = `Confirm Clear`;
+        setTimeout(function () {
+          if (btn.dataset.armed === `true`) {
+            btn.dataset.armed = `false`;
+            btn.textContent = `Clear Loaded`;
+          }
+        }, 3500);
+        return;
+      }
+
+      if (btn) {
+        btn.dataset.armed = `false`;
+        btn.textContent = `Clear Loaded`;
+        btn.style.display = `none`;
+      }
+
+      for (let i = 0; i < loadedPdfSheets.length; i += 1) {
+        if (loadedPdfSheets[i].objectUrl) {
+          URL.revokeObjectURL(loadedPdfSheets[i].objectUrl);
+        }
+      }
+      loadedPdfSheets = [];
+      selectedSheetId = STARTER_SDS_SHEETS[0].id;
+      renderAll();
+      setStatusFeedback(`Cleared loaded local PDFs. Showing starter reference sheets.`, false);
+    }
+
+    function getActiveCatalog() {
+      return loadedPdfSheets.length > 0 ? loadedPdfSheets : STARTER_SDS_SHEETS;
+    }
+
+    function getFilteredCatalog() {
+      const catalog = getActiveCatalog();
+      const q = searchQuery.trim().toLowerCase();
+      if (!q) return catalog;
+
+      const tokens = q.split(/\s+/).filter(Boolean);
+      return catalog.filter(function (sheet) {
+        const haystack = [
+          sheet.title,
+          sheet.fileName,
+          sheet.relativePath || ``,
+          sheet.cas || ``,
+          sheet.hazardClass || ``
+        ].join(` `).toLowerCase();
+        return tokens.every(function (t) {
+          return haystack.indexOf(t) !== -1;
+        });
+      });
+    }
+
+    function handleSearchInput(value) {
+      searchQuery = value || ``;
+      renderListOnly();
+      persistUiState();
+    }
+
+    function resetFilter() {
+      searchQuery = ``;
+      const input = document.getElementById(`sds-search-input`);
+      if (input) input.value = ``;
+      renderListOnly();
+      setStatusFeedback(`Search filter cleared.`, false);
+      persistUiState();
+    }
+
+    function selectSheet(sheetId) {
+      selectedSheetId = sheetId;
+      renderListActiveState();
+      renderViewer();
+      persistUiState();
+    }
+
+    function setStatusFeedback(message, isError) {
+      const el = document.getElementById(`status-feedback`);
+      if (!el) return;
+      el.textContent = message;
+      if (isError) {
+        el.classList.add(`is-error`);
+      } else {
+        el.classList.remove(`is-error`);
+      }
+    }
+
+    function escapeHtml(text) {
+      return String(text || ``)
+        .replace(/&/g, `&amp;`)
+        .replace(/</g, `&lt;`)
+        .replace(/>/g, `&gt;`)
+        .replace(/"/g, `&quot;`)
+        .replace(/'/g, `&#39;`);
+    }
+
+    function renderListOnly() {
+      const catalog = getActiveCatalog();
+      const filtered = getFilteredCatalog();
+
+      const visibleCountEl = document.getElementById(`visible-count`);
+      const totalCountEl = document.getElementById(`total-count`);
+      const badgeEl = document.getElementById(`list-count-badge`);
+      const listEl = document.getElementById(`sds-sheets-list`);
+      const emptyEl = document.getElementById(`empty-list-state`);
+      const emptyReasonEl = document.getElementById(`empty-list-reason`);
+
+      if (visibleCountEl) visibleCountEl.textContent = String(filtered.length);
+      if (totalCountEl) totalCountEl.textContent = String(catalog.length);
+      if (badgeEl) {
+        badgeEl.textContent = filtered.length === 1 ? `1 sheet` : `${filtered.length} sheets`;
+      }
+
+      if (!listEl || !emptyEl) return;
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = ``;
+        emptyEl.style.display = `block`;
+        if (emptyReasonEl) {
+          emptyReasonEl.textContent = searchQuery.trim()
+            ? `No sheets matched "${searchQuery.trim()}". Reset the filter or try another chemical or filename.`
+            : `No SDS sheets are currently loaded.`;
+        }
+        return;
+      }
+
+      emptyEl.style.display = `none`;
+
+      // Use DocumentFragment for fast rendering of 100+ items
+      const fragment = document.createDocumentFragment();
+      for (let i = 0; i < filtered.length; i += 1) {
+        const item = filtered[i];
+        const li = document.createElement(`li`);
+        li.className = `sds-item`;
+
+        const btn = document.createElement(`button`);
+        btn.type = `button`;
+        btn.className = `sds-item-btn` + (item.id === selectedSheetId ? ` is-active` : ``);
+        btn.dataset.sheetId = item.id;
+        btn.setAttribute(`role`, `option`);
+        btn.setAttribute(`aria-selected`, item.id === selectedSheetId ? `true` : `false`);
+        btn.onclick = function () {
+          selectSheet(item.id);
+        };
+
+        const titleSpan = document.createElement(`span`);
+        titleSpan.className = `sds-item-title`;
+        titleSpan.textContent = `${i + 1}. ${item.title}`;
+
+        const metaSpan = document.createElement(`span`);
+        metaSpan.className = `sds-item-meta`;
+        const metaParts = [item.fileName];
+        if (item.cas) metaParts.push(`CAS ${item.cas}`);
+        if (item.sizeLabel) metaParts.push(item.sizeLabel);
+        metaSpan.textContent = metaParts.join(` • `);
+
+        btn.appendChild(titleSpan);
+        btn.appendChild(metaSpan);
+        li.appendChild(btn);
+        fragment.appendChild(li);
+      }
+
+      listEl.innerHTML = ``;
+      listEl.appendChild(fragment);
+    }
+
+    function renderListActiveState() {
+      const buttons = document.querySelectorAll(`.sds-item-btn`);
+      buttons.forEach(function (btn) {
+        const isMatch = btn.dataset.sheetId === selectedSheetId;
+        btn.classList.toggle(`is-active`, isMatch);
+        btn.setAttribute(`aria-selected`, isMatch ? `true` : `false`);
+      });
+    }
+
+    function renderViewer() {
+      const catalog = getActiveCatalog();
+      const selected = catalog.find(function (item) {
+        return item.id === selectedSheetId;
+      });
+
+      const titleEl = document.getElementById(`viewer-title`);
+      const subtitleEl = document.getElementById(`viewer-subtitle`);
+      const actionsEl = document.getElementById(`viewer-actions`);
+      const downloadBtn = document.getElementById(`download-pdf-btn`);
+      const placeholderEl = document.getElementById(`viewer-placeholder`);
+      const pdfWrapEl = document.getElementById(`pdf-frame-wrap`);
+      const iframeEl = document.getElementById(`pdf-viewer-iframe`);
+      const sampleWrapEl = document.getElementById(`sample-sheet-wrap`);
+      const sampleContentEl = document.getElementById(`sample-sheet-content`);
+
+      if (!titleEl || !subtitleEl || !placeholderEl || !pdfWrapEl || !iframeEl || !sampleWrapEl || !sampleContentEl) {
+        return;
+      }
+
+      if (!selected) {
+        titleEl.textContent = `Select an SDS Sheet`;
+        subtitleEl.textContent = `Click any document in the SDS Sheets List to inspect it here.`;
+        if (actionsEl) actionsEl.style.display = `none`;
+        placeholderEl.style.display = `flex`;
+        pdfWrapEl.style.display = `none`;
+        sampleWrapEl.style.display = `none`;
+        iframeEl.removeAttribute(`src`);
+        return;
+      }
+
+      titleEl.textContent = selected.title;
+
+      if (selected.sourceType === `local-pdf`) {
+        subtitleEl.textContent = `${selected.relativePath || selected.fileName} • ${selected.sizeLabel}`;
+        if (!selected.objectUrl && selected.file) {
+          selected.objectUrl = URL.createObjectURL(selected.file);
+        }
+        currentPdfBlobUrl = selected.objectUrl;
+        placeholderEl.style.display = `none`;
+        sampleWrapEl.style.display = `none`;
+        pdfWrapEl.style.display = `flex`;
+        if (actionsEl) actionsEl.style.display = `flex`;
+        if (downloadBtn) downloadBtn.style.display = `inline-flex`;
+        iframeEl.src = selected.objectUrl;
+      } else {
+        subtitleEl.textContent = `${selected.fileName} • CAS ${selected.cas} • ${selected.hazardClass}`;
+        placeholderEl.style.display = `none`;
+        pdfWrapEl.style.display = `none`;
+        iframeEl.removeAttribute(`src`);
+        sampleWrapEl.style.display = `flex`;
+        if (actionsEl) actionsEl.style.display = `none`;
+
+        sampleContentEl.innerHTML =
+          `<div class="sample-sheet-banner">` +
+            `<strong>Built-in Reference Sheet Preview</strong> — Load your local PDF files via <em>Batch Load PDFs (100+)</em> or <em>Load SDS Folder</em> to inspect actual PDF documents in the embedded PDF frame.` +
+          `</div>` +
+          `<div class="sample-sheet-head">` +
+            `<h4>${escapeHtml(selected.title)}</h4>` +
+            `<div><strong>Signal Word:</strong> ${escapeHtml(selected.signalWord)} &nbsp;|&nbsp; <strong>CAS Number:</strong> ${escapeHtml(selected.cas)}</div>` +
+          `</div>` +
+          `<div class="sample-grid">` +
+            `<div class="sample-cell"><span class="sample-cell-label">Document File</span><span>${escapeHtml(selected.fileName)}</span></div>` +
+            `<div class="sample-cell"><span class="sample-cell-label">Hazard Classification</span><span>${escapeHtml(selected.hazardClass)}</span></div>` +
+          `</div>` +
+          `<div class="sample-section"><h5>Section 2 — Hazard Identification</h5><p>${escapeHtml(selected.ghsSummary)}</p></div>` +
+          `<div class="sample-section"><h5>Section 4 — First-Aid Measures</h5><p>${escapeHtml(selected.firstAid)}</p></div>` +
+          `<div class="sample-section"><h5>Section 6 — Accidental Release Measures</h5><p>${escapeHtml(selected.spillResponse)}</p></div>` +
+          `<div class="sample-section"><h5>Section 7 — Handling and Storage</h5><p>${escapeHtml(selected.storage)}</p></div>` +
+          `<div class="sample-section"><h5>Section 8 — Personal Protective Equipment</h5><p>${escapeHtml(selected.ppe)}</p></div>`;
+      }
+    }
+
+    function downloadSelectedPdf() {
+      const catalog = getActiveCatalog();
+      const selected = catalog.find(function (item) {
+        return item.id === selectedSheetId;
+      });
+      if (!selected || selected.sourceType !== `local-pdf` || !selected.objectUrl) return;
+
+      const link = document.createElement(`a`);
+      link.href = selected.objectUrl;
+      link.download = selected.fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function renderAll() {
+      renderListOnly();
+      renderViewer();
+    }
+
+    function setupDragAndDrop() {
+      const dropZone = document.getElementById(`binder-drop-zone`);
+      if (!dropZone) return;
+
+      dropZone.addEventListener(`dragover`, function (event) {
+        event.preventDefault();
+        dropZone.classList.add(`drop-active`);
+      });
+
+      dropZone.addEventListener(`dragleave`, function (event) {
+        if (!dropZone.contains(event.relatedTarget)) {
+          dropZone.classList.remove(`drop-active`);
+        }
+      });
+
+      dropZone.addEventListener(`drop`, function (event) {
+        event.preventDefault();
+        dropZone.classList.remove(`drop-active`);
+        if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length) {
+          handleBatchFiles(event.dataTransfer.files);
+        }
+      });
+    }
+
+    async function persistUiState() {
+      if (!window.notebookAppApi || typeof window.notebookAppApi.setAppState !== `function`) return;
+      try {
+        await window.notebookAppApi.setAppState({
+          searchQuery: searchQuery,
+          selectedSheetId: selectedSheetId
+        });
+      } catch (err) {
+        // Ignore persistence errors in standalone local browser mode
+      }
+    }
+
+    async function initApp() {
+      setupDragAndDrop();
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+        try {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved) {
+            if (typeof saved.searchQuery === `string`) {
+              searchQuery = saved.searchQuery;
+              const searchEl = document.getElementById(`sds-search-input`);
+              if (searchEl) searchEl.value = searchQuery;
+            }
+            if (typeof saved.selectedSheetId === `string`) {
+              const existsInStarter = STARTER_SDS_SHEETS.some(function (s) {
+                return s.id === saved.selectedSheetId;
+              });
+              if (existsInStarter) {
+                selectedSheetId = saved.selectedSheetId;
+              }
+            }
+          }
+        } catch (err) {
+          // Proceed with defaults
+        }
+      }
+
+      renderAll();
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+        window.notebookAppApi.notifyAppReady();
+      }
+    }
+
+    document.addEventListener(`DOMContentLoaded`, initApp);
+  </script>
+</body>
+</html>
