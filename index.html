@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="handbook">
+  <title>INDUSTRIAL HAZARD SDS BOOK — Safety Data Sheet Master Binder</title>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* 1. Handbook base roles adapted to Deep Muted Industrial Safety Red Binder */
+      --background: #6b1d1d;                /* deep muted industrial safety red binder */
+      --binder-spine: #4e1212;              /* deeper binder spine & header band */
+      --binder-edge: #8c3434;               /* subtle binder stitching / seam rule */
+      --on-binder: #fcf8f2;                 /* crisp ivory-white ink on binder */
+      --on-binder-muted: #f2d9d9;           /* soft muted ivory on binder */
+
+      --surface-container-low: #f7f4ee;     /* primary paper binder sheet */
+      --surface-container: #ece6dc;         /* secondary paper tint */
+      --surface-container-high: #ded6c8;    /* pressed / active paper state */
+      --surface-card: #ffffff;              /* pure white sheet insert */
+
+      /* Ink on paper sheets */
+      --on-surface: #111111;                /* near-black Times New Roman ink */
+      --on-surface-variant: #4a4540;        /* charcoal-grey metadata on paper */
+
+      /* Rules */
+      --outline: #111111;                   /* heavy industrial black rules */
+      --outline-variant: #bfb7aa;           /* hairline paper dividers */
+
+      /* Accents */
+      --primary: #111111;                   /* solid industrial black for chemical boxes & primary actions */
+      --on-primary: #ffffff;                /* crisp white text inside black boxes */
+      --primary-container: #f0e3e3;         /* muted pale safety tint on paper */
+      --on-primary-container: #5c1414;      /* deep safety red text on pale tint */
+      --secondary: #3b2323;                 /* secondary dark umber */
+      --tertiary: #7d1919;                  /* muted industrial red inset rule & link accent */
+      --error: #9e1b1b;                     /* danger signal red on paper */
+      --on-error: #ffffff;
+
+      /* Semantic */
+      --positive: #1f5c2e;
+      --positive-bg: #e4efe6;
+      --warning: #8a4b00;
+      --warning-bg: #f9edd8;
+      --danger-bg: #f7dfdf;
+      --ghs-red: #b71c1c;
+
+      /* Data series */
+      --data-1: #7d1919;
+      --data-2: #8a4b00;
+      --data-3: #1f5c2e;
+      --data-4: #111111;
+      --data-context: #bfb7aa;
+
+      /* Typography — Times New Roman across entire interface */
+      --font-headline: 'Times New Roman', Times, serif;
+      --font-body: 'Times New Roman', Times, serif;
+      --font-label: 'Times New Roman', Times, serif;
+
+      /* Type scale (Dashboard / Data Explorer) */
+      --display-size: clamp(1.75rem, 1.35rem + 1.5vw, 2.5rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.25rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1.0625rem);
+      --label-size: 0.8125rem;
+
+      /* Shape — crisp square handbook binder corners */
+      --rounded: 0;
+      --rounded-lg: 0;
+      --rounded-full: 0;
+
+      /* Effects */
+      --top-index-rule: 6px solid var(--primary);
+      --inset-rule: 5px solid var(--tertiary);
+      --button-ground: 0 2px 0 var(--binder-spine);
+      --button-ground-secondary: 0 2px 0 var(--outline-variant);
+      --focus-yellow: #ffdd00;
+      --focus-ring: 3px solid var(--focus-yellow);
+      --focus-bar: inset 0 0 0 2px var(--on-surface);
+      --focus-underline: 0 -2px var(--focus-yellow), 0 4px var(--on-surface);
+
+      /* Spacing scale (4pt base) */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.5;
+    }
+
+    button, input, select, textarea {
+      font-family: var(--font-body);
+    }
+
+    header {
+      position: static !important;
+    }
+
+    /* Full-page seamless binder shell */
+    .binder-shell {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--background);
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .binder-container {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .binder-container * {
+      min-width: 0;
+    }
+
+    /* Header & Branding */
+    .binder-header {
+      background-color: var(--binder-spine);
+      border: 2px solid var(--binder-edge);
+      border-top: var(--top-index-rule);
+      padding: var(--space-lg);
+      color: var(--on-binder);
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: center;
+    }
+
+    .logo-frame {
+      width: 168px;
+      min-height: 96px;
+      background-color: var(--surface-card);
+      border: 2px solid var(--outline);
+      padding: var(--space-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-img {
+      display: block;
+      max-width: 100%;
+      max-height: 82px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .logo-svg-fallback {
+      display: none;
+      width: 100%;
+      height: auto;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      text-align: center;
+      color: var(--on-surface);
+    }
+
+    .logo-svg-fallback.is-visible {
+      display: flex;
+    }
+
+    .logo-svg-graphic {
+      width: 136px;
+      height: 68px;
+      display: block;
+    }
+
+    .header-text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      align-items: flex-start;
+    }
+
+    .binder-kicker {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--on-binder-muted);
+      margin: 0;
+    }
+
+    .binder-title {
+      font-family: var(--font-headline);
+      font-size: var(--display-size);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      color: var(--on-binder);
+      margin: 0;
+    }
+
+    .binder-subtitle {
+      font-family: var(--font-headline);
+      font-size: var(--subhead-size);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--on-binder-muted);
+      margin: 0;
+    }
+
+    .binder-meta-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm) var(--space-lg);
+      margin-top: var(--space-xs);
+      padding-top: var(--space-sm);
+      border-top: 1px solid var(--binder-edge);
+      width: 100%;
+      font-size: var(--label-size);
+      color: var(--on-binder-muted);
+    }
+
+    .binder-meta-item strong {
+      color: var(--on-binder);
+    }
+
+    /* Search & Filter Control Sheet */
+    .search-panel {
+      background-color: var(--surface-container-low);
+      border: 2px solid var(--outline);
+      border-left: var(--inset-rule);
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--space-md);
+      align-items: end;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .field-label {
+      font-family: var(--font-label);
+      font-size: var(--body-size);
+      font-weight: 700;
+      color: var(--on-surface);
+    }
+
+    .search-input {
+      width: 100%;
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      font-size: var(--body-size);
+      color: var(--on-surface);
+      background-color: var(--surface-card);
+      border: 2px solid var(--outline);
+      border-radius: var(--rounded);
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .search-input::placeholder {
+      color: var(--on-surface-variant);
+      opacity: 1;
+    }
+
+    .search-input:focus-visible {
+      outline: var(--focus-ring);
+      outline-offset: 0;
+      box-shadow: var(--focus-bar);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-lg);
+      font-family: var(--font-label);
+      font-size: var(--body-size);
+      font-weight: 700;
+      line-height: 1.2;
+      background-color: var(--primary);
+      color: var(--on-primary);
+      border: 2px solid var(--outline);
+      border-radius: var(--rounded);
+      box-shadow: var(--button-ground);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+    }
+
+    .button:hover {
+      background-color: var(--secondary);
+    }
+
+    .button:active {
+      transform: translateY(2px);
+      box-shadow: none;
+    }
+
+    .button:focus-visible {
+      outline: var(--focus-ring);
+      outline-offset: 0;
+      box-shadow: var(--focus-bar);
+    }
+
+    .button--secondary {
+      background-color: var(--surface-container);
+      color: var(--on-surface);
+      box-shadow: var(--button-ground-secondary);
+    }
+
+    .button--secondary:hover {
+      background-color: var(--surface-container-high);
+    }
+
+    .filter-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm) var(--space-md);
+      padding-top: var(--space-sm);
+      border-top: 1px solid var(--outline-variant);
+    }
+
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .filter-chip {
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-md);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background-color: var(--surface-card);
+      color: var(--on-surface);
+      border: 2px solid var(--outline);
+      border-radius: var(--rounded);
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+
+    .filter-chip:hover {
+      background-color: var(--surface-container);
+    }
+
+    .filter-chip.is-active {
+      background-color: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .filter-chip:focus-visible {
+      outline: var(--focus-ring);
+      outline-offset: 0;
+      box-shadow: var(--focus-bar);
+    }
+
+    .results-status {
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--on-surface-variant);
+      margin: 0;
+    }
+
+    /* Two-column Master Binder Workspace */
+    .binder-workspace {
+      display: grid;
+      grid-template-columns: minmax(300px, 38%) minmax(0, 62%);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    .panel {
+      background-color: var(--surface-container-low);
+      border: 2px solid var(--outline);
+      border-top: var(--top-index-rule);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-header {
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 2px solid var(--outline);
+      background-color: var(--surface-card);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+
+    .panel-title {
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--on-surface);
+      margin: 0;
+    }
+
+    .panel-count-tag {
+      display: inline-block;
+      padding: var(--space-xs) var(--space-sm);
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      border: 1px solid var(--tertiary);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    /* SDS Sheets List */
+    .sds-list {
+      display: flex;
+      flex-direction: column;
+      max-height: 760px;
+      overflow-y: auto;
+      padding: var(--space-md);
+      gap: var(--space-sm);
+    }
+
+    .sds-item {
+      width: 100%;
+      min-width: 0;
+      min-height: 44px;
+      text-align: left;
+      background-color: var(--surface-card);
+      color: var(--on-surface);
+      border: 2px solid var(--outline-variant);
+      border-left: 5px solid var(--outline);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--space-sm);
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+    }
+
+    .sds-item:hover {
+      background-color: var(--surface-container);
+      border-color: var(--outline);
+    }
+
+    .sds-item.is-selected {
+      background-color: var(--surface-card);
+      border: 2px solid var(--outline);
+      border-left: 6px solid var(--tertiary);
+      box-shadow: inset 0 0 0 1px var(--outline);
+    }
+
+    .sds-item:focus-visible {
+      outline: var(--focus-ring);
+      outline-offset: 0;
+      box-shadow: var(--focus-bar);
+    }
+
+    /* CHEMICAL BOX ALIGNMENT FIX — dynamic expansion, clean wrapping, zero clipping */
+    .chemical-box-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: var(--space-xs);
+      width: 100%;
+      min-width: 0;
+    }
+
+    .chemical-box {
+      display: inline-block;
+      max-width: 100%;
+      width: fit-content;
+      min-width: 0;
+      height: auto;
+      min-height: 0;
+      padding: var(--space-xs) var(--space-sm);
+      background-color: var(--primary);
+      color: var(--on-primary);
+      font-family: var(--font-label);
+      font-size: var(--body-size);
+      font-weight: 700;
+      line-height: 1.35;
+      white-space: normal;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      text-align: left;
+    }
+
+    .chemical-box--code {
+      font-size: var(--label-size);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background-color: var(--secondary);
+    }
+
+    .sds-item-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-xs) var(--space-sm);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      width: 100%;
+      min-width: 0;
+    }
+
+    .sds-item-manufacturer {
+      font-weight: 700;
+      color: var(--on-surface);
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    .signal-tag {
+      display: inline-block;
+      padding: var(--space-xs) var(--space-sm);
+      font-size: var(--label-size);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border: 1px solid var(--outline);
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    .signal-tag--danger {
+      background-color: var(--danger-bg);
+      color: var(--error);
+      border-color: var(--error);
+    }
+
+    .signal-tag--warning {
+      background-color: var(--warning-bg);
+      color: var(--warning);
+      border-color: var(--warning);
+    }
+
+    .signal-tag--caution {
+      background-color: var(--positive-bg);
+      color: var(--positive);
+      border-color: var(--positive);
+    }
+
+    .sds-item-summary {
+      margin: 0;
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      line-height: 1.4;
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    /* Empty search state */
+    .empty-state {
+      padding: var(--space-xl) var(--space-lg);
+      background-color: var(--surface-card);
+      border: 2px dashed var(--outline-variant);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-md);
+    }
+
+    .empty-state-title {
+      margin: 0;
+      font-size: var(--subhead-size);
+      font-weight: 700;
+      color: var(--on-surface);
+    }
+
+    .empty-state-body {
+      margin: 0;
+      color: var(--on-surface-variant);
+      max-width: 65ch;
+    }
+
+    /* Summary & Full SDS Sheet Panel */
+    .preview-body {
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .preview-hero {
+      background-color: var(--surface-card);
+      border: 2px solid var(--outline);
+      border-left: var(--inset-rule);
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .preview-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+
+    .preview-chemical-heading {
+      margin: 0;
+      font-family: var(--font-headline);
+      font-size: clamp(1.375rem, 1.15rem + 0.8vw, 1.875rem);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--on-surface);
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    .preview-facts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+      gap: var(--space-md);
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--outline-variant);
+    }
+
+    .fact-cell {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .fact-label {
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--on-surface-variant);
+    }
+
+    .fact-value {
+      font-size: var(--body-size);
+      font-weight: 700;
+      color: var(--on-surface);
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    /* GHS Pictograms strip */
+    .ghs-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      align-items: center;
+      padding: var(--space-md);
+      background-color: var(--surface-container);
+      border: 1px solid var(--outline-variant);
+    }
+
+    .ghs-strip-label {
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--on-surface);
+      margin-right: var(--space-xs);
+    }
+
+    .ghs-item {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      background-color: var(--surface-card);
+      border: 1px solid var(--outline);
+      padding: var(--space-xs) var(--space-sm);
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--on-surface);
+    }
+
+    .ghs-diamond-svg {
+      width: 30px;
+      height: 30px;
+      flex-shrink: 0;
+    }
+
+    .ghs-border {
+      fill: var(--surface-card);
+      stroke: var(--ghs-red);
+      stroke-width: 3;
+    }
+
+    .ghs-glyph {
+      fill: var(--on-surface);
+      stroke: var(--on-surface);
+    }
+
+    /* Preview Mode Tabs (Summary Sheet vs Embedded PDF Frame) */
+    .sheet-mode-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      border-bottom: 2px solid var(--outline);
+      padding-bottom: var(--space-sm);
+    }
+
+    .sheet-mode-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .mode-tab {
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-md);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background-color: var(--surface-card);
+      color: var(--on-surface);
+      border: 2px solid var(--outline);
+      cursor: pointer;
+    }
+
+    .mode-tab.is-active {
+      background-color: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .mode-tab:focus-visible {
+      outline: var(--focus-ring);
+      outline-offset: 0;
+      box-shadow: var(--focus-bar);
+    }
+
+    /* Embedded PDF Frame */
+    .pdf-viewer-wrap {
+      background-color: var(--surface-card);
+      border: 2px solid var(--outline);
+      min-height: 540px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pdf-frame {
+      width: 100%;
+      height: 560px;
+      border: 0;
+      background-color: var(--surface-container);
+    }
+
+    .pdf-unavailable-note {
+      padding: var(--space-lg);
+      background-color: var(--surface-container);
+      border-top: 1px solid var(--outline-variant);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+
+    /* 16-Section Standard SDS Sheet Document */
+    .sds-document {
+      background-color: var(--surface-card);
+      border: 2px solid var(--outline);
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .sds-doc-banner {
+      border-bottom: 3px double var(--outline);
+      padding-bottom: var(--space-md);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--space-sm);
+    }
+
+    .sds-doc-heading {
+      margin: 0;
+      font-size: var(--subhead-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .sds-doc-standard {
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--on-surface-variant);
+    }
+
+    .sds-sections-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .sds-section-block {
+      border-top: 2px solid var(--outline);
+      padding-top: var(--space-sm);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .sds-section-block--wide {
+      grid-column: 1 / -1;
+    }
+
+    .sds-sec-title {
+      margin: 0;
+      font-size: var(--body-size);
+      font-weight: 700;
+      color: var(--tertiary);
+    }
+
+    .sds-sec-body {
+      margin: 0;
+      font-size: var(--body-size);
+      color: var(--on-surface);
+      max-width: 65ch;
+    }
+
+    .sds-props-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--label-size);
+    }
+
+    .sds-props-table th,
+    .sds-props-table td {
+      padding: var(--space-xs) var(--space-sm);
+      border-bottom: 1px solid var(--outline-variant);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .sds-props-table th {
+      font-weight: 700;
+      color: var(--on-surface-variant);
+      width: 42%;
+    }
+
+    /* Footer */
+    .binder-footer {
+      background-color: var(--binder-spine);
+      border: 2px solid var(--binder-edge);
+      padding: var(--space-md) var(--space-lg);
+      color: var(--on-binder-muted);
+      font-size: var(--label-size);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm) var(--space-lg);
+    }
+
+    /* Responsive breakpoints */
+    @media (max-width: 960px) {
+      .binder-workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .sds-list {
+        max-height: 440px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .binder-shell {
+        padding: var(--space-sm);
+        gap: var(--space-md);
+      }
+
+      .binder-header {
+        grid-template-columns: 1fr;
+        padding: var(--space-md);
+      }
+
+      .logo-frame {
+        width: 100%;
+        max-width: 220px;
+      }
+
+      .search-panel,
+      .preview-body,
+      .sds-document {
+        padding: var(--space-md);
+      }
+
+      .search-row {
+        grid-template-columns: 1fr;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="binder-shell">
+    <div class="binder-container">
+
+      <!-- Masthead / Binder Header -->
+      <header class="binder-header">
+        <div class="logo-frame" aria-label="Organization Logo">
+          <img
+            id="brand-logo-img"
+            class="logo-img"
+            src="UFM_logo_Transparent.png"
+            alt="UFM Industrial Safety Master Binder Logo"
+          >
+          <div id="brand-logo-fallback" class="logo-svg-fallback" aria-hidden="true">
+            <svg class="logo-svg-graphic" viewBox="0 0 180 90" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="UFM Safety Emblem">
+              <rect x="2" y="2" width="176" height="86" fill="var(--surface-card)" stroke="var(--outline)" stroke-width="3"/>
+              <rect x="8" y="8" width="164" height="74" fill="none" stroke="var(--tertiary)" stroke-width="2"/>
+              <polygon points="34,18 52,45 34,72 16,45" fill="var(--tertiary)"/>
+              <polygon points="34,26 45,45 34,64 23,45" fill="var(--surface-card)"/>
+              <rect x="32" y="34" width="4" height="14" fill="var(--on-surface)"/>
+              <rect x="32" y="51" width="4" height="4" fill="var(--on-surface)"/>
+              <text x="64" y="45" font-family="Times New Roman, Times, serif" font-size="24" font-weight="bold" fill="var(--on-surface)">UFM</text>
+              <text x="64" y="64" font-family="Times New Roman, Times, serif" font-size="11" font-weight="bold" letter-spacing="1.2" fill="var(--tertiary)">SAFETY &amp; SDS</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="header-text">
+          <p class="binder-kicker">OSHA HazCom / GHS Master Reference</p>
+          <h1 class="binder-title">INDUSTRIAL HAZARD SDS BOOK</h1>
+          <p class="binder-subtitle">Safety Data Sheet Master Binder</p>
+          <div class="binder-meta-strip">
+            <span class="binder-meta-item"><strong>Index Source:</strong> <span id="manifest-source-label">fastmail7009-netizen/pdf-library (pdf-manifest.json)</span></span>
+            <span class="binder-meta-item"><strong>Access Mode:</strong> Read-Only Reference</span>
+            <span class="binder-meta-item"><strong>Total Indexed Sheets:</strong> <span id="header-total-count">0</span></span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Search & Filter Controls (100% Read-Only) -->
+      <section class="search-panel" aria-label="Search and Filter Safety Data Sheets">
+        <div class="search-row">
+          <div class="field-group">
+            <label for="sds-search-input" class="field-label">Search SDS Index</label>
+            <input
+              type="search"
+              id="sds-search-input"
+              class="search-input"
+              placeholder="Search SDS index, chemical name..."
+              autocomplete="off"
+            >
+          </div>
+          <button type="button" id="reset-filter-btn" class="button button--secondary">
+            Reset filter
+          </button>
+        </div>
+
+        <div class="filter-toolbar">
+          <div class="filter-pills" role="group" aria-label="Filter by Hazard Signal or Class">
+            <button type="button" class="filter-chip is-active" data-filter="all">All Sheets</button>
+            <button type="button" class="filter-chip" data-filter="DANGER">Danger</button>
+            <button type="button" class="filter-chip" data-filter="WARNING">Warning</button>
+            <button type="button" class="filter-chip" data-filter="Corrosive">Corrosive</button>
+            <button type="button" class="filter-chip" data-filter="Flammable">Flammable</button>
+          </div>
+          <p id="results-status" class="results-status" aria-live="polite">Loading SDS index…</p>
+        </div>
+      </section>
+
+      <!-- Two-Column Master Binder Workspace -->
+      <main class="binder-workspace">
+
+        <!-- Left Column: SDS Sheets List -->
+        <section class="panel" aria-labelledby="sds-list-heading">
+          <div class="panel-header">
+            <h2 id="sds-list-heading" class="panel-title">SDS Sheets List</h2>
+            <span id="list-count-badge" class="panel-count-tag">0 Sheets</span>
+          </div>
+          <div id="sds-list-container" class="sds-list" role="listbox" aria-label="Safety Data Sheets List">
+            <!-- Dynamically populated -->
+          </div>
+        </section>
+
+        <!-- Right Column: Summary & Full SDS Sheet -->
+        <section class="panel" aria-labelledby="sds-preview-heading">
+          <div class="panel-header">
+            <h2 id="sds-preview-heading" class="panel-title">Summary &amp; Full SDS Sheet</h2>
+            <span id="selected-code-tag" class="panel-count-tag">No Selection</span>
+          </div>
+          <div id="preview-body" class="preview-body">
+            <!-- Dynamically populated -->
+          </div>
+        </section>
+
+      </main>
+
+      <footer class="binder-footer">
+        <span>INDUSTRIAL HAZARD SDS BOOK — Safety Data Sheet Master Binder</span>
+        <span>Automated Manifest Index: pdf-manifest.json · fastmail7009-netizen/pdf-library · Read-Only Reference</span>
+      </footer>
+
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // Fallback catalog grounded in industrial/janitorial/lab SDS standards (anchored with Dawn SOAP)
+      // Used automatically if pdf-manifest.json is unavailable in standalone preview environments.
+      const FALLBACK_MANIFEST = [
+        {
+          code: `SDS-001`,
+          name: `Dawn SOAP`,
+          fullProductName: `Dawn Professional Manual Pot & Pan Liquid Dishwashing Detergent (Dawn SOAP)`,
+          filename: `Dawn_SOAP_SDS.pdf`,
+          manufacturer: `Procter & Gamble Professional`,
+          cas: `Mixture (Sodium Laureth Sulfate / Lauramine Oxide / Ethanol)`,
+          category: `Detergents & Surfactants`,
+          signalWord: `WARNING`,
+          hazards: [`Eye Irritation`, `Aquatic Chronic`],
+          ghsIcons: [`exclamation`],
+          ppe: `Safety glasses recommended for bulk concentrate handling; impervious gloves for prolonged immersion.`,
+          firstAid: `Eyes: Rinse cautiously with water for 15 minutes; remove contact lenses if present. Ingestion: Drink a glass of water; do not induce vomiting.`,
+          fireFighting: `Non-flammable aqueous solution. Use extinguishing media suitable for surrounding fire (water spray, CO2, dry chemical).`,
+          spills: `Small spills: Flush with plenty of water or absorb with inert material. Prevent concentrated undiluted runoff into storm drains.`,
+          storage: `Store in original closed container in a cool, dry, well-ventilated area between 50°F and 95°F.`,
+          physical: {
+            appearance: `Clear blue viscous liquid`,
+            odor: `Mild characteristic citrus-fresh scent`,
+            ph: `9.0 – 9.2 (10% aqueous solution)`,
+            flashPoint: `> 201°F (> 93.9°C, Closed Cup)`,
+            specificGravity: `1.03`
+          },
+          summary: `Concentrated anionic and nonionic surfactant dishwashing liquid. Causes serious eye irritation upon direct contact; low acute dermal and inhalation toxicity.`,
+          tox: `LD50 Oral (Rat) > 5,000 mg/kg (estimated from components). Reversible eye irritation in rabbit Draize test.`,
+          ecological: `Readily biodegradable surfactants; harmful to aquatic life in high undiluted concentrations.`,
+          transport: `Not regulated as dangerous goods by DOT, IMDG, or IATA.`,
+          regulatory: `OSHA HazCom 2012 compliant; TSCA listed ingredients.`
+        },
+        {
+          code: `SDS-002`,
+          name: `Sodium Hypochlorite Solution (12.5% Industrial Grade)`,
+          fullProductName: `Sodium Hypochlorite Aqueous Solution 12.5% — Industrial Bleach & Disinfectant`,
+          filename: `Sodium_Hypochlorite_12_5_SDS.pdf`,
+          manufacturer: `Olin Chlor Alkali Products`,
+          cas: `7681-52-9`,
+          category: `Oxidizers & Disinfectants`,
+          signalWord: `DANGER`,
+          hazards: [`Corrosive`, `Oxidizer`, `Aquatic Acute`],
+          ghsIcons: [`corrosion`, `environment`],
+          ppe: `Chemical splash goggles, face shield, neoprene or butyl rubber gloves, chemical-resistant apron, and NIOSH respirator if misting occurs.`,
+          firstAid: `Eyes/Skin: Flush immediately with copious running water for at least 30 minutes while removing contaminated clothing. Seek immediate medical attention.`,
+          fireFighting: `Non-combustible, but strong oxidizer that intensifies fire and reacts violently with acids or ammonia to release toxic chlorine gas.`,
+          spills: `Evacuate area, dike spill with sand or vermiculite, neutralize cautiously with sodium bisulfite solution under ventilation.`,
+          storage: `Store in vented, UV-opaque HDPE tanks away from heat, sunlight, acids, ammonia, and organic reducing agents.`,
+          physical: {
+            appearance: `Pale greenish-yellow liquid`,
+            odor: `Pungent chlorine odor`,
+            ph: `12.0 – 13.0`,
+            flashPoint: `Not flammable`,
+            specificGravity: `1.20`
+          },
+          summary: `Strong alkaline oxidizer causing severe skin burns and eye damage. Never mix with acids or ammonium compounds.`,
+          tox: `Corrosive to mucous membranes, respiratory tract, eyes, and skin.`,
+          ecological: `Very toxic to aquatic organisms; dechlorinate before authorized discharge.`,
+          transport: `UN 1791, Hypochlorite solutions, Class 8, Packing Group III.`,
+          regulatory: `CERCLA RQ: 100 lbs (Sodium Hypochlorite).`
+        },
+        {
+          code: `SDS-003`,
+          name: `Isopropyl Alcohol 99% Anhydrous Solvent`,
+          fullProductName: `Isopropyl Alcohol (2-Propanol) 99% USP / Electronic Cleaning Grade`,
+          filename: `Isopropyl_Alcohol_99_SDS.pdf`,
+          manufacturer: `Fisher Chemical Industrial`,
+          cas: `67-63-0`,
+          category: `Flammable Solvents`,
+          signalWord: `DANGER`,
+          hazards: [`Flammable`, `Eye Irritation`, `Narcotic Effects`],
+          ghsIcons: [`flame`, `exclamation`],
+          ppe: `Safety goggles, nitrile or butyl gloves, flame-resistant lab coat, and local exhaust ventilation.`,
+          firstAid: `Inhalation: Move to fresh air immediately. Eyes: Irrigate with water for 15 minutes. Ingestion: Do not induce vomiting; obtain medical help.`,
+          fireFighting: `Use alcohol-resistant foam, dry chemical, or CO2. Water spray may be ineffective; use water fog only to cool exposed containers.`,
+          spills: `Eliminate all ignition sources immediately. Ground equipment. Absorb with non-sparking tools and inert absorbent.`,
+          storage: `Store in grounded, bonded flammable-liquid safety cabinet away from heat, sparks, open flames, and strong oxidizers.`,
+          physical: {
+            appearance: `Clear colorless volatile liquid`,
+            odor: `Sharp rubbing-alcohol odor`,
+            ph: `Neutral (~7.0)`,
+            flashPoint: `53°F (11.7°C, Closed Cup)`,
+            specificGravity: `0.785`
+          },
+          summary: `Highly flammable liquid and vapor. Causes serious eye irritation and may cause drowsiness or dizziness upon high vapor inhalation.`,
+          tox: `OSHA PEL: 400 ppm TWA; ACGIH TLV: 200 ppm TWA, 400 ppm STEL.`,
+          ecological: `Readily biodegradable; low bioaccumulation potential.`,
+          transport: `UN 1219, Isopropanol, Class 3, Packing Group II.`,
+          regulatory: `SARA 311/312 Fire Hazard, Acute Health Hazard.`
+        },
+        {
+          code: `SDS-004`,
+          name: `Acetone Technical Grade Fast-Evaporating Degreaser`,
+          fullProductName: `Acetone (2-Propanone) 99.5% Technical Grade Industrial Solvent`,
+          filename: `Acetone_Technical_Grade_SDS.pdf`,
+          manufacturer: `Shell Chemical LP`,
+          cas: `67-64-1`,
+          category: `Flammable Solvents`,
+          signalWord: `DANGER`,
+          hazards: [`Flammable`, `Eye Irritation`, `STOT-SE 3`],
+          ghsIcons: [`flame`, `exclamation`],
+          ppe: `Chemical splash goggles, butyl rubber gloves, explosion-proof ventilation.`,
+          firstAid: `Eyes: Flush thoroughly with water for 15–20 minutes. Skin: Wash with soap and water; apply emollient cream for defatting.`,
+          fireFighting: `Highly volatile Class IB flammable liquid. Use dry chemical, CO2, or alcohol-resistant foam. Vapors may flash back from distant ignition sources.`,
+          spills: `Shut off ignition sources. Ventilate area. Soak up with vermiculite or dry sand using non-sparking shovels.`,
+          storage: `Keep containers tightly closed in cool, well-ventilated flammable storage room.`,
+          physical: {
+            appearance: `Clear colorless mobile liquid`,
+            odor: `Sweetish pungent ketone odor`,
+            ph: `Not applicable`,
+            flashPoint: `-4°F (-20°C, Closed Cup)`,
+            specificGravity: `0.791`
+          },
+          summary: `Extremely flammable solvent and vapor; causes serious eye irritation and central nervous system depression at high concentrations.`,
+          tox: `OSHA PEL: 1,000 ppm TWA; ACGIH TLV: 250 ppm TWA, 500 ppm STEL.`,
+          ecological: `Volatile; evaporates rapidly from soil and water surfaces.`,
+          transport: `UN 1090, Acetone, Class 3, Packing Group II.`,
+          regulatory: `CERCLA RQ: 5,000 lbs; VOC exempt under US EPA rules.`
+        },
+        {
+          code: `SDS-005`,
+          name: `Phosphoric Acid 75% Heavy-Duty Mineral Descaler`,
+          fullProductName: `Phosphoric Acid 75% Aqueous Solution — Industrial Scale & Rust Remover`,
+          filename: `Phosphoric_Acid_75_SDS.pdf`,
+          manufacturer: `Nutrien Industrial Chemicals`,
+          cas: `7664-38-2`,
+          category: `Acids & Descalers`,
+          signalWord: `DANGER`,
+          hazards: [`Corrosive`, `Metal Corrosive`],
+          ghsIcons: [`corrosion`],
+          ppe: `Full face shield over chemical goggles, neoprene gloves, acid-resistant apron and boots.`,
+          firstAid: `Skin/Eyes: Flood immediately with water for at least 30 minutes. Do not attempt chemical neutralization on skin.`,
+          fireFighting: `Non-flammable, but reaction with common metals liberates flammable hydrogen gas.`,
+          spills: `Contain spill; neutralize carefully with soda ash or hydrated lime. Wash residue thoroughly with water.`,
+          storage: `Store in corrosion-resistant lined steel or HDPE containers away from strong bases, metals, and cyanides.`,
+          physical: {
+            appearance: `Clear syrupy colorless liquid`,
+            odor: `Odorless`,
+            ph: `< 1.0`,
+            flashPoint: `Not flammable`,
+            specificGravity: `1.58`
+          },
+          summary: `Concentrated mineral acid causing severe skin burns, permanent eye damage, and corrosion to mild steel and aluminum.`,
+          tox: `OSHA PEL: 1 mg/m³ TWA; ACGIH STEL: 3 mg/m³.`,
+          ecological: `Harmful to aquatic life due to acute pH shift and nutrient loading.`,
+          transport: `UN 1805, Phosphoric acid, solution, Class 8, Packing Group III.`,
+          regulatory: `CERCLA RQ: 5,000 lbs.`
+        },
+        {
+          code: `SDS-006`,
+          name: `Quaternary Ammonium Sanitizer Concentrate (QAC-256)`,
+          fullProductName: `Didecyl Dimethyl Ammonium Chloride / Benzalkonium Chloride Sanitizer Concentrate`,
+          filename: `Quat_Sanitizer_QAC256_SDS.pdf`,
+          manufacturer: `Ecolab Industrial Hygiene`,
+          cas: `68424-85-1 / 7173-51-5`,
+          category: `Detergents & Surfactants`,
+          signalWord: `DANGER`,
+          hazards: [`Corrosive`, `Acute Toxicity`, `Aquatic Acute`],
+          ghsIcons: [`corrosion`, `exclamation`, `environment`],
+          ppe: `Chemical splash goggles, nitrile gloves, protective footwear when diluting concentrate.`,
+          firstAid: `Eyes: Flush for 20 minutes; seek medical evaluation. Ingestion: Rinse mouth; drink 1–2 glasses of water; seek medical care immediately.`,
+          fireFighting: `Water spray, dry chemical, foam, or CO2.`,
+          spills: `Contain concentrate with inert absorbent; rinse floor thoroughly as diluted residue is slippery.`,
+          storage: `Keep tightly sealed at room temperature; keep out of reach of unauthorized personnel.`,
+          physical: {
+            appearance: `Clear amber-straw liquid`,
+            odor: `Mild amine-alcohol odor`,
+            ph: `7.2 – 8.2 (concentrate)`,
+            flashPoint: `> 200°F (> 93°C)`,
+            specificGravity: `1.00`
+          },
+          summary: `Broad-spectrum quaternary ammonium biocide concentrate. Corrosive to eyes and skin prior to end-use dilution.`,
+          tox: `Concentrate causes severe ocular corrosion; diluted solution (1:256) is mildly irritating.`,
+          ecological: `Very toxic to aquatic life; do not discharge undiluted concentrate to surface waters.`,
+          transport: `UN 1903, Disinfectant, liquid, corrosive, n.o.s., Class 8, PG III.`,
+          regulatory: `EPA FIFRA Registered Antimicrobial.`
+        },
+        {
+          code: `SDS-007`,
+          name: `Sodium Hydroxide Caustic Soda Micro-Beads (99%)`,
+          fullProductName: `Sodium Hydroxide Anhydrous Beads (Caustic Soda) 99% Technical Grade`,
+          filename: `Sodium_Hydroxide_Beads_SDS.pdf`,
+          manufacturer: `Westlake Chemical Corp.`,
+          cas: `1310-73-2`,
+          category: `Caustics & Alkalis`,
+          signalWord: `DANGER`,
+          hazards: [`Corrosive`, `Exothermic Dissolution`],
+          ghsIcons: [`corrosion`],
+          ppe: `Chemical goggles and face shield, gauntlet butyl/neoprene gloves, dust respirator (N95/P100), full chemical apron.`,
+          firstAid: `Eyes/Skin: Brush off dry beads, then flush continuously with cool water for at least 30 minutes. Immediate medical emergency for eye exposure.`,
+          fireFighting: `Non-combustible; reacts violently with water (intense heat), acids, and amphoteric metals (aluminum, zinc) generating hydrogen gas.`,
+          spills: `Sweep up dry material carefully without generating dust. Place in dry, labeled HDPE drum for recovery or neutralization.`,
+          storage: `Store tightly sealed in cool, dry location away from moisture, acids, and aluminum/galvanized surfaces.`,
+          physical: {
+            appearance: `White hygroscopic spherical beads`,
+            odor: `Odorless`,
+            ph: `14.0 (5% aqueous solution)`,
+            flashPoint: `Not flammable`,
+            specificGravity: `2.13`
+          },
+          summary: `Severe corrosive alkali. Causes immediate deep tissue liquefaction burns upon moisture contact. Always add caustic slowly to cold water, never water to caustic.`,
+          tox: `OSHA PEL: 2 mg/m³ TWA; ACGIH Ceiling: 2 mg/m³.`,
+          ecological: `Harmful to aquatic life due to extreme alkalinity.`,
+          transport: `UN 1823, Sodium hydroxide, solid, Class 8, Packing Group II.`,
+          regulatory: `CERCLA RQ: 1,000 lbs.`
+        },
+        {
+          code: `SDS-008`,
+          name: `Simple Green Industrial Cleaner & Degreaser`,
+          fullProductName: `Simple Green All-Purpose Industrial Cleaner & Degreaser Concentrate`,
+          filename: `Simple_Green_Industrial_SDS.pdf`,
+          manufacturer: `Sunshine Makers, Inc.`,
+          cas: `Mixture (Ethoxylated Alcohol / Tetrapotassium Pyrophosphate)`,
+          category: `Detergents & Surfactants`,
+          signalWord: `WARNING`,
+          hazards: [`Eye Irritation`],
+          ghsIcons: [`exclamation`],
+          ppe: `Safety glasses with side shields; nitrile gloves for extended direct immersion.`,
+          firstAid: `Eyes: Flush gently with clean water for 15 minutes. Skin: Rinse with water if irritation develops.`,
+          fireFighting: `Non-flammable aqueous detergent; use extinguishing agents appropriate to surrounding materials.`,
+          spills: `Mop up or absorb with inert material; floor surfaces will become slippery until rinsed clean.`,
+          storage: `Keep container tightly closed between 40°F and 110°F; avoid freezing.`,
+          physical: {
+            appearance: `Clear emerald-green liquid`,
+            odor: `Characteristic sassafras scent`,
+            ph: `8.5 – 9.5`,
+            flashPoint: `None to boiling`,
+            specificGravity: `1.02`
+          },
+          summary: `Water-based biodegradable non-ionic surfactant degreaser. Causes mild to moderate eye irritation on direct splash.`,
+          tox: `LD50 Oral (Rat) > 5,000 mg/kg. Non-carcinogenic per NTP/IARC/OSHA.`,
+          ecological: `Readily biodegradable; phosphate-free formula variants available.`,
+          transport: `Not DOT regulated.`,
+          regulatory: `OSHA HazCom 2012 compliant; EPA Safer Choice recognized.`
+        },
+        {
+          code: `SDS-009`,
+          name: `WD-40 Multi-Use Industrial Penetrant & Lubricant`,
+          fullProductName: `WD-40 Multi-Use Product Aerosol — Penetrant, Moisture Displacer & Corrosion Inhibitor`,
+          filename: `WD40_Multi_Use_Aerosol_SDS.pdf`,
+          manufacturer: `WD-40 Company`,
+          cas: `64742-47-8 / 124-38-9 (CO2 Propellant)`,
+          category: `Flammable Solvents`,
+          signalWord: `DANGER`,
+          hazards: [`Flammable`, `Pressurized Aerosol`, `Aspiration Hazard`],
+          ghsIcons: [`flame`, `health`, `exclamation`],
+          ppe: `Safety glasses, chemical-resistant nitrile gloves, adequate cross-ventilation.`,
+          firstAid: `Ingestion: Do NOT induce vomiting due to aspiration hazard; seek immediate medical attention. Inhalation: Move to fresh air.`,
+          fireFighting: `Use CO2, dry chemical, or foam. Pressurized cans may rupture violently in fire; cool containers with water spray from safe distance.`,
+          spills: `Eliminate ignition sources. Absorb liquid with oil-dry clay or vermiculite.`,
+          storage: `Store below 120°F (49°C) away from sparks, open flames, and direct sunlight. Do not puncture or incinerate cans.`,
+          physical: {
+            appearance: `Light amber liquid spray`,
+            odor: `Mild petroleum hydrocarbon odor`,
+            ph: `Not applicable`,
+            flashPoint: `138°F (59°C, Liquid Concentrate)`,
+            specificGravity: `0.81`
+          },
+          summary: `Flammable aerosol containing aliphatic petroleum distillates. May be fatal if swallowed and enters airways; pressurized container may burst if heated.`,
+          tox: `ACGIH TLV (Aliphatic Hydrocarbon): 200 mg/m³ TWA.`,
+          ecological: `Harmful to aquatic life with long-lasting effects if spilled in bulk.`,
+          transport: `UN 1950, Aerosols, Flammable, Class 2.1 (Limited Quantity).`,
+          regulatory: `TSCA inventory compliant; California Prop 65 non-listed.`
+        },
+        {
+          code: `SDS-010`,
+          name: `Muriatic Acid (Hydrochloric Acid 31.45% Technical)`,
+          fullProductName: `Hydrochloric Acid 20° Baumé (31.45% Muriatic Acid) Concrete Etchant & pH Reducer`,
+          filename: `Muriatic_Acid_31_SDS.pdf`,
+          manufacturer: `Kuehne Chemical Co.`,
+          cas: `7647-01-0`,
+          category: `Acids & Descalers`,
+          signalWord: `DANGER`,
+          hazards: [`Corrosive`, `Respiratory Irritation`, `Metal Corrosive`],
+          ghsIcons: [`corrosion`, `exclamation`],
+          ppe: `Chemical splash goggles + full face shield, acid-resistant butyl gloves, acid apron, and acid-gas cartridge respirator (NIOSH-approved).`,
+          firstAid: `Inhalation: Remove immediately to fresh air; administer oxygen if breathing is difficult. Skin/Eyes: Flush for 30 minutes; obtain urgent medical care.`,
+          fireFighting: `Non-flammable, but evolves corrosive HCl gas when heated and flammable hydrogen gas on contact with metals.`,
+          spills: `Evacuate downwind personnel. Neutralize slowly with sodium bicarbonate or soda ash; avoid breathing fumes.`,
+          storage: `Store in acid-rated ventilated containment away from alkalis, oxidizers, bleach (chlorine release), and metals.`,
+          physical: {
+            appearance: `Clear to slightly yellow fuming liquid`,
+            odor: `Sharp, suffocating pungent acid odor`,
+            ph: `< 1.0`,
+            flashPoint: `Not flammable`,
+            specificGravity: `1.16`
+          },
+          summary: `Strong fuming mineral acid. Causes severe burns to skin, eyes, and respiratory tract. Never mix with sodium hypochlorite (bleach).`,
+          tox: `OSHA Ceiling PEL: 5 ppm (7 mg/m³); IDLH: 50 ppm.`,
+          ecological: `Toxic to aquatic life via rapid pH depression.`,
+          transport: `UN 1789, Hydrochloric acid, Class 8, Packing Group II.`,
+          regulatory: `CERCLA RQ: 5,000 lbs; EPCRA Section 302 TPQ applies to anhydrous form.`
+        }
+      ];
+
+      // Application state
+      let allSheets = [];
+      let filteredSheets = [];
+      let selectedSheetId = null;
+      let activeCategoryFilter = `all`;
+      let activeViewMode = `summary`; // 'summary' or 'pdf'
+      let loadedFromLiveManifest = false;
+
+      // GHS SVG Icon Library (zero inline hex — uses CSS classes)
+      const GHS_ICONS = {
+        flame: {
+          label: `Flammable (GHS02)`,
+          svg: `<svg class="ghs-diamond-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <polygon class="ghs-border" points="32,4 60,32 32,60 4,32"/>
+            <path class="ghs-glyph" d="M32 16c2 7-3 10-1 15 2-2 4-5 4-9 4 4 6 10 3 16-2 4-5 6-8 6-5 0-9-4-9-10 0-5 3-9 6-12 0 3 1 5 3 6-1-5 0-9 2-12z" stroke-width="1"/>
+            <rect class="ghs-glyph" x="22" y="45" width="20" height="2.5"/>
+          </svg>`
+        },
+        exclamation: {
+          label: `Irritant / Acute Hazard (GHS07)`,
+          svg: `<svg class="ghs-diamond-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <polygon class="ghs-border" points="32,4 60,32 32,60 4,32"/>
+            <rect class="ghs-glyph" x="29.5" y="17" width="5" height="20"/>
+            <circle class="ghs-glyph" cx="32" cy="44" r="3"/>
+          </svg>`
+        },
+        corrosion: {
+          label: `Corrosive (GHS05)`,
+          svg: `<svg class="ghs-diamond-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <polygon class="ghs-border" points="32,4 60,32 32,60 4,32"/>
+            <path class="ghs-glyph" d="M18 24l8-4 4 6-8 4zM46 24l-8-4-4 6 8 4z" stroke-width="1"/>
+            <rect class="ghs-glyph" x="15" y="40" width="14" height="5"/>
+            <rect class="ghs-glyph" x="35" y="41" width="14" height="4"/>
+            <circle class="ghs-glyph" cx="24" cy="34" r="1.8"/>
+            <circle class="ghs-glyph" cx="40" cy="34" r="1.8"/>
+          </svg>`
+        },
+        health: {
+          label: `Health / Aspiration Hazard (GHS08)`,
+          svg: `<svg class="ghs-diamond-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <polygon class="ghs-border" points="32,4 60,32 32,60 4,32"/>
+            <circle class="ghs-glyph" cx="32" cy="21" r="4.5"/>
+            <path class="ghs-glyph" d="M22 45v-11c0-3 4-5 10-5s10 2 10 5v11h-20z" stroke-width="1"/>
+          </svg>`
+        },
+        environment: {
+          label: `Environmental Hazard (GHS09)`,
+          svg: `<svg class="ghs-diamond-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <polygon class="ghs-border" points="32,4 60,32 32,60 4,32"/>
+            <line class="ghs-glyph" x1="25" y1="20" x2="25" y2="42" stroke-width="2.5"/>
+            <line class="ghs-glyph" x1="25" y1="27" x2="18" y2="21" stroke-width="2"/>
+            <line class="ghs-glyph" x1="25" y1="30" x2="32" y2="24" stroke-width="2"/>
+            <path class="ghs-glyph" d="M16 42h32v3H16z" stroke-width="1"/>
+          </svg>`
+        }
+      };
+
+      function escapeHtml(text) {
+        const str = String(text == null ? '' : text);
+        return str
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function deriveDisplayName(rawName) {
+        const cleaned = String(rawName || 'Unnamed Safety Data Sheet')
+          .split('/')
+          .pop()
+          .replace(/\.pdf$/i, '')
+          .replace(/[_-]+/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+        return cleaned || `Unnamed SDS Document`;
+      }
+
+      function inferHazardsFromName(name) {
+        const lower = name.toLowerCase();
+        const hazards = [];
+        const ghsIcons = [];
+        let signalWord = `WARNING`;
+
+        if (/(acid|caustic|hydroxide|bleach|hypochlorite|corrosive|descaler|muriatic|quat)/.test(lower)) {
+          hazards.push(`Corrosive`);
+          ghsIcons.push(`corrosion`);
+          signalWord = `DANGER`;
+        }
+        if (/(alcohol|acetone|solvent|flammable|thinner|gasoline|wd-40|wd40|propane|fuel|aerosol)/.test(lower)) {
+          hazards.push(`Flammable`);
+          ghsIcons.push(`flame`);
+          signalWord = `DANGER`;
+        }
+        if (/(soap|detergent|cleaner|degreaser|sanitizer|surfactant)/.test(lower)) {
+          hazards.push(`Eye Irritation`);
+          if (!ghsIcons.includes(`exclamation`)) ghsIcons.push(`exclamation`);
+        }
+        if (hazards.length === 0) {
+          hazards.push(`Industrial Chemical Reference`);
+          ghsIcons.push(`exclamation`);
+        }
+        return { hazards, ghsIcons, signalWord };
+      }
+
+      function normalizeManifestEntry(entry, index) {
+        if (typeof entry === `string`) {
+          const name = deriveDisplayName(entry);
+          const inferred = inferHazardsFromName(name);
+          const code = `SDS-${String(index + 1).padStart(3, '0')}`;
+          return {
+            id: `sheet-${index}`,
+            code: code,
+            name: name,
+            fullProductName: name,
+            filename: entry,
+            pdfUrl: entry,
+            manufacturer: `fastmail7009-netizen/pdf-library`,
+            cas: `See Full PDF Document`,
+            category: `Indexed PDF Sheet`,
+            signalWord: inferred.signalWord,
+            hazards: inferred.hazards,
+            ghsIcons: inferred.ghsIcons,
+            ppe: `Consult Section 8 of the attached Safety Data Sheet PDF for required eye, skin, and respiratory PPE.`,
+            firstAid: `Consult Section 4 of the attached Safety Data Sheet PDF for exposure response procedures.`,
+            fireFighting: `Consult Section 5 of the attached Safety Data Sheet PDF for suitable extinguishing media.`,
+            spills: `Consult Section 6 of the attached Safety Data Sheet PDF for containment and cleanup guidance.`,
+            storage: `Consult Section 7 of the attached Safety Data Sheet PDF for safe handling and storage conditions.`,
+            physical: {
+              appearance: `See Section 9 of Full PDF`,
+              odor: `See Section 9 of Full PDF`,
+              ph: `See Section 9 of Full PDF`,
+              flashPoint: `See Section 9 of Full PDF`,
+              specificGravity: `See Section 9 of Full PDF`
+            },
+            summary: `Automatically indexed from pdf-manifest.json (${entry}). Open the Full PDF Preview tab or inspect metadata below.`,
+            tox: `Consult Section 11 of the attached PDF document.`,
+            ecological: `Consult Section 12 of the attached PDF document.`,
+            transport: `Consult Section 14 of the attached PDF document.`,
+            regulatory: `Consult Section 15 of the attached PDF document.`
+          };
+        }
+
+        const rawPath = entry.url || entry.path || entry.file || entry.filename || entry.pdf || ``;
+        const name = entry.name || entry.title || entry.chemical || deriveDisplayName(rawPath);
+        const inferred = inferHazardsFromName(name);
+        const code = entry.code || entry.sdsCode || `SDS-${String(index + 1).padStart(3, '0')}`;
+        const hazards = Array.isArray(entry.hazards) && entry.hazards.length ? entry.hazards : inferred.hazards;
+        const ghsIcons = Array.isArray(entry.ghsIcons) && entry.ghsIcons.length ? entry.ghsIcons : inferred.ghsIcons;
+
+        return {
+          id: `sheet-${index}`,
+          code: code,
+          name: name,
+          fullProductName: entry.fullProductName || name,
+          filename: rawPath,
+          pdfUrl: rawPath,
+          manufacturer: entry.manufacturer || entry.vendor || `fastmail7009-netizen/pdf-library`,
+          cas: entry.cas || `See Full SDS Document`,
+          category: entry.category || `Indexed PDF Sheet`,
+          signalWord: (entry.signalWord || inferred.signalWord).toUpperCase(),
+          hazards: hazards,
+          ghsIcons: ghsIcons,
+          ppe: entry.ppe || `Refer to Section 8 of the Full SDS Sheet for required personal protective equipment.`,
+          firstAid: entry.firstAid || `Refer to Section 4 of the Full SDS Sheet for emergency first-aid measures.`,
+          fireFighting: entry.fireFighting || `Refer to Section 5 of the Full SDS Sheet for fire-fighting procedures.`,
+          spills: entry.spills || `Refer to Section 6 of the Full SDS Sheet for accidental release protocols.`,
+          storage: entry.storage || `Refer to Section 7 of the Full SDS Sheet for handling and storage requirements.`,
+          physical: entry.physical || {
+            appearance: `See Section 9`,
+            odor: `See Section 9`,
+            ph: `See Section 9`,
+            flashPoint: `See Section 9`,
+            specificGravity: `See Section 9`
+          },
+          summary: entry.summary || `Safety Data Sheet record for ${name} (${rawPath || code}).`,
+          tox: entry.tox || `Refer to Section 11 of the Full SDS Sheet.`,
+          ecological: entry.ecological || `Refer to Section 12 of the Full SDS Sheet.`,
+          transport: entry.transport || `Refer to Section 14 of the Full SDS Sheet.`,
+          regulatory: entry.regulatory || `Refer to Section 15 of the Full SDS Sheet.`
+        };
+      }
+
+      async function loadPdfManifest() {
+        const sourceLabel = document.getElementById('manifest-source-label');
+        try {
+          const response = await fetch(`pdf-manifest.json`, { cache: `no-store` });
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          const payload = await response.json();
+          let rawList = [];
+          if (Array.isArray(payload)) {
+            rawList = payload;
+          } else if (payload && typeof payload === `object`) {
+            rawList = payload.files || payload.pdfs || payload.sheets || payload.items || [];
+          }
+
+          if (Array.isArray(rawList) && rawList.length > 0) {
+            allSheets = rawList.map(normalizeManifestEntry);
+            loadedFromLiveManifest = true;
+            activeViewMode = `pdf`;
+            if (sourceLabel) {
+              sourceLabel.textContent = `Live pdf-manifest.json (${allSheets.length} PDFs)`;
+            }
+          } else {
+            throw new Error(`Empty manifest`);
+          }
+        } catch (_err) {
+          allSheets = FALLBACK_MANIFEST.map(function (item, idx) {
+            const normalized = normalizeManifestEntry(item, idx);
+            // Built-in fallback items use rich structured 16-section SDS rendering (no external file path required)
+            normalized.hasLocalPdfFile = false;
+            return normalized;
+          });
+          loadedFromLiveManifest = false;
+          activeViewMode = `summary`;
+          if (sourceLabel) {
+            sourceLabel.textContent = `fastmail7009-netizen/pdf-library (Reference Master Index)`;
+          }
+        }
+
+        if (loadedFromLiveManifest) {
+          allSheets.forEach(function (s) {
+            s.hasLocalPdfFile = Boolean(s.pdfUrl);
+          });
+        }
+
+        const totalEl = document.getElementById('header-total-count');
+        if (totalEl) totalEl.textContent = String(allSheets.length);
+
+        applyFilters();
+      }
+
+      function getSignalClass(signalWord) {
+        if (signalWord === `DANGER`) return `signal-tag--danger`;
+        if (signalWord === `WARNING`) return `signal-tag--warning`;
+        return `signal-tag--caution`;
+      }
+
+      function applyFilters() {
+        const searchInput = document.getElementById('sds-search-input');
+        const query = searchInput ? searchInput.value.trim().toLowerCase() : ``;
+
+        filteredSheets = allSheets.filter(function (sheet) {
+          const matchesFilter =
+            activeCategoryFilter === `all` ||
+            sheet.signalWord === activeCategoryFilter ||
+            sheet.hazards.some(function (h) {
+              return h.toLowerCase().indexOf(activeCategoryFilter.toLowerCase()) !== -1;
+            });
+
+          if (!matchesFilter) return false;
+          if (!query) return true;
+
+          const haystack = [
+            sheet.code,
+            sheet.name,
+            sheet.fullProductName,
+            sheet.manufacturer,
+            sheet.cas,
+            sheet.category,
+            sheet.signalWord,
+            sheet.filename,
+            sheet.summary,
+            sheet.hazards.join(` `)
+          ].join(` `).toLowerCase();
+
+          return haystack.indexOf(query) !== -1;
+        });
+
+        // Keep selection valid
+        if (filteredSheets.length > 0) {
+          const stillVisible = filteredSheets.some(function (s) { return s.id === selectedSheetId; });
+          if (!stillVisible) {
+            selectedSheetId = filteredSheets[0].id;
+          }
+        } else {
+          selectedSheetId = null;
+        }
+
+        renderList();
+        renderPreview();
+        updateStatusBar();
+      }
+
+      function updateStatusBar() {
+        const statusEl = document.getElementById('results-status');
+        const badgeEl = document.getElementById('list-count-badge');
+        const total = allSheets.length;
+        const shown = filteredSheets.length;
+
+        if (statusEl) {
+          statusEl.textContent = `Showing ${shown} of ${total} Safety Data Sheets`;
+        }
+        if (badgeEl) {
+          badgeEl.textContent = shown === 1 ? `1 Sheet` : `${shown} Sheets`;
+        }
+      }
+
+      function renderList() {
+        const container = document.getElementById('sds-list-container');
+        if (!container) return;
+
+        if (filteredSheets.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <p class="empty-state-title">No matching Safety Data Sheets found</p>
+              <p class="empty-state-body">No indexed chemicals or SDS codes matched your current search or hazard filter.</p>
+              <button type="button" class="button" onclick="resetAllFilters()">Reset filter</button>
+            </div>
+          `;
+          return;
+        }
+
+        const html = filteredSheets.map(function (sheet) {
+          const isSelected = sheet.id === selectedSheetId;
+          const signalClass = getSignalClass(sheet.signalWord);
+          return `
+            <button
+              type="button"
+              class="sds-item${isSelected ? ' is-selected' : ''}"
+              role="option"
+              aria-selected="${isSelected ? 'true' : 'false'}"
+              onclick="selectSheet('${escapeHtml(sheet.id)}')"
+            >
+              <div class="chemical-box-row">
+                <span class="chemical-box chemical-box--code">${escapeHtml(sheet.code)}</span>
+                <span class="chemical-box">${escapeHtml(sheet.name)}</span>
+              </div>
+              <div class="sds-item-meta">
+                <span class="signal-tag ${signalClass}">${escapeHtml(sheet.signalWord)}</span>
+                <span class="sds-item-manufacturer">${escapeHtml(sheet.manufacturer)}</span>
+              </div>
+              <p class="sds-item-summary">${escapeHtml(sheet.hazards.join(' · '))}</p>
+            </button>
+          `;
+        }).join(``);
+
+        container.innerHTML = html;
+      }
+
+      function renderPreview() {
+        const previewEl = document.getElementById('preview-body');
+        const codeTagEl = document.getElementById('selected-code-tag');
+        if (!previewEl) return;
+
+        const sheet = filteredSheets.find(function (s) { return s.id === selectedSheetId; }) || null;
+        if (!sheet) {
+          if (codeTagEl) codeTagEl.textContent = `No Selection`;
+          previewEl.innerHTML = `
+            <div class="empty-state">
+              <p class="empty-state-title">No Safety Data Sheet selected</p>
+              <p class="empty-state-body">Select a chemical entry from the SDS Sheets List or reset your search filter to inspect the complete hazard summary and 16-section SDS sheet.</p>
+              <button type="button" class="button" onclick="resetAllFilters()">Reset filter</button>
+            </div>
+          `;
+          return;
+        }
+
+        if (codeTagEl) codeTagEl.textContent = sheet.code;
+
+        const ghsHtml = sheet.ghsIcons.map(function (key) {
+          const icon = GHS_ICONS[key] || GHS_ICONS.exclamation;
+          return `<span class="ghs-item">${icon.svg}<span>${escapeHtml(icon.label)}</span></span>`;
+        }).join(``);
+
+        const signalClass = getSignalClass(sheet.signalWord);
+        const canShowPdfFrame = Boolean(sheet.hasLocalPdfFile && sheet.pdfUrl);
+
+        let documentContentHtml = ``;
+        if (activeViewMode === `pdf` && canShowPdfFrame) {
+          documentContentHtml = `
+            <div class="pdf-viewer-wrap">
+              <iframe
+                class="pdf-frame"
+                src="${escapeHtml(sheet.pdfUrl)}"
+                title="Full SDS PDF Preview for ${escapeHtml(sheet.name)}"
+              ></iframe>
+              <div class="pdf-unavailable-note">
+                Document Source: <strong>${escapeHtml(sheet.filename)}</strong> — Switch to <strong>16-Section SDS Summary</strong> above to view structured hazard tables.
+              </div>
+            </div>
+          `;
+        } else {
+          documentContentHtml = `
+            <article class="sds-document" aria-label="16-Section Safety Data Sheet for ${escapeHtml(sheet.name)}">
+              <div class="sds-doc-banner">
+                <h3 class="sds-doc-heading">Safety Data Sheet — ${escapeHtml(sheet.code)}</h3>
+                <span class="sds-doc-standard">OSHA 29 CFR 1910.1200 / GHS Rev. 7 Format</span>
+              </div>
+
+              <div class="sds-sections-grid">
+                <div class="sds-section-block sds-section-block--wide">
+                  <h4 class="sds-sec-title">Section 1 &amp; 2 — Identification &amp; Hazard Summary</h4>
+                  <p class="sds-sec-body"><strong>Product Identifier:</strong> ${escapeHtml(sheet.fullProductName)}</p>
+                  <p class="sds-sec-body">${escapeHtml(sheet.summary)}</p>
+                </div>
+
+                <div class="sds-section-block">
+                  <h4 class="sds-sec-title">Section 3 — Composition / CAS</h4>
+                  <p class="sds-sec-body">${escapeHtml(sheet.cas)}</p>
+                </div>
+
+                <div class="sds-section-block">
+                  <h4 class="sds-sec-title">Section 4 — First-Aid Measures</h4>
+                  <p class="sds-sec-body">${escapeHtml(sheet.firstAid)}</p>
+                </div>
+
+                <div class="sds-section-block">
+                  <h4 class="sds-sec-title">Section 5 — Fire-Fighting Measures</h4>
+                  <p class="sds-sec-body">${escapeHtml(sheet.fireFighting)}</p>
+                </div>
+
+                <div class="sds-section-block">
+                  <h4 class="sds-sec-title">Section 6 — Accidental Release Measures</h4>
+                  <p class="sds-sec-body">${escapeHtml(sheet.spills)}</p>
+                </div>
+
+                <div class="sds-section-block">
+                  <h4 class="sds-sec-title">Section 7 — Handling &amp; Storage</h4>
+                  <p class="sds-sec-body">${escapeHtml(sheet.storage)}</p>
+                </div>
+
+                <div class="sds-section-block">
+                  <h4 class="sds-sec-title">Section 8 — Exposure Controls &amp; PPE</h4>
+                  <p class="sds-sec-body">${escapeHtml(sheet.ppe)}</p>
+                </div>
+
+                <div class="sds-section-block sds-section-block--wide">
+                  <h4 class="sds-sec-title">Section 9 — Physical &amp; Chemical Properties</h4>
+                  <table class="sds-props-table">
+                    <tbody>
+                      <tr>
+                        <th>Appearance</th>
+                        <td>${escapeHtml(sheet.physical.appearance)}</td>
+                      </tr>
+                      <tr>
+                        <th>Odor</th>
+                        <td>${escapeHtml(sheet.physical.odor)}</td>
+                      </tr>
+                      <tr>
+                        <th>pH Value</th>
+                        <td>${escapeHtml(sheet.physical.ph)}</td>
+                      </tr>
+                      <tr>
+                        <th>Flash Point</th>
+                        <td>${escapeHtml(sheet.physical.flashPoint)}</td>
+                      </tr>
+                      <tr>
+                        <th>Specific Gravity / Relative Density</th>
+                        <td>${escapeHtml(sheet.physical.specificGravity)}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="sds-section-block">
+                  <h4 class="sds-sec-title">Section 10 &amp; 11 — Stability &amp; Toxicology</h4>
+                  <p class="sds-sec-body">${escapeHtml(sheet.tox)}</p>
+                </div>
+
+                <div class="sds-section-block">
+                  <h4 class="sds-sec-title">Section 12 &amp; 13 — Ecological &amp; Disposal</h4>
+                  <p class="sds-sec-body">${escapeHtml(sheet.ecological)}</p>
+                </div>
+
+                <div class="sds-section-block">
+                  <h4 class="sds-sec-title">Section 14 — Transport Information</h4>
+                  <p class="sds-sec-body">${escapeHtml(sheet.transport)}</p>
+                </div>
+
+                <div class="sds-section-block">
+                  <h4 class="sds-sec-title">Section 15 &amp; 16 — Regulatory &amp; Document File</h4>
+                  <p class="sds-sec-body">${escapeHtml(sheet.regulatory)} · File: ${escapeHtml(sheet.filename)}</p>
+                </div>
+              </div>
+            </article>
+          `;
+        }
+
+        const modeToggleHtml = canShowPdfFrame
+          ? `
+            <div class="sheet-mode-bar">
+              <div class="sheet-mode-buttons" role="tablist" aria-label="SDS Sheet Display Mode">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected="${activeViewMode === 'pdf' ? 'true' : 'false'}"
+                  class="mode-tab${activeViewMode === 'pdf' ? ' is-active' : ''}"
+                  onclick="setViewMode('pdf')"
+                >Embedded PDF Preview</button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected="${activeViewMode === 'summary' ? 'true' : 'false'}"
+                  class="mode-tab${activeViewMode === 'summary' ? ' is-active' : ''}"
+                  onclick="setViewMode('summary')"
+                >16-Section SDS Summary</button>
+              </div>
+              <span class="results-status">Source: ${escapeHtml(sheet.filename)}</span>
+            </div>
+          `
+          : ``;
+
+        previewEl.innerHTML = `
+          <div class="preview-hero">
+            <div class="chemical-box-row">
+              <span class="chemical-box chemical-box--code">${escapeHtml(sheet.code)}</span>
+              <span class="chemical-box">${escapeHtml(sheet.name)}</span>
+            </div>
+
+            <div class="preview-title-row">
+              <h3 class="preview-chemical-heading">${escapeHtml(sheet.fullProductName)}</h3>
+              <span class="signal-tag ${signalClass}">Signal Word: ${escapeHtml(sheet.signalWord)}</span>
+            </div>
+
+            <div class="ghs-strip">
+              <span class="ghs-strip-label">GHS Hazards:</span>
+              ${ghsHtml}
+            </div>
+
+            <div class="preview-facts-grid">
+              <div class="fact-cell">
+                <span class="fact-label">Manufacturer</span>
+                <span class="fact-value">${escapeHtml(sheet.manufacturer)}</span>
+              </div>
+              <div class="fact-cell">
+                <span class="fact-label">CAS / Identifier</span>
+                <span class="fact-value">${escapeHtml(sheet.cas)}</span>
+              </div>
+              <div class="fact-cell">
+                <span class="fact-label">Hazard Category</span>
+                <span class="fact-value">${escapeHtml(sheet.category)}</span>
+              </div>
+              <div class="fact-cell">
+                <span class="fact-label">PDF Document</span>
+                <span class="fact-value">${escapeHtml(sheet.filename)}</span>
+              </div>
+            </div>
+          </div>
+
+          ${modeToggleHtml}
+          ${documentContentHtml}
+        `;
+      }
+
+      // Hoisted global handlers for inline onclick attributes
+      window.selectSheet = function (id) {
+        selectedSheetId = id;
+        renderList();
+        renderPreview();
+      };
+
+      window.setViewMode = function (mode) {
+        activeViewMode = mode;
+        renderPreview();
+      };
+
+      window.resetAllFilters = function () {
+        const searchInput = document.getElementById('sds-search-input');
+        if (searchInput) searchInput.value = ``;
+        activeCategoryFilter = `all`;
+        document.querySelectorAll('.filter-chip').forEach(function (btn) {
+          btn.classList.toggle('is-active', btn.getAttribute('data-filter') === `all`);
+        });
+        applyFilters();
+      };
+
+      // Logo fallback handler (tries UFM_logo_Transparent.png -> logo.png -> inline SVG emblem)
+      function initLogoFallback() {
+        const img = document.getElementById('brand-logo-img');
+        const fallback = document.getElementById('brand-logo-fallback');
+        if (!img || !fallback) return;
+
+        let triedAlternate = false;
+        img.addEventListener('error', function () {
+          if (!triedAlternate) {
+            triedAlternate = true;
+            img.src = `logo.png`;
+          } else {
+            img.style.display = `none`;
+            fallback.classList.add('is-visible');
+          }
+        });
+      }
+
+      function initEvents() {
+        const searchInput = document.getElementById('sds-search-input');
+        if (searchInput) {
+          searchInput.addEventListener('input', applyFilters);
+        }
+
+        const resetBtn = document.getElementById('reset-filter-btn');
+        if (resetBtn) {
+          resetBtn.addEventListener('click', window.resetAllFilters);
+        }
+
+        document.querySelectorAll('.filter-chip').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            activeCategoryFilter = btn.getAttribute('data-filter') || `all`;
+            document.querySelectorAll('.filter-chip').forEach(function (other) {
+              other.classList.toggle('is-active', other === btn);
+            });
+            applyFilters();
+          });
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        initLogoFallback();
+        initEvents();
+        loadPdfManifest();
+      });
+    })();
+  </script>
+</body>
+</html>
